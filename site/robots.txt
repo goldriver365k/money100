@@ -1,0 +1,4 @@
+# 개발·미리보기 환경: 검색 노출 차단
+# 운영 배포 시 `npm run build:production` 이 이 파일을 운영용으로 교체합니다.
+User-agent: *
+Disallow: /

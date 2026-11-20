@@ -1,0 +1,226 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'none'; form-action 'none'; base-uri 'none'">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <title>월급 일할계산기 — 중도 입사·퇴사 급여 계산 | 정산노트</title>
+  <meta name="description" content="중도 입사 급여 계산, 중도 퇴사 급여 계산이 필요한 달의 급여 일할계산을 달력일 기준과 소정근로일 기준으로 비교합니다. 입력값은 브라우저 안에서만 처리됩니다.">
+  <!-- seo:start -->
+  <meta name="robots" content="noindex, nofollow">
+  <!-- seo:end -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="정산노트">
+  <meta property="og:title" content="월급 일할계산기 — 중도 입사·퇴사 급여 계산 | 정산노트">
+  <meta property="og:description" content="중도 입사·퇴사한 달의 세전 예상 급여를 두 가지 방식으로 비교하세요.">
+  <meta property="og:locale" content="ko_KR">
+  <meta name="theme-color" content="#1f5f4a">
+  <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/assets/css/style.css">
+  <script type="module" src="/assets/js/salary-proration-page.js"></script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "퇴사일에는 어떤 날짜를 입력하나요?",
+        "acceptedAnswer": { "@type": "Answer", "text": "정산 대상에 포함되는 마지막 재직일을 입력하세요. 회사 기록에서 퇴사일이 재직 종료 다음 날을 뜻한다면 마지막 재직일을 확인해 입력하세요." }
+      },
+      {
+        "@type": "Question",
+        "name": "토요일이나 공휴일은 어떻게 처리하나요?",
+        "acceptedAnswer": { "@type": "Answer", "text": "달력일 기준은 날짜를 모두 셉니다. 소정근로일 기준은 회사와 정한 해당 월의 근무 일정을 달력에서 선택해 계산합니다." }
+      },
+      {
+        "@type": "Question",
+        "name": "어느 쪽이 실제 지급액인가요?",
+        "acceptedAnswer": { "@type": "Answer", "text": "두 예상액을 비교한 뒤 급여명세서에서 회사의 임금 항목별 계산 방법과 공제 내역을 확인하세요." }
+      }
+    ]
+  }
+  </script>
+</head>
+<body>
+  <a class="skip-link" href="#main">본문 바로가기</a>
+  <header class="site-header">
+    <div class="container">
+      <a class="brand" href="/">정산노트</a>
+    </div>
+  </header>
+
+  <main id="main" class="container">
+    <nav class="breadcrumb" aria-label="현재 위치">
+      <ol>
+        <li><a href="/" id="home-link">← 계산기 목록(홈)</a></li>
+        <li aria-current="page">월급 일할계산기</li>
+      </ol>
+    </nav>
+
+    <section class="hero" aria-labelledby="page-title">
+      <h1 id="page-title">월급 일할계산기</h1>
+      <p class="lead">중도 입사·퇴사한 달의 세전 예상 급여를 두 가지 방식으로 비교하세요.</p>
+    </section>
+
+    <noscript>
+      <p class="notice notice-warn">이 계산기는 브라우저의 JavaScript로 동작합니다. JavaScript를 켠 뒤 다시 열어 주세요.</p>
+    </noscript>
+
+    <form id="proration-form" class="panel" novalidate aria-labelledby="form-title">
+      <h2 id="form-title" class="panel-title">입력</h2>
+
+      <div class="field">
+        <label for="salary">일할 대상 세전 월급 <span class="unit">(원)</span></label>
+        <p class="hint" id="salary-hint">회사에서 일할 계산에 포함하는 세전 월정급 항목(기본급 등)의 합을 원 단위로 입력하세요.</p>
+        <input id="salary" name="salary" type="text" inputmode="numeric" autocomplete="off" spellcheck="false"
+               placeholder="예: 3100000" aria-describedby="salary-hint salary-preview salary-error">
+        <p class="preview" id="salary-preview"></p>
+        <p class="error" id="salary-error" hidden></p>
+      </div>
+
+      <fieldset class="field">
+        <legend>정산 대상 월</legend>
+        <div class="row">
+          <div class="sub-field">
+            <label for="year">연도</label>
+            <select id="year" name="year"></select>
+          </div>
+          <div class="sub-field">
+            <label for="month">월</label>
+            <select id="month" name="month"></select>
+          </div>
+        </div>
+        <p class="hint" id="period-hint">정산월을 바꾸면 입력한 날짜는 비워지고, 근로 일정은 새 달의 월~금으로 초기화됩니다.</p>
+      </fieldset>
+
+      <fieldset class="field">
+        <legend>정산 유형</legend>
+        <div class="choices">
+          <label class="choice"><input type="radio" name="type" value="join" checked> <span>중도 입사</span></label>
+          <label class="choice"><input type="radio" name="type" value="leave"> <span>중도 퇴사</span></label>
+          <label class="choice"><input type="radio" name="type" value="both"> <span>같은 달 입·퇴사</span></label>
+        </div>
+      </fieldset>
+
+      <div class="row dates">
+        <div class="field" id="start-field">
+          <label for="start-date">입사일</label>
+          <input id="start-date" name="startDate" type="date" aria-describedby="start-date-hint start-date-error">
+          <p class="hint" id="start-date-hint">입사일부터 정산에 포함합니다.</p>
+          <p class="error" id="start-date-error" hidden></p>
+        </div>
+        <div class="field" id="end-field" hidden>
+          <label for="end-date">마지막 재직일</label>
+          <input id="end-date" name="endDate" type="date" aria-describedby="end-date-hint end-date-error">
+          <p class="hint" id="end-date-hint">정산에 포함되는 마지막 근무(재직) 날짜입니다.</p>
+          <p class="error" id="end-date-error" hidden></p>
+        </div>
+      </div>
+
+      <fieldset class="field schedule" aria-describedby="schedule-hint schedule-summary schedule-error">
+        <legend>월 전체 소정근로 일정</legend>
+        <p class="hint" id="schedule-hint">재직 구간 밖의 날짜를 포함해, 그달 전체에 예정된 근무일을 선택하세요. 월~금이 기본 선택되어 있으며 공휴일·주말 근무·교대근무에 맞게 날짜를 눌러 선택하거나 해제할 수 있습니다.</p>
+        <div class="schedule-tools">
+          <button type="button" class="btn btn-ghost" id="reset-weekdays">월~금으로 초기화</button>
+          <button type="button" class="btn btn-ghost" id="clear-workdays">전체 해제</button>
+        </div>
+        <div class="calendar" id="calendar">
+          <div class="calendar-head" aria-hidden="true">
+            <span class="sun">일</span><span>월</span><span>화</span><span>수</span><span>목</span><span>금</span><span class="sat">토</span>
+          </div>
+          <div class="calendar-grid" id="calendar-grid"></div>
+        </div>
+        <p class="legend-note"><span class="swatch swatch-on" aria-hidden="true"></span> 선택한 근로일 <span class="swatch swatch-range" aria-hidden="true"></span> 재직 구간</p>
+        <p class="schedule-summary" id="schedule-summary"></p>
+        <p class="error" id="schedule-error" hidden></p>
+      </fieldset>
+
+      <div class="actions">
+        <button type="submit" class="btn btn-primary" id="submit">계산하기</button>
+      </div>
+    </form>
+
+    <div id="result-status" class="sr-only" role="status" aria-live="polite" aria-atomic="true"></div>
+
+    <section id="result" class="panel result" hidden aria-labelledby="result-title">
+      <h2 id="result-title" class="panel-title" tabindex="-1">세전 일할 급여 비교</h2>
+      <p class="result-meta" id="result-meta"></p>
+      <table class="compare" role="table" aria-labelledby="result-title" aria-describedby="result-meta">
+        <thead role="rowgroup">
+          <tr role="row">
+            <th role="columnheader" scope="col">계산 방식</th>
+            <th role="columnheader" scope="col">적용 일수</th>
+            <th role="columnheader" scope="col">전체 일수</th>
+            <th role="columnheader" scope="col">산식</th>
+            <th role="columnheader" scope="col">세전 예상액</th>
+          </tr>
+        </thead>
+        <tbody role="rowgroup">
+          <tr role="row" id="row-calendar">
+            <th role="rowheader" scope="row">달력일 기준</th>
+            <td role="cell" data-label="적용 일수" data-col="applied"></td>
+            <td role="cell" data-label="전체 일수" data-col="total"></td>
+            <td role="cell" data-label="산식" data-col="formula"></td>
+            <td role="cell" data-label="세전 예상액" data-col="amount" class="amount"></td>
+          </tr>
+          <tr role="row" id="row-workday">
+            <th role="rowheader" scope="row">소정근로일 기준</th>
+            <td role="cell" data-label="적용 일수" data-col="applied"></td>
+            <td role="cell" data-label="전체 일수" data-col="total"></td>
+            <td role="cell" data-label="산식" data-col="formula"></td>
+            <td role="cell" data-label="세전 예상액" data-col="amount" class="amount"></td>
+          </tr>
+        </tbody>
+      </table>
+      <p class="diff"><span class="diff-label">차액</span> <strong id="diff-value"></strong></p>
+    </section>
+
+    <section class="notice" aria-labelledby="notice-title">
+      <h2 id="notice-title" class="sr-only">실제 급여 확인 안내</h2>
+      <p>이 계산기는 입력한 월정급을 두 가지 방식으로 배분합니다. 실제 정산 방식과 대상 항목은 근로계약서, 취업규칙 및 급여명세서에서 확인하세요. 세금·보험료 공제, 별도 수당, 유급휴일·주휴수당의 개별 반영은 이 비교에 포함되지 않습니다.</p>
+      <p class="disclaimer">본 계산 결과는 단순 모의 계산이며, 법적 효력을 갖는 증빙자료가 아닙니다.</p>
+    </section>
+
+    <section class="content" aria-labelledby="basis-title">
+      <h2 id="basis-title">적용 기준과 공식 출처</h2>
+      <h3>계산 방법</h3>
+      <ul>
+        <li><strong>재직 구간</strong>: 시작일과 종료일을 모두 포함합니다. 중도 입사는 입사일부터 월말까지, 중도 퇴사는 월초부터 마지막 재직일까지, 같은 달 입·퇴사는 입사일부터 마지막 재직일까지입니다.</li>
+        <li><strong>달력일 기준</strong>: 세전 월급 × 재직 달력일 수 ÷ 그달 전체 달력일 수</li>
+        <li><strong>소정근로일 기준</strong>: 세전 월급 × 재직 구간 안의 선택 근로일 수 ÷ 그달 전체 선택 근로일 수</li>
+        <li><strong>끝수 처리</strong>: 각 방식의 마지막 단계에서 원 단위로 사사오입합니다. 차액은 표시된 두 금액의 차이입니다.</li>
+        <li>윤년과 월별 일수는 실제 달력을 따릅니다.</li>
+      </ul>
+      <p>두 산식은 급여 일할계산 결과를 비교해 보기 위한 참고용 계산 방법입니다. 회사의 실제 정산 방식은 근로계약서와 취업규칙에서 정해집니다.</p>
+
+      <h3>관련 법령</h3>
+      <p>임금 지급과 임금명세서에 관한 안내는 아래 조문을 근거로 합니다.</p>
+      <ul class="sources">
+        <li><a href="https://www.law.go.kr/lsLinkCommonInfo.do?chrClsCd=010202&amp;lsJoLnkSeq=1027161983" target="_blank" rel="noopener noreferrer">근로기준법 제43조 (임금 지급)<span class="sr-only"> — 새 창에서 열림</span></a> — 임금의 지급 방법에 관한 조문</li>
+        <li><a href="https://www.law.go.kr/lsLinkCommonInfo.do?chrClsCd=010202&amp;lsJoLnkSeq=1029728419" target="_blank" rel="noopener noreferrer">근로기준법 제48조 (임금대장 및 임금명세서)<span class="sr-only"> — 새 창에서 열림</span></a> — 임금명세서에서 임금 항목별 금액과 계산 방법을 확인할 수 있는 근거</li>
+      </ul>
+      <p class="checked-date">공식 자료 확인일: <time datetime="2026-11-21">2026년 11월 21일</time></p>
+    </section>
+
+    <section class="content faq" aria-labelledby="faq-title">
+      <h2 id="faq-title">자주 묻는 질문</h2>
+      <p>중도 입사 급여 계산이나 중도 퇴사 급여 계산처럼 한 달을 다 채우지 못한 달의 급여 일할계산에서 자주 받는 질문입니다.</p>
+      <h3>퇴사일에는 어떤 날짜를 입력하나요?</h3>
+      <p>정산 대상에 포함되는 마지막 재직일을 입력하세요. 회사 기록에서 퇴사일이 재직 종료 다음 날을 뜻한다면 마지막 재직일을 확인해 입력하세요.</p>
+      <h3>토요일이나 공휴일은 어떻게 처리하나요?</h3>
+      <p>달력일 기준은 날짜를 모두 셉니다. 소정근로일 기준은 회사와 정한 해당 월의 근무 일정을 달력에서 선택해 계산합니다.</p>
+      <h3>어느 쪽이 실제 지급액인가요?</h3>
+      <p>두 예상액을 비교한 뒤 급여명세서에서 회사의 임금 항목별 계산 방법과 공제 내역을 확인하세요.</p>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p>입력한 급여와 날짜는 브라우저 안에서만 계산되며 서버나 분석 도구로 전송되지 않습니다.</p>
+      <p><a href="/">정산노트 홈</a></p>
+    </div>
+  </footer>
+</body>
+</html>
