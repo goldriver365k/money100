@@ -203,11 +203,42 @@ function exampleBlock(r, spec) {
         </ol>`;
 }
 
+/** 상단 메뉴 펼침 항목 아이콘 (직접 그린 단순 선 아이콘) */
+const NAV_ICONS = {
+  money: '<rect x="2.5" y="6" width="19" height="12" rx="2"/><circle cx="12" cy="12" r="2.6"/><path d="M6 9.5v5M18 9.5v5"/>',
+  briefcase: '<rect x="3" y="7.5" width="18" height="12" rx="2"/><path d="M9 7.5V6a1.5 1.5 0 0 1 1.5-1.5h3A1.5 1.5 0 0 1 15 6v1.5M3 12.5h18"/>',
+  calendar: '<rect x="3.5" y="5" width="17" height="15" rx="2"/><path d="M3.5 9.5h17M8 3v4M16 3v4M8 13.5h2M14 13.5h2M8 16.5h2"/>',
+  clock: '<circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/>',
+  heart: '<path d="M12 19.5s-7.5-4.4-7.5-9.6A4 4 0 0 1 12 7.6a4 4 0 0 1 7.5 2.3c0 5.2-7.5 9.6-7.5 9.6z"/>',
+  shield: '<path d="M12 3.5 19 6v5.5c0 4.4-3 7.8-7 9-4-1.2-7-4.6-7-9V6z"/><path d="M9 12l2.2 2.2L15.5 10"/>',
+  receipt: '<path d="M6 3.5h12v17l-2-1.4-2 1.4-2-1.4-2 1.4-2-1.4-2 1.4z"/><path d="M9 8.5h6M9 12h6M9 15.5h3.5"/>',
+  percent: '<circle cx="12" cy="12" r="8.5"/><path d="M9 15l6-6"/><circle cx="9.3" cy="9.3" r="1"/><circle cx="14.7" cy="14.7" r="1"/>',
+  gift: '<rect x="4" y="9" width="16" height="11" rx="1.5"/><path d="M3 9h18M12 9v11M12 9c-1.5-3.5-5-3.5-5-1.2C7 9 12 9 12 9zM12 9c1.5-3.5 5-3.5 5-1.2C17 9 12 9 12 9z"/>',
+  doc: '<path d="M7 3.5h7l4 4v13H7z"/><path d="M14 3.5v4h4M9.5 12h6M9.5 15.5h6"/>',
+  loan: '<path d="M4 10.5 12 4l8 6.5V20H4z"/><path d="M9.5 17.5l5-5"/><circle cx="9.8" cy="12.8" r="0.9"/><circle cx="14.2" cy="17.2" r="0.9"/>',
+  house: '<path d="M4 10.5 12 4l8 6.5V20H4z"/><path d="M10 20v-5h4v5"/>',
+  key: '<circle cx="8" cy="15" r="3.5"/><path d="M10.5 12.5 19 4M16 7l2 2M14 9l1.5 1.5"/>',
+  swap: '<path d="M4 8h14l-3-3M20 16H6l3 3"/>',
+  gauge: '<path d="M4 17a8 8 0 1 1 16 0"/><path d="M12 17l4-5"/>',
+  ruler: '<rect x="3" y="8" width="18" height="8" rx="1.5"/><path d="M7 8v3M11 8v4M15 8v3M19 8v2"/>',
+  star: '<path d="M12 4l2.4 4.9 5.4.8-3.9 3.8.9 5.4-4.8-2.5-4.8 2.5.9-5.4-3.9-3.8 5.4-.8z"/>',
+  alert: '<path d="M12 4 21 19.5H3z"/><path d="M12 10v4M12 17v.01"/>',
+};
+const NAV_ICON_OF = {
+  'annual-salary-net': 'money', 'monthly-salary-net': 'money', 'severance-pay': 'briefcase', 'weekly-holiday-pay': 'calendar',
+  'hourly-wage': 'clock', 'unemployment-benefit': 'briefcase', 'annual-leave-pay': 'calendar', 'overtime-pay': 'clock',
+  'salary-proration': 'calendar', 'parental-leave-pay': 'heart',
+  'social-insurance': 'shield', 'comprehensive-income-tax': 'doc', vat: 'receipt', 'year-end-tax': 'receipt', 'freelancer-tax': 'percent',
+  'income-tax': 'doc', 'health-insurance': 'shield', 'national-pension': 'shield', 'gift-tax': 'gift', 'inheritance-tax': 'doc',
+  'loan-interest': 'loan', 'acquisition-tax': 'house', 'capital-gains-tax': 'house', 'brokerage-fee': 'key', 'rent-conversion': 'swap',
+  'dsr-limit': 'gauge', 'property-tax': 'house', pyeong: 'ruler', 'subscription-points': 'star', 'jeonse-safety': 'alert',
+};
+
 /** 공통 상단 메뉴 (모든 페이지). current: 'home' | 'labor' | 'tax' | 'realty' | null — 현재 분야 강조 */
 function siteHeader(current = null, guideHref = '#basis-fold') {
   const cats = Object.entries(CATEGORIES).map(([key, label]) => {
     const items = CATALOG.filter((c) => c.cat === key && c.slug)
-      .map((c) => `<li><a href="/${c.slug}">${esc(c.name.replace(/ ?계산기$/, ''))}</a></li>`).join('');
+      .map((c) => `<li><a href="/${c.slug}"><span class="nav-ico" aria-hidden="true"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${NAV_ICONS[NAV_ICON_OF[c.slug]] ?? NAV_ICONS.doc}</svg></span><span class="nav-txt"><span class="nav-name">${esc(c.name.replace(/ ?계산기$/, ''))}</span><span class="nav-desc">${esc(c.desc)}</span></span></a></li>`).join('');
     return `<li class="has-menu cat-${key}${current === key ? ' is-current' : ''}">
           <button type="button" class="nav-cat" aria-expanded="false" aria-controls="menu-${key}">${label}<span class="nav-caret" aria-hidden="true"></span></button>
           <div class="nav-panel" id="menu-${key}">

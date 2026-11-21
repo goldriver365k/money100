@@ -36,7 +36,9 @@ function closeAllCats(except) {
   catButtons.forEach((b) => { if (b !== except) setCat(b, false); });
 }
 catButtons.forEach((btn) => {
-  btn.addEventListener('click', () => {
+  btn.addEventListener('click', (e) => {
+    // PC 마우스: 올렸을 때 이미 펼쳐졌으므로 클릭은 펼친 상태 유지 (닫히는 깜빡임 방지). 키보드·모바일은 펼침/접힘 전환
+    if (!isMobileNav() && e.detail > 0 && btn.closest('.has-menu')?.matches(':hover')) { closeAllCats(btn); setCat(btn, true); return; }
     const open = btn.getAttribute('aria-expanded') !== 'true';
     closeAllCats(btn);
     setCat(btn, open);
