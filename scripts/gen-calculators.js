@@ -45,10 +45,50 @@ function field(f) {
   }
   const modeAttrs = f.modeLabels ? ` data-mode-label ${Object.entries(f.modeLabels).map(([k, v]) => `data-label-${k.replace(/[A-Z]/g, (c) => `-${c.toLowerCase()}`)}="${esc(v)}"`).join(' ')}` : '';
   const preview = f.type === 'amount' ? `\n        <p class="preview" id="${id}-preview"></p>` : '';
+  if (f.helper === 'monthlyPay') {
+    return `      <div class="field">
+        <label for="${id}"${modeAttrs}><span class="label-text">${esc(f.label)}</span>${req}${unit}</label>
+        <div class="input-with-action">
+          ${control}
+          <button type="button" class="btn btn-ghost helper-toggle" id="${id}-helper-toggle" aria-expanded="false" aria-controls="${id}-helper">자동 계산</button>
+        </div>${err}${preview}${hint}
+${monthlyPayHelper(id, f.nonTaxableField)}
+      </div>`;
+  }
   return `      <div class="field">
         <label for="${id}"${modeAttrs}><span class="label-text">${esc(f.label)}</span>${req}${unit}</label>
         ${control}${err}${preview}${hint}
       </div>`;
+}
+
+/** '세전 월급' 자동 계산 패널 (calc-page.js 가 calc/monthly-pay-helper.js 와 연결). 입력값 이름은 mp… 로 계산 입력과 구분된다. */
+function monthlyPayHelper(target, nonTaxableField) {
+  const amt = (name, label, hint = '', value = '') => `
+          <div class="field helper-field">
+            <label for="${name}">${label} <span class="unit">(원)</span></label>
+            <input id="${name}" name="${name}" type="text" inputmode="numeric" autocomplete="off" spellcheck="false" data-amount${value ? ` value="${value}"` : ''} aria-describedby="${name}-error ${name}-preview${hint ? ` ${name}-hint` : ''}">
+            <p class="error" id="${name}-error" hidden></p>
+            <p class="preview" id="${name}-preview"></p>${hint ? `\n            <p class="hint" id="${name}-hint">${hint}</p>` : ''}
+          </div>`;
+  const radio = (name, legend, choices) => `
+          <fieldset class="field helper-field">
+            <legend>${legend}</legend>
+            <div class="choices">
+              ${choices.map(([v, l, on]) => `<label class="choice"><input type="radio" name="${name}" value="${v}"${on ? ' checked' : ''}> <span>${l}</span></label>`).join('\n              ')}
+            </div>
+          </fieldset>`;
+  return `        <div class="pay-helper" id="${target}-helper" data-helper="monthlyPay" data-target="${target}" data-nontaxable="${nonTaxableField}" hidden>
+          <p class="pay-helper-title">세전 월급 자동 계산</p>${radio('mpMode', '계산 방식', [['annual', '연봉 ÷ 12', true], ['parts', '기본급 + 수당']])}
+          <div data-mp-group="annual">${amt('mpAnnual', '연봉 (세전, 연간 총액)')}${amt('mpIncludedBonus', '연봉에 포함된 상여금 (연간)', '계약 연봉 안에 들어 있는 상여금입니다. 없으면 비워 두세요.')}${radio('mpIncludedBonusPaid', '연봉에 포함된 상여금은 어떻게 받나요?', [['monthly', '매달 나눠 받음 (월급에 포함)', true], ['separate', '상여 달에 따로 받음 (월급에서 제외)']])}${amt('mpExtraBonus', '연봉과 별도로 받는 상여금 (연간)', '성과급 등 연봉 외로 받는 금액입니다.')}${radio('mpExtraBonusInAverage', '별도 상여금을 월 평균에 넣을까요?', [['no', '아니요 (월급에서 제외)', true], ['yes', '예 (÷ 12 해서 포함)']])}${amt('mpNonTaxableA', '비과세 수당 (월)', '식대 등. 아래 비과세 금액 칸에도 자동으로 들어가 한 번만 차감됩니다.')}${radio('mpNonTaxableIn', '비과세 수당이 연봉에 포함되어 있나요?', [['included', '예 (연봉 안에 포함)', true], ['separate', '아니요 (연봉과 별도로 받음)']])}
+          </div>
+          <div data-mp-group="parts" hidden>${amt('mpBase', '기본급 (월)')}${amt('mpAllowance', '과세 수당 합계 (월)', '직책·자격·연장근로 수당 등 세금이 붙는 수당입니다.')}${amt('mpNonTaxableP', '비과세 수당 (월)', '식대 등. 아래 비과세 금액 칸에도 자동으로 들어가 한 번만 차감됩니다.')}
+          </div>
+          <div class="pay-helper-result" id="${target}-helper-result" aria-live="polite"></div>
+          <div class="pay-helper-actions">
+            <button type="button" class="btn btn-primary" id="${target}-helper-apply">세전 월급에 넣기</button>
+            <button type="button" class="btn btn-ghost" id="${target}-helper-close">닫기</button>
+          </div>
+        </div>`;
 }
 
 function exampleBlock(r, spec) {

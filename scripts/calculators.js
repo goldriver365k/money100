@@ -219,7 +219,7 @@ export const PAGES_SPEC = [
     basisYear: '2026년 요율·세율 기준',
     fields: [
       yearField,
-      { type: 'amount', name: 'pay', label: '세전 월급', required: true, placeholder: '예: 3000000', hint: '비과세 수당을 포함한 한 달 세전 급여입니다.' },
+      { type: 'amount', name: 'pay', label: '세전 월급', required: true, placeholder: '예: 3000000', helper: 'monthlyPay', nonTaxableField: 'nonTaxable', hint: '비과세 수당을 포함한 한 달 세전 급여입니다. 모르면 "자동 계산"으로 연봉이나 기본급 + 수당에서 구할 수 있습니다.' },
       { type: 'amount', name: 'nonTaxable', label: '월 비과세 금액', value: '200000', hint: '식대(월 20만 원 한도) 등 비과세 수당의 합계입니다. 없으면 0.' },
       { type: 'count', name: 'dependents', label: '부양가족 수 (본인 포함)', value: '1', unit: '명', hint: '기본공제 대상 인원입니다. 본인만이면 1입니다.' },
       { type: 'count', name: 'children', label: '자녀세액공제 대상 자녀 수', value: '0', unit: '명', hint: '기본공제 대상 자녀 중 연령 요건을 충족한 자녀 수입니다. 2026년 귀속분 연령 기준은 개정 소득세법 경과규정(8세 → 단계 상향)에 따르므로 국세청 안내로 확인하세요.' },

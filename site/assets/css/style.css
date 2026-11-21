@@ -932,3 +932,20 @@ html { scroll-padding-top: 84px; }
 .site-footer a { display: inline-flex; align-items: center; min-height: 44px; }
 /* 홈 제목 줄 균형 (모바일에서 "30종"만 다음 줄로 떨어지지 않게) */
 .home-hero-center h1 { text-wrap: balance; word-break: keep-all; }
+
+/* ===== '세전 월급' 자동 계산 도우미 ===== */
+.input-with-action { display: flex; gap: 8px; align-items: stretch; max-width: 520px; }
+.input-with-action input { flex: 1 1 auto; min-width: 0; max-width: none; }
+.input-with-action .helper-toggle { flex: none; min-height: 48px; padding: 0 16px; white-space: nowrap; }
+.pay-helper { margin: 12px 0 0; padding: 16px; border: 1.5px solid var(--brand); border-radius: 12px; background: var(--brand-soft); }
+.pay-helper-title { margin: 0 0 10px; font-weight: 800; }
+.pay-helper .helper-field { margin-bottom: 14px; }
+.pay-helper .helper-field input[type="text"] { width: 100%; max-width: 420px; background: #fff; }
+.pay-helper-result:not(:empty) { margin: 4px 0 12px; padding: 10px 14px; border-radius: 10px; background: #fff; }
+.pay-helper-result .kv-list { margin: 0; }
+.pay-helper-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+.pay-helper-actions .btn { min-height: 48px; }
+@media (max-width: 599px) {
+  .pay-helper { padding: 14px 12px; }
+  .pay-helper-actions .btn-primary { flex: 1 1 100%; }
+}

@@ -139,6 +139,46 @@ const check = (slug, w, item, ok, actual = '') => {
         check(spec.slug, w, '스크립트 오류 없음', errors.length === 0, errors.join(' | '));
         await p.close();
       }
+      // '세전 월급' 자동 계산 도우미 (월급 실수령액)
+      {
+        const p = await ctx.newPage(); const errs = [];
+        p.on('pageerror', (e) => errs.push(String(e)));
+        await gotoRetry(p, '/monthly-salary-net');
+        await p.waitForSelector('form[data-ready="true"]');
+        const S = 'monthly-salary-net';
+        const tog = p.locator('#pay-helper-toggle');
+        const before = await p.evaluate(() => ({ hidden: document.getElementById('pay-helper').hidden, exp: document.getElementById('pay-helper-toggle').getAttribute('aria-expanded'), h: Math.round(document.getElementById('pay-helper-toggle').getBoundingClientRect().height), direct: document.getElementById('pay').readOnly === false }));
+        if (mobile) await tog.tap(); else await tog.click();
+        const opened = await p.evaluate(() => ({ hidden: document.getElementById('pay-helper').hidden, exp: document.getElementById('pay-helper-toggle').getAttribute('aria-expanded') }));
+        check(S, w, '자동 계산 버튼: 기본 닫힘·직접 입력 유지·누르면 펼침(aria-expanded)·높이 44px 이상', before.hidden && before.exp === 'false' && before.direct && before.h >= 44 && !opened.hidden && opened.exp === 'true', JSON.stringify({ before, opened }));
+        // 빈 값으로 넣기 → 오류, 패널 유지
+        await p.click('#pay-helper-apply');
+        const err = await p.evaluate(() => ({ e: document.getElementById('mpAnnual-error').textContent, open: !document.getElementById('pay-helper').hidden, pay: document.getElementById('pay').value }));
+        check(S, w, '자동 계산: 빈 연봉으로 넣기 → 오류 표시·패널 유지·입력란 변경 없음', err.e.length > 0 && err.open && err.pay === '', JSON.stringify(err));
+        // 연봉 ÷ 12
+        await p.fill('#mpAnnual', '50000000'); await p.fill('#mpNonTaxableA', '200000');
+        const prev = await p.textContent('#pay-helper-result');
+        await p.click('#pay-helper-apply');
+        const a = await p.evaluate(() => ({ pay: document.getElementById('pay').value, nt: document.getElementById('nonTaxable').value, closed: document.getElementById('pay-helper').hidden, focus: document.activeElement?.id, preview: document.getElementById('pay-preview').textContent }));
+        check(S, w, '연봉 ÷ 12: 미리보기 → 세전 월급 4,166,666원·비과세 200,000원 자동 입력, 패널 닫힘·입력란 포커스', /4,166,666원/.test(prev) && a.pay === '4166666' && a.nt === '200000' && a.closed && a.focus === 'pay' && /4,166,666원/.test(a.preview), JSON.stringify({ prev: prev.slice(0, 80), ...a }));
+        await p.click('#submit'); await p.waitForSelector('#result:not([hidden])');
+        const net = await p.$$eval('#result-stats .stat', (els) => els.map((e) => e.textContent));
+        check(S, w, '자동 입력 후 계산 = 연봉 실수령액과 동일 (비과세 중복 차감 없음)', net[0].includes('3,553,771원'), net[0]);
+        // 기본급 + 수당
+        await tog.click();
+        await p.check('input[name="mpMode"][value="parts"]');
+        await p.fill('#mpBase', '2500000'); await p.fill('#mpAllowance', '300000'); await p.fill('#mpNonTaxableP', '200000');
+        await p.click('#pay-helper-apply');
+        const b = await p.evaluate(() => ({ pay: document.getElementById('pay').value, nt: document.getElementById('nonTaxable').value }));
+        check(S, w, '기본급 + 수당: 250만 + 30만 + 비과세 20만 → 세전 월급 3,000,000원·비과세 200,000원', b.pay === '3000000' && b.nt === '200000', JSON.stringify(b));
+        if (mobile) {
+          await tog.click();
+          const ov = await p.evaluate(() => { const vw = document.documentElement.clientWidth; const bad = [...document.querySelectorAll('#pay-helper input, #pay-helper button, #pay-helper .choice')].filter((e) => e.checkVisibility() && e.getBoundingClientRect().right > vw + 0.5).length; const small = [...document.querySelectorAll('#pay-helper button, #pay-helper .choice')].filter((e) => e.checkVisibility() && e.getBoundingClientRect().height < 44).length; return { overflow: document.documentElement.scrollWidth - vw, bad, small }; });
+          check(S, w, '자동 계산 패널 모바일: 가로 넘침·잘림 없음, 버튼·선택지 44px 이상', ov.overflow <= 0 && ov.bad === 0 && ov.small === 0, JSON.stringify(ov));
+        }
+        check(S, w, '자동 계산: 스크립트 오류 없음', errs.length === 0, errs.join(' | '));
+        await p.close();
+      }
       // 공통 아코디언 (이용 가능한 모든 계산기)
       for (const slug of liveSlugs) {
         const p = await ctx.newPage();
