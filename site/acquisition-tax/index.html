@@ -1,0 +1,256 @@
+<!doctype html>
+<html lang="ko" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'none'; form-action 'none'; base-uri 'none'">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <title>취득세 계산기 2026 — 주택 1~3%·다주택 중과·생애최초 감면 | 정산노트</title>
+  <meta name="description" content="취득가액, 취득 후 주택 수, 조정대상지역 여부, 전용면적으로 2026년 주택 취득세(1~3%, 중과 8·12%), 지방교육세, 농어촌특별세와 생애최초 감면(최대 200만 원)을 계산합니다.">
+  <!-- seo:start -->
+  <meta name="robots" content="noindex, nofollow">
+  <!-- seo:end -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="정산노트">
+  <meta property="og:title" content="취득세 계산기 2026 — 주택 1~3%·다주택 중과·생애최초 감면 | 정산노트">
+  <meta property="og:description" content="주택 수와 지역에 따른 취득세·지방교육세·농어촌특별세를 확인하세요.">
+  <meta property="og:locale" content="ko_KR">
+  <meta name="theme-color" content="#2563e2">
+  <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/assets/css/style.css">
+  <script type="module" src="/assets/js/nav.js"></script>
+  <script type="module" src="/assets/js/calc-page.js"></script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "6억~9억 원 구간 세율은 어떻게 정해지나요?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "(취득가액 × 2/3억 − 3)%로 계산합니다. 예를 들어 7억 5천만 원이면 2.00%입니다."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "조정대상지역은 어디인가요?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "2025년 10월 15일부터 서울 전역과 경기 12곳이 조정대상지역입니다. 국토교통부 고시로 최신 지정 현황을 확인하세요."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "오피스텔은 주택인가요?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "취득세에서는 주택 외(4%)로 계산합니다. 다만 주거용 오피스텔은 다른 주택의 주택 수 계산에 포함될 수 있습니다."
+        }
+      }
+    ]
+  }
+  </script>
+</head>
+<body class="calc-page">
+<!-- 이 파일은 scripts/gen-calculators.js 로 생성됩니다. 직접 고치지 말고 scripts/calculators.js 를 수정하세요. -->
+  <a class="skip-link" href="#main">본문 바로가기</a>
+  <header class="site-header">
+    <div class="container container-wide header-inner">
+      <a class="brand" href="/"><span class="brand-mark" aria-hidden="true"></span>정산노트</a>
+      <nav class="main-nav" aria-label="주요 메뉴"><ul><li><a href="/#calculators">계산기 모음</a></li><li><a href="#basis-fold" data-open-fold>이용 가이드</a></li><li><a href="#faq-fold" data-open-fold>자주 묻는 질문</a></li></ul></nav>
+    </div>
+  </header>
+
+  <main id="main" class="container">
+    <nav class="breadcrumb" aria-label="현재 위치">
+      <ol>
+        <li><a href="/" id="home-link">← 계산기 목록(홈)</a></li>
+        <li aria-current="page">취득세 계산기</li>
+      </ol>
+    </nav>
+
+    <section class="hero calc-hero" aria-labelledby="page-title">
+      <p class="calc-badges"><span class="cat-badge cat-realty">주거·부동산</span><span class="basis-badge">적용 기준: 2026년 지방세법 기준</span></p>
+      <h1 id="page-title">취득세 계산기</h1>
+      <p class="lead">주택 수와 지역에 따른 취득세·지방교육세·농어촌특별세를 확인하세요.</p>
+    </section>
+
+    <noscript>
+      <p class="notice notice-warn">이 계산기는 브라우저의 JavaScript로 동작합니다. JavaScript를 켠 뒤 다시 열어 주세요.</p>
+    </noscript>
+
+    <form id="calc-form" class="panel" data-calc="acquisition-tax" novalidate autocomplete="off" aria-labelledby="form-title">
+      <h2 id="form-title" class="panel-title"><span class="step">1</span> 입력</h2>
+      <div class="field">
+        <label for="year"><span class="label-text">취득 연도</span></label>
+        <select id="year" name="year" data-years aria-describedby="year-error year-hint"></select>
+        <p class="error" id="year-error" hidden></p>
+        <p class="hint" id="year-hint">연도를 바꾸면 그해 기준(요율·세율)으로 계산합니다. 공식 확정 전인 항목은 계산하지 않고 사유를 알려 드립니다.</p>
+      </div>
+
+      <fieldset class="field">
+        <legend>취득 대상</legend>
+        <div class="choices">
+          <label class="choice"><input type="radio" name="kind" value="house" checked> <span>주택</span></label>
+          <label class="choice"><input type="radio" name="kind" value="nonHouse"> <span>주택 외 (토지·상가·오피스텔 등)</span></label>
+        </div>
+        <p class="error" id="kind-error" hidden></p>
+      </fieldset>
+
+      <div class="field">
+        <label for="price"><span class="label-text">취득가액 (매매가)</span> <span class="req">필수</span> <span class="unit">(원)</span></label>
+        <input id="price" name="price" type="text" inputmode="numeric" autocomplete="off" spellcheck="false" placeholder="예: 700000000" data-amount aria-describedby="price-error price-preview">
+        <p class="error" id="price-error" hidden></p>
+        <p class="preview" id="price-preview"></p>
+      </div>
+
+      <div class="field">
+        <label for="count"><span class="label-text">취득 후 주택 수 (세대 기준)</span></label>
+        <select id="count" name="count" aria-describedby="count-error"><option value="one" selected>1주택</option><option value="two">2주택</option><option value="three">3주택</option><option value="four">4주택 이상</option><option value="corp">법인</option></select>
+        <p class="error" id="count-error" hidden></p>
+      </div>
+
+      <fieldset class="field">
+        <legend>취득 주택이 조정대상지역에 있나요?</legend>
+        <div class="choices">
+          <label class="choice"><input type="radio" name="regulated" value="no" checked> <span>아니요</span></label>
+          <label class="choice"><input type="radio" name="regulated" value="yes"> <span>예</span></label>
+        </div>
+        <p class="error" id="regulated-error" hidden></p>
+      </fieldset>
+
+      <fieldset class="field">
+        <legend>일시적 2주택(종전 주택 처분 예정)인가요?</legend>
+        <div class="choices">
+          <label class="choice"><input type="radio" name="temp" value="no" checked> <span>아니요</span></label>
+          <label class="choice"><input type="radio" name="temp" value="yes"> <span>예</span></label>
+        </div>
+        <p class="error" id="temp-error" hidden></p>
+      </fieldset>
+
+      <fieldset class="field">
+        <legend>전용면적</legend>
+        <div class="choices">
+          <label class="choice"><input type="radio" name="area" value="under85" checked> <span>85㎡ 이하</span></label>
+          <label class="choice"><input type="radio" name="area" value="over85"> <span>85㎡ 초과</span></label>
+        </div>
+        <p class="error" id="area-error" hidden></p>
+      </fieldset>
+
+      <fieldset class="field">
+        <legend>생애최초 주택 구입 감면을 신청하나요?</legend>
+        <div class="choices">
+          <label class="choice"><input type="radio" name="firstHome" value="no" checked> <span>아니요</span></label>
+          <label class="choice"><input type="radio" name="firstHome" value="yes"> <span>예 (12억 이하, 최대 200만 원)</span></label>
+        </div>
+        <p class="error" id="firstHome-error" hidden></p>
+      </fieldset>
+
+      <div class="actions actions-sticky">
+        <button type="submit" class="btn btn-primary" id="submit">계산하기</button>
+        <button type="button" class="btn btn-reset" id="reset-all">초기화</button>
+      </div>
+    </form>
+
+    <div id="result-status" class="sr-only" role="status" aria-live="polite" aria-atomic="true"></div>
+
+    <section id="result" class="panel result" hidden aria-labelledby="result-title">
+      <h2 id="result-title" class="panel-title" tabindex="-1"><span class="step">2</span> 계산 결과</h2>
+      <div id="result-unavailable" class="notice notice-warn" hidden>
+        <p><strong>계산할 수 없습니다.</strong> <span id="unavailable-reason"></span></p>
+        <p>공식 기준이 확인되지 않은 값은 임의로 쓰지 않습니다. 다른 기준 연도를 선택해 주세요.</p>
+      </div>
+      <div id="result-body">
+        <p class="result-meta" id="result-meta"></p>
+        <div class="headline result-stats" id="result-stats"></div>
+        <h3 class="table-title">항목별 상세 내역</h3>
+        <div id="result-table"></div>
+        <dl class="kv-list" id="result-rows"></dl>
+        <div data-block>
+          <h3 class="table-title">계산 공식</h3>
+          <ul class="formula-list" id="result-formulas"></ul>
+        </div>
+        <div data-block class="caution">
+          <h3 class="table-title">주의사항</h3>
+          <ul id="result-warnings"></ul>
+        </div>
+        <p class="disclaimer result-disclaimer">본 계산 결과는 단순 모의 계산이며, 법적 확정 금액이나 효력을 갖는 증빙자료가 아닙니다.</p>
+      </div>
+    </section>
+
+    <!-- 공통 아코디언: 계산 방법 · 실제 예제 · 공식출처 (기본 접힘) -->
+    <details class="content basis-fold info-fold" id="basis-fold">
+      <summary class="fold-summary"><h2 id="info-title">계산 방법 · 실제 예제 · 공식출처</h2><span class="fold-icon" aria-hidden="true"></span></summary>
+      <div class="fold-body">
+      <section class="howto" aria-labelledby="howto-title">
+      <h3 id="howto-title">취득세 계산 방법</h3>
+      <ol>
+        <li>1주택(및 비조정 2주택·일시적 2주택) 기본세율: 6억 이하 1%, 6억~9억 (취득가 × 2/3억 − 3)%, 9억 초과 3%입니다.</li>
+        <li>조정대상지역 2주택 8%, 3주택 12%, 비조정 3주택 8%, 4주택 이상과 법인 12%로 중과됩니다.</li>
+        <li>지방교육세(기본세율 주택은 취득세율의 1/10, 중과 0.4%)와 전용 85㎡ 초과 주택의 농어촌특별세를 더하고, 생애최초는 최대 200만 원을 감면합니다.</li>
+      </ol>
+      <h4>실제 계산 예제</h4>
+      <div class="example">
+        <p class="example-case"><strong>예시</strong> 7억 원 아파트(전용 84㎡), 1주택 취득 (2026년)</p>
+        <dl class="kv-list example-result">
+          <div class="kv"><dt>취득세</dt><dd>11,690,000원</dd></div>
+          <div class="kv"><dt>지방교육세 + 농어촌특별세</dt><dd>1,169,000원</dd></div>
+          <div class="kv"><dt>총 납부 예상</dt><dd>12,859,000원</dd></div>
+        </dl>
+        <ol class="example-steps">
+          <li>취득세: 1.67% · 11,690,000원</li>
+          <li>생애최초 감면: 해당 없음 · 0원</li>
+          <li>지방교육세: 0.167% · 1,169,000원</li>
+          <li>농어촌특별세: 비과세 (전용 85㎡ 이하 주택) · 0원</li>
+        </ol>
+      </div>
+      </section>
+      <section class="basis" aria-labelledby="basis-title">
+      <h3 id="basis-title">적용 기준 및 공식 출처</h3>
+      <p>적용 기준: 2026년 지방세법 기준. 연도별 요율·세율은 기준 데이터로 따로 관리하며, 공식 확정 전인 연도는 계산하지 않습니다.</p>
+      <ul class="sources">
+        <li><a href="https://www.law.go.kr/법령/%EC%A7%80%EB%B0%A9%EC%84%B8%EB%B2%95/%EC%A0%9C11%EC%A1%B0" target="_blank" rel="noopener noreferrer">지방세법 제11조 제1항 제8호 (주택 유상취득 1~3%)<span class="sr-only"> — 새 창에서 열림</span></a></li>
+        <li><a href="https://www.law.go.kr/법령/%EC%A7%80%EB%B0%A9%EC%84%B8%EB%B2%95/%EC%A0%9C13%EC%A1%B0%EC%9D%982" target="_blank" rel="noopener noreferrer">지방세법 제13조의2 (다주택·법인 주택 취득 중과 8%·12%)<span class="sr-only"> — 새 창에서 열림</span></a></li>
+        <li><a href="https://www.law.go.kr/법령/%EC%A7%80%EB%B0%A9%EC%84%B8%EB%B2%95/%EC%A0%9C151%EC%A1%B0" target="_blank" rel="noopener noreferrer">지방세법 제151조 (지방교육세)<span class="sr-only"> — 새 창에서 열림</span></a></li>
+        <li><a href="https://www.law.go.kr/법령/%EB%86%8D%EC%96%B4%EC%B4%8C%ED%8A%B9%EB%B3%84%EC%84%B8%EB%B2%95/%EC%A0%9C5%EC%A1%B0" target="_blank" rel="noopener noreferrer">농어촌특별세법 제5조 (취득세 관련 농어촌특별세, 전용 85㎡ 이하 주택 비과세)<span class="sr-only"> — 새 창에서 열림</span></a></li>
+        <li><a href="https://www.molit.go.kr/" target="_blank" rel="noopener noreferrer">국토교통부 — 조정대상지역 지정 현황 (2025.10.15. 서울 전역·경기 12곳 지정)<span class="sr-only"> — 새 창에서 열림</span></a></li>
+      </ul>
+      <p class="checked-date">공식 자료 확인일: <time datetime="2026-11-21">2026년 11월 21일</time></p>
+      </section>
+    </div>
+    </details>
+
+    <details class="content faq faq-fold" id="faq-fold">
+      <summary class="fold-summary"><h2 id="faq-title">자주 묻는 질문</h2></summary>
+      <div class="fold-body">
+      <h3>6억~9억 원 구간 세율은 어떻게 정해지나요?</h3>
+      <p>(취득가액 × 2/3억 − 3)%로 계산합니다. 예를 들어 7억 5천만 원이면 2.00%입니다.</p>
+      <h3>조정대상지역은 어디인가요?</h3>
+      <p>2025년 10월 15일부터 서울 전역과 경기 12곳이 조정대상지역입니다. 국토교통부 고시로 최신 지정 현황을 확인하세요.</p>
+      <h3>오피스텔은 주택인가요?</h3>
+      <p>취득세에서는 주택 외(4%)로 계산합니다. 다만 주거용 오피스텔은 다른 주택의 주택 수 계산에 포함될 수 있습니다.</p>
+    </div>
+    </details>
+
+    <section class="content related" aria-labelledby="related-title">
+      <h2 id="related-title">관련 계산기</h2>
+      <ul class="related-list">
+        <li><a class="related-link cat-realty" href="/capital-gains-tax"><span class="related-cat">주거·부동산</span><strong>양도소득세 계산기</strong><span>보유기간과 공제를 반영한 양도세를 확인합니다.</span></a></li>
+        <li><a class="related-link cat-realty" href="/brokerage-fee"><span class="related-cat">주거·부동산</span><strong>중개수수료 계산기</strong><span>거래금액별 부동산 중개보수 상한을 확인합니다.</span></a></li>
+        <li><a class="related-link cat-realty" href="/property-tax"><span class="related-cat">주거·부동산</span><strong>재산세 계산기</strong><span>공시가격 기준 주택 재산세를 확인합니다.</span></a></li>
+      </ul>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container container-wide">
+      <p class="footer-brand">정산노트<span aria-hidden="true">.</span></p>
+      <p>정산노트의 계산 결과는 단순 모의 계산이며, 법적 효력을 갖는 증빙자료가 아닙니다.</p>
+      <p>입력한 값은 브라우저 안에서만 계산되며 서버나 분석 도구로 전송되지 않습니다.</p>
+      <p><a href="/">정산노트 홈</a></p>
+    </div>
+  </footer>
+</body>
+</html>

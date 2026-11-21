@@ -1,0 +1,228 @@
+<!doctype html>
+<html lang="ko" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'none'; form-action 'none'; base-uri 'none'">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <title>DSR 대출한도 계산기 — 스트레스 DSR 반영 주택담보대출 한도 추정 | 정산노트</title>
+  <meta name="description" content="연소득, 기존 대출 원리금, 금리, 스트레스 금리, 만기, DSR 한도(은행 40%)로 원리금균등 상환 기준 신규 대출 가능 원금을 추정합니다. 스트레스 금리와 한도는 직접 입력하는 가정값입니다.">
+  <!-- seo:start -->
+  <meta name="robots" content="noindex, nofollow">
+  <!-- seo:end -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="정산노트">
+  <meta property="og:title" content="DSR 대출한도 계산기 — 스트레스 DSR 반영 주택담보대출 한도 추정 | 정산노트">
+  <meta property="og:description" content="DSR 규제 안에서 받을 수 있는 신규 대출 원금을 추정하세요.">
+  <meta property="og:locale" content="ko_KR">
+  <meta name="theme-color" content="#2563e2">
+  <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/assets/css/style.css">
+  <script type="module" src="/assets/js/nav.js"></script>
+  <script type="module" src="/assets/js/calc-page.js"></script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "실제 한도와 왜 다른가요?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "LTV·DTI, 지역별 규제, 금리 유형(변동·혼합·주기형)에 따른 스트레스 금리 차이, 금융회사 심사가 반영되지 않았기 때문입니다."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "전세자금대출도 DSR에 들어가나요?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "일부 대출(전세자금대출 등)은 DSR 산정에서 제외되거나 이자만 반영될 수 있습니다. 금융회사에 확인하세요."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "스트레스 금리는 얼마로 넣나요?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "2025년 7월 3단계 시행 이후 기본 1.5%p이며, 지방 주담대 유예·수도권 강화 등 예외가 있어 대출 상담 시 안내받은 값을 넣는 것이 정확합니다."
+        }
+      }
+    ]
+  }
+  </script>
+</head>
+<body class="calc-page">
+<!-- 이 파일은 scripts/gen-calculators.js 로 생성됩니다. 직접 고치지 말고 scripts/calculators.js 를 수정하세요. -->
+  <a class="skip-link" href="#main">본문 바로가기</a>
+  <header class="site-header">
+    <div class="container container-wide header-inner">
+      <a class="brand" href="/"><span class="brand-mark" aria-hidden="true"></span>정산노트</a>
+      <nav class="main-nav" aria-label="주요 메뉴"><ul><li><a href="/#calculators">계산기 모음</a></li><li><a href="#basis-fold" data-open-fold>이용 가이드</a></li><li><a href="#faq-fold" data-open-fold>자주 묻는 질문</a></li></ul></nav>
+    </div>
+  </header>
+
+  <main id="main" class="container">
+    <nav class="breadcrumb" aria-label="현재 위치">
+      <ol>
+        <li><a href="/" id="home-link">← 계산기 목록(홈)</a></li>
+        <li aria-current="page">DSR 대출한도 계산기</li>
+      </ol>
+    </nav>
+
+    <section class="hero calc-hero" aria-labelledby="page-title">
+      <p class="calc-badges"><span class="cat-badge cat-realty">주거·부동산</span><span class="basis-badge">적용 기준: 금융위원회 DSR·스트레스 DSR 3단계 (참고 가정값 입력)</span></p>
+      <h1 id="page-title">DSR 대출한도 계산기</h1>
+      <p class="lead">DSR 규제 안에서 받을 수 있는 신규 대출 원금을 추정하세요.</p>
+    </section>
+
+    <noscript>
+      <p class="notice notice-warn">이 계산기는 브라우저의 JavaScript로 동작합니다. JavaScript를 켠 뒤 다시 열어 주세요.</p>
+    </noscript>
+
+    <form id="calc-form" class="panel" data-calc="dsr-limit" novalidate autocomplete="off" aria-labelledby="form-title">
+      <h2 id="form-title" class="panel-title"><span class="step">1</span> 입력</h2>
+      <div class="field">
+        <label for="income"><span class="label-text">연소득 (세전)</span> <span class="req">필수</span> <span class="unit">(원)</span></label>
+        <input id="income" name="income" type="text" inputmode="numeric" autocomplete="off" spellcheck="false" placeholder="예: 60000000" data-amount aria-describedby="income-error income-preview">
+        <p class="error" id="income-error" hidden></p>
+        <p class="preview" id="income-preview"></p>
+      </div>
+
+      <div class="field">
+        <label for="existing"><span class="label-text">기존 대출 연간 원리금 상환액</span> <span class="opt">선택</span> <span class="unit">(원)</span></label>
+        <input id="existing" name="existing" type="text" inputmode="numeric" autocomplete="off" spellcheck="false" value="0" data-amount aria-describedby="existing-error existing-preview existing-hint">
+        <p class="error" id="existing-error" hidden></p>
+        <p class="preview" id="existing-preview"></p>
+        <p class="hint" id="existing-hint">신용대출·자동차할부 등 모든 대출의 1년 원리금 합계입니다.</p>
+      </div>
+
+      <div class="field">
+        <label for="rate"><span class="label-text">신규 대출 금리</span> <span class="req">필수</span> <span class="unit">(%)</span></label>
+        <input id="rate" name="rate" type="text" inputmode="decimal" autocomplete="off" spellcheck="false" placeholder="예: 4.2" aria-describedby="rate-error">
+        <p class="error" id="rate-error" hidden></p>
+      </div>
+
+      <div class="field">
+        <label for="stress"><span class="label-text">스트레스 금리</span> <span class="opt">선택</span> <span class="unit">(%p)</span></label>
+        <input id="stress" name="stress" type="text" inputmode="decimal" autocomplete="off" spellcheck="false" value="1.5" aria-describedby="stress-error stress-hint">
+        <p class="error" id="stress-error" hidden></p>
+        <p class="hint" id="stress-hint">3단계 기본 1.5%p (참고 가정값). 대출 유형·지역별로 다릅니다.</p>
+      </div>
+
+      <div class="field">
+        <label for="years"><span class="label-text">만기</span> <span class="opt">선택</span> <span class="unit">(년)</span></label>
+        <input id="years" name="years" type="text" inputmode="numeric" autocomplete="off" spellcheck="false" value="30" aria-describedby="years-error">
+        <p class="error" id="years-error" hidden></p>
+      </div>
+
+      <div class="field">
+        <label for="limit"><span class="label-text">DSR 한도</span> <span class="opt">선택</span> <span class="unit">(%)</span></label>
+        <input id="limit" name="limit" type="text" inputmode="decimal" autocomplete="off" spellcheck="false" value="40" aria-describedby="limit-error limit-hint">
+        <p class="error" id="limit-error" hidden></p>
+        <p class="hint" id="limit-hint">은행권 40%, 제2금융권 50%.</p>
+      </div>
+
+      <div class="actions actions-sticky">
+        <button type="submit" class="btn btn-primary" id="submit">계산하기</button>
+        <button type="button" class="btn btn-reset" id="reset-all">초기화</button>
+      </div>
+    </form>
+
+    <div id="result-status" class="sr-only" role="status" aria-live="polite" aria-atomic="true"></div>
+
+    <section id="result" class="panel result" hidden aria-labelledby="result-title">
+      <h2 id="result-title" class="panel-title" tabindex="-1"><span class="step">2</span> 계산 결과</h2>
+      <div id="result-unavailable" class="notice notice-warn" hidden>
+        <p><strong>계산할 수 없습니다.</strong> <span id="unavailable-reason"></span></p>
+        <p>공식 기준이 확인되지 않은 값은 임의로 쓰지 않습니다. 다른 기준 연도를 선택해 주세요.</p>
+      </div>
+      <div id="result-body">
+        <p class="result-meta" id="result-meta"></p>
+        <div class="headline result-stats" id="result-stats"></div>
+        <h3 class="table-title">항목별 상세 내역</h3>
+        <div id="result-table"></div>
+        <dl class="kv-list" id="result-rows"></dl>
+        <div data-block>
+          <h3 class="table-title">계산 공식</h3>
+          <ul class="formula-list" id="result-formulas"></ul>
+        </div>
+        <div data-block class="caution">
+          <h3 class="table-title">주의사항</h3>
+          <ul id="result-warnings"></ul>
+        </div>
+        <p class="disclaimer result-disclaimer">본 계산 결과는 단순 모의 계산이며, 법적 확정 금액이나 효력을 갖는 증빙자료가 아닙니다.</p>
+      </div>
+    </section>
+
+    <!-- 공통 아코디언: 계산 방법 · 실제 예제 · 공식출처 (기본 접힘) -->
+    <details class="content basis-fold info-fold" id="basis-fold">
+      <summary class="fold-summary"><h2 id="info-title">계산 방법 · 실제 예제 · 공식출처</h2><span class="fold-icon" aria-hidden="true"></span></summary>
+      <div class="fold-body">
+      <section class="howto" aria-labelledby="howto-title">
+      <h3 id="howto-title">DSR 대출한도 계산 방법</h3>
+      <ol>
+        <li>DSR = 모든 대출의 연간 원리금 상환액 ÷ 연소득이며, 은행권은 40% 이하여야 합니다.</li>
+        <li>신규 대출에 쓸 수 있는 연간 상환액 = 연소득 × DSR 한도 − 기존 대출 연간 원리금입니다.</li>
+        <li>스트레스 DSR은 실제 금리에 스트레스 금리를 더해 상환액을 계산하므로 한도가 줄어듭니다. 그 금리로 원리금균등 상환했을 때 연간 상환액이 위 금액이 되는 원금이 한도입니다.</li>
+      </ol>
+      <h4>실제 계산 예제</h4>
+      <div class="example">
+        <p class="example-case"><strong>예시</strong> 연소득 6,000만 원, 기존 원리금 연 300만 원, 금리 4.2%, 스트레스 1.5%p, 30년</p>
+        <dl class="kv-list example-result">
+          <div class="kv"><dt>신규 대출 한도 (추정)</dt><dd>301,510,000원</dd></div>
+          <div class="kv"><dt>실제 금리 기준 월 상환액</dt><dd>1,474,435원</dd></div>
+          <div class="kv"><dt>현재 DSR (기존 대출)</dt><dd>5%</dd></div>
+        </dl>
+        <ol class="example-steps">
+          <li>연간 상환 가능액: 60,000,000원 × 40% − 3,000,000원 = 21,000,000원</li>
+          <li>DSR 산정 금리: 4.2% + 스트레스 1.5%p = 5.7%</li>
+          <li>DSR 산정용 월 상환액: 1,749,965원</li>
+          <li>한도 원금 (1만 원 미만 버림): 301,510,000원</li>
+        </ol>
+      </div>
+      </section>
+      <section class="basis" aria-labelledby="basis-title">
+      <h3 id="basis-title">적용 기준 및 공식 출처</h3>
+      <p>적용 기준: 금융위원회 DSR·스트레스 DSR 3단계 (참고 가정값 입력). 연도별 요율·세율은 기준 데이터로 따로 관리하며, 공식 확정 전인 연도는 계산하지 않습니다.</p>
+      <ul class="sources">
+        <li><a href="https://www.fsc.go.kr/" target="_blank" rel="noopener noreferrer">금융위원회 — 차주단위 DSR(은행권 40%·제2금융권 50%), 스트레스 DSR 3단계 스트레스 금리 1.5%p (2025.7.~)<span class="sr-only"> — 새 창에서 열림</span></a></li>
+      </ul>
+      <p class="checked-date">공식 자료 확인일: <time datetime="2026-11-21">2026년 11월 21일</time></p>
+      </section>
+    </div>
+    </details>
+
+    <details class="content faq faq-fold" id="faq-fold">
+      <summary class="fold-summary"><h2 id="faq-title">자주 묻는 질문</h2></summary>
+      <div class="fold-body">
+      <h3>실제 한도와 왜 다른가요?</h3>
+      <p>LTV·DTI, 지역별 규제, 금리 유형(변동·혼합·주기형)에 따른 스트레스 금리 차이, 금융회사 심사가 반영되지 않았기 때문입니다.</p>
+      <h3>전세자금대출도 DSR에 들어가나요?</h3>
+      <p>일부 대출(전세자금대출 등)은 DSR 산정에서 제외되거나 이자만 반영될 수 있습니다. 금융회사에 확인하세요.</p>
+      <h3>스트레스 금리는 얼마로 넣나요?</h3>
+      <p>2025년 7월 3단계 시행 이후 기본 1.5%p이며, 지방 주담대 유예·수도권 강화 등 예외가 있어 대출 상담 시 안내받은 값을 넣는 것이 정확합니다.</p>
+    </div>
+    </details>
+
+    <section class="content related" aria-labelledby="related-title">
+      <h2 id="related-title">관련 계산기</h2>
+      <ul class="related-list">
+        <li><a class="related-link cat-realty" href="/loan-interest"><span class="related-cat">주거·부동산</span><strong>대출이자 계산기</strong><span>원리금균등·원금균등·만기일시 상환의 월 상환액과 총이자를 계산합니다.</span></a></li>
+        <li><a class="related-link cat-labor" href="/annual-salary-net"><span class="related-cat">노동·급여</span><strong>연봉 실수령액 계산기</strong><span>연봉에서 4대보험과 소득세를 뺀 월·연 실수령액을 확인합니다.</span></a></li>
+        <li><a class="related-link cat-realty" href="/acquisition-tax"><span class="related-cat">주거·부동산</span><strong>취득세 계산기</strong><span>주택 수와 가격에 따른 취득세를 확인합니다.</span></a></li>
+      </ul>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container container-wide">
+      <p class="footer-brand">정산노트<span aria-hidden="true">.</span></p>
+      <p>정산노트의 계산 결과는 단순 모의 계산이며, 법적 효력을 갖는 증빙자료가 아닙니다.</p>
+      <p>입력한 값은 브라우저 안에서만 계산되며 서버나 분석 도구로 전송되지 않습니다.</p>
+      <p><a href="/">정산노트 홈</a></p>
+    </div>
+  </footer>
+</body>
+</html>

@@ -1,0 +1,200 @@
+<!doctype html>
+<html lang="ko" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'none'; form-action 'none'; base-uri 'none'">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <title>평수 계산기 — 제곱미터(㎡) 평 변환 정확하게 | 정산노트</title>
+  <meta name="description" content="제곱미터(㎡)를 평으로, 평을 ㎡로 정확하게 변환합니다(1평 = 400/121㎡ ≈ 3.3058㎡). 전용 59·84·114㎡의 평 환산과 공급면적·전용면적 차이를 함께 안내합니다.">
+  <!-- seo:start -->
+  <meta name="robots" content="noindex, nofollow">
+  <!-- seo:end -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="정산노트">
+  <meta property="og:title" content="평수 계산기 — 제곱미터(㎡) 평 변환 정확하게 | 정산노트">
+  <meta property="og:description" content="㎡와 평을 서로 정확하게 변환하세요.">
+  <meta property="og:locale" content="ko_KR">
+  <meta name="theme-color" content="#2563e2">
+  <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/assets/css/style.css">
+  <script type="module" src="/assets/js/nav.js"></script>
+  <script type="module" src="/assets/js/calc-page.js"></script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "84㎡는 몇 평인가요?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "전용 84㎡는 약 25.4평입니다. 흔히 말하는 \"34평\"은 주거공용면적을 더한 공급면적 기준입니다."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "1평은 정확히 몇 ㎡인가요?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "400/121㎡, 약 3.3058㎡입니다. 3.3으로 나누면 약간의 오차가 생깁니다."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "법적 문서에는 무엇을 쓰나요?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "부동산 거래·등기의 법정 단위는 ㎡입니다."
+        }
+      }
+    ]
+  }
+  </script>
+</head>
+<body class="calc-page">
+<!-- 이 파일은 scripts/gen-calculators.js 로 생성됩니다. 직접 고치지 말고 scripts/calculators.js 를 수정하세요. -->
+  <a class="skip-link" href="#main">본문 바로가기</a>
+  <header class="site-header">
+    <div class="container container-wide header-inner">
+      <a class="brand" href="/"><span class="brand-mark" aria-hidden="true"></span>정산노트</a>
+      <nav class="main-nav" aria-label="주요 메뉴"><ul><li><a href="/#calculators">계산기 모음</a></li><li><a href="#basis-fold" data-open-fold>이용 가이드</a></li><li><a href="#faq-fold" data-open-fold>자주 묻는 질문</a></li></ul></nav>
+    </div>
+  </header>
+
+  <main id="main" class="container">
+    <nav class="breadcrumb" aria-label="현재 위치">
+      <ol>
+        <li><a href="/" id="home-link">← 계산기 목록(홈)</a></li>
+        <li aria-current="page">평수 계산기</li>
+      </ol>
+    </nav>
+
+    <section class="hero calc-hero" aria-labelledby="page-title">
+      <p class="calc-badges"><span class="cat-badge cat-realty">주거·부동산</span><span class="basis-badge">적용 기준: 계량에 관한 법률 (1평 = 400/121㎡)</span></p>
+      <h1 id="page-title">평수 계산기</h1>
+      <p class="lead">㎡와 평을 서로 정확하게 변환하세요.</p>
+    </section>
+
+    <noscript>
+      <p class="notice notice-warn">이 계산기는 브라우저의 JavaScript로 동작합니다. JavaScript를 켠 뒤 다시 열어 주세요.</p>
+    </noscript>
+
+    <form id="calc-form" class="panel" data-calc="pyeong" novalidate autocomplete="off" aria-labelledby="form-title">
+      <h2 id="form-title" class="panel-title"><span class="step">1</span> 입력</h2>
+      <fieldset class="field">
+        <legend>변환 방향</legend>
+        <div class="choices">
+          <label class="choice"><input type="radio" name="mode" value="toPyeong" checked> <span>㎡ → 평</span></label>
+          <label class="choice"><input type="radio" name="mode" value="toM2"> <span>평 → ㎡</span></label>
+        </div>
+        <p class="error" id="mode-error" hidden></p>
+      </fieldset>
+
+      <div class="field">
+        <label for="value" data-mode-label data-label-to-pyeong="면적 (㎡)" data-label-to-m2="평"><span class="label-text">면적 (㎡)</span> <span class="req">필수</span></label>
+        <input id="value" name="value" type="text" inputmode="decimal" autocomplete="off" spellcheck="false" placeholder="예: 84.97" aria-describedby="value-error">
+        <p class="error" id="value-error" hidden></p>
+      </div>
+
+      <div class="actions actions-sticky">
+        <button type="submit" class="btn btn-primary" id="submit">계산하기</button>
+        <button type="button" class="btn btn-reset" id="reset-all">초기화</button>
+      </div>
+    </form>
+
+    <div id="result-status" class="sr-only" role="status" aria-live="polite" aria-atomic="true"></div>
+
+    <section id="result" class="panel result" hidden aria-labelledby="result-title">
+      <h2 id="result-title" class="panel-title" tabindex="-1"><span class="step">2</span> 계산 결과</h2>
+      <div id="result-unavailable" class="notice notice-warn" hidden>
+        <p><strong>계산할 수 없습니다.</strong> <span id="unavailable-reason"></span></p>
+        <p>공식 기준이 확인되지 않은 값은 임의로 쓰지 않습니다. 다른 기준 연도를 선택해 주세요.</p>
+      </div>
+      <div id="result-body">
+        <p class="result-meta" id="result-meta"></p>
+        <div class="headline result-stats" id="result-stats"></div>
+        <h3 class="table-title">항목별 상세 내역</h3>
+        <div id="result-table"></div>
+        <dl class="kv-list" id="result-rows"></dl>
+        <div data-block>
+          <h3 class="table-title">계산 공식</h3>
+          <ul class="formula-list" id="result-formulas"></ul>
+        </div>
+        <div data-block class="caution">
+          <h3 class="table-title">주의사항</h3>
+          <ul id="result-warnings"></ul>
+        </div>
+        <p class="disclaimer result-disclaimer">본 계산 결과는 단순 모의 계산이며, 법적 확정 금액이나 효력을 갖는 증빙자료가 아닙니다.</p>
+      </div>
+    </section>
+
+    <!-- 공통 아코디언: 계산 방법 · 실제 예제 · 공식출처 (기본 접힘) -->
+    <details class="content basis-fold info-fold" id="basis-fold">
+      <summary class="fold-summary"><h2 id="info-title">계산 방법 · 실제 예제 · 공식출처</h2><span class="fold-icon" aria-hidden="true"></span></summary>
+      <div class="fold-body">
+      <section class="howto" aria-labelledby="howto-title">
+      <h3 id="howto-title">평수 계산 방법</h3>
+      <ol>
+        <li>1평은 400/121㎡(약 3.305785㎡)입니다.</li>
+        <li>평 = ㎡ ÷ 3.305785, ㎡ = 평 × 3.305785로 계산하고 결과를 소수 둘째 자리까지 보여 줍니다.</li>
+        <li>아파트 &quot;평형&quot;은 보통 공급면적 기준이므로 전용면적과 구분하세요.</li>
+      </ol>
+      <h4>실제 계산 예제</h4>
+      <div class="example">
+        <p class="example-case"><strong>예시</strong> 전용 84.97㎡</p>
+        <dl class="kv-list example-result">
+          <div class="kv"><dt>제곱미터</dt><dd>84.97㎡</dd></div>
+          <div class="kv"><dt>평</dt><dd>25.7평</dd></div>
+          <div class="kv"><dt>1평</dt><dd>400/121㎡ ≈ 3.3058㎡</dd></div>
+        </dl>
+        <ol class="example-steps">
+          <li>계산: 84.97 ÷ 3.305785 = 25.7034평</li>
+          <li>자주 쓰는 면적 (전용): 59㎡ ≈ 17.8평 · 84㎡ ≈ 25.4평 · 114㎡ ≈ 34.5평</li>
+        </ol>
+      </div>
+      </section>
+      <section class="basis" aria-labelledby="basis-title">
+      <h3 id="basis-title">적용 기준 및 공식 출처</h3>
+      <p>적용 기준: 계량에 관한 법률 (1평 = 400/121㎡). 연도별 요율·세율은 기준 데이터로 따로 관리하며, 공식 확정 전인 연도는 계산하지 않습니다.</p>
+      <ul class="sources">
+        <li><a href="https://www.law.go.kr/법령/%EA%B3%84%EB%9F%89%EC%97%90%EA%B4%80%ED%95%9C%EB%B2%95%EB%A5%A0/%EC%A0%9C5%EC%A1%B0" target="_blank" rel="noopener noreferrer">계량에 관한 법률 — 법정 단위는 제곱미터(㎡). 1평 = 400/121㎡ (≈3.3058㎡)<span class="sr-only"> — 새 창에서 열림</span></a></li>
+      </ul>
+      <p class="checked-date">공식 자료 확인일: <time datetime="2026-11-21">2026년 11월 21일</time></p>
+      </section>
+    </div>
+    </details>
+
+    <details class="content faq faq-fold" id="faq-fold">
+      <summary class="fold-summary"><h2 id="faq-title">자주 묻는 질문</h2></summary>
+      <div class="fold-body">
+      <h3>84㎡는 몇 평인가요?</h3>
+      <p>전용 84㎡는 약 25.4평입니다. 흔히 말하는 &quot;34평&quot;은 주거공용면적을 더한 공급면적 기준입니다.</p>
+      <h3>1평은 정확히 몇 ㎡인가요?</h3>
+      <p>400/121㎡, 약 3.3058㎡입니다. 3.3으로 나누면 약간의 오차가 생깁니다.</p>
+      <h3>법적 문서에는 무엇을 쓰나요?</h3>
+      <p>부동산 거래·등기의 법정 단위는 ㎡입니다.</p>
+    </div>
+    </details>
+
+    <section class="content related" aria-labelledby="related-title">
+      <h2 id="related-title">관련 계산기</h2>
+      <ul class="related-list">
+        <li><a class="related-link cat-realty" href="/acquisition-tax"><span class="related-cat">주거·부동산</span><strong>취득세 계산기</strong><span>주택 수와 가격에 따른 취득세를 확인합니다.</span></a></li>
+        <li><a class="related-link cat-realty" href="/brokerage-fee"><span class="related-cat">주거·부동산</span><strong>중개수수료 계산기</strong><span>거래금액별 부동산 중개보수 상한을 확인합니다.</span></a></li>
+        <li><a class="related-link cat-realty" href="/subscription-points"><span class="related-cat">주거·부동산</span><strong>청약가점 계산기</strong><span>무주택기간·부양가족·통장 가입기간으로 가점을 계산합니다.</span></a></li>
+      </ul>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container container-wide">
+      <p class="footer-brand">정산노트<span aria-hidden="true">.</span></p>
+      <p>정산노트의 계산 결과는 단순 모의 계산이며, 법적 효력을 갖는 증빙자료가 아닙니다.</p>
+      <p>입력한 값은 브라우저 안에서만 계산되며 서버나 분석 도구로 전송되지 않습니다.</p>
+      <p><a href="/">정산노트 홈</a></p>
+    </div>
+  </footer>
+</body>
+</html>

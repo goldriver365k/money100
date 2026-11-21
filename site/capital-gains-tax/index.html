@@ -1,0 +1,242 @@
+<!doctype html>
+<html lang="ko" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'none'; form-action 'none'; base-uri 'none'">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <title>양도소득세 계산기 2026 — 1세대1주택 12억 비과세·장기보유특별공제·중과 | 정산노트</title>
+  <meta name="description" content="양도가액·취득가액·필요경비·보유기간·거주기간으로 주택 양도소득세를 계산합니다. 1세대1주택 12억 원 비과세와 초과분 안분, 장기보유특별공제(최대 80%), 단기세율, 조정대상지역 다주택 중과(2026.5.10. 이후)를 반영합니다.">
+  <!-- seo:start -->
+  <meta name="robots" content="noindex, nofollow">
+  <!-- seo:end -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="정산노트">
+  <meta property="og:title" content="양도소득세 계산기 2026 — 1세대1주택 12억 비과세·장기보유특별공제·중과 | 정산노트">
+  <meta property="og:description" content="주택을 팔 때 낼 양도소득세와 지방소득세를 확인하세요.">
+  <meta property="og:locale" content="ko_KR">
+  <meta name="theme-color" content="#2563e2">
+  <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/assets/css/style.css">
+  <script type="module" src="/assets/js/nav.js"></script>
+  <script type="module" src="/assets/js/calc-page.js"></script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "12억 원이 넘으면 전체에 세금이 붙나요?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "아닙니다. 양도차익 중 (양도가액 − 12억) ÷ 양도가액 비율만큼만 과세됩니다."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "다주택 중과는 지금 적용되나요?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "한시 중과 배제가 2026년 5월 9일 종료되어, 5월 10일 이후 조정대상지역 주택 양도분은 2주택 +20%p, 3주택 이상 +30%p가 적용됩니다(일부 보완 기한·예외 있음)."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "비과세 요건은 무엇인가요?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "1세대가 양도일 현재 1주택을 2년 이상 보유(조정대상지역에서 취득했다면 2년 이상 거주)해야 합니다. 일시적 2주택 등 특례는 세무 전문가와 확인하세요."
+        }
+      }
+    ]
+  }
+  </script>
+</head>
+<body class="calc-page">
+<!-- 이 파일은 scripts/gen-calculators.js 로 생성됩니다. 직접 고치지 말고 scripts/calculators.js 를 수정하세요. -->
+  <a class="skip-link" href="#main">본문 바로가기</a>
+  <header class="site-header">
+    <div class="container container-wide header-inner">
+      <a class="brand" href="/"><span class="brand-mark" aria-hidden="true"></span>정산노트</a>
+      <nav class="main-nav" aria-label="주요 메뉴"><ul><li><a href="/#calculators">계산기 모음</a></li><li><a href="#basis-fold" data-open-fold>이용 가이드</a></li><li><a href="#faq-fold" data-open-fold>자주 묻는 질문</a></li></ul></nav>
+    </div>
+  </header>
+
+  <main id="main" class="container">
+    <nav class="breadcrumb" aria-label="현재 위치">
+      <ol>
+        <li><a href="/" id="home-link">← 계산기 목록(홈)</a></li>
+        <li aria-current="page">양도소득세 계산기</li>
+      </ol>
+    </nav>
+
+    <section class="hero calc-hero" aria-labelledby="page-title">
+      <p class="calc-badges"><span class="cat-badge cat-realty">주거·부동산</span><span class="basis-badge">적용 기준: 양도일이 속한 연도 기준 (2026년)</span></p>
+      <h1 id="page-title">양도소득세 계산기</h1>
+      <p class="lead">주택을 팔 때 낼 양도소득세와 지방소득세를 확인하세요.</p>
+    </section>
+
+    <noscript>
+      <p class="notice notice-warn">이 계산기는 브라우저의 JavaScript로 동작합니다. JavaScript를 켠 뒤 다시 열어 주세요.</p>
+    </noscript>
+
+    <form id="calc-form" class="panel" data-calc="capital-gains-tax" novalidate autocomplete="off" aria-labelledby="form-title">
+      <h2 id="form-title" class="panel-title"><span class="step">1</span> 입력</h2>
+      <div class="field">
+        <label for="sale"><span class="label-text">양도가액 (판 가격)</span> <span class="req">필수</span> <span class="unit">(원)</span></label>
+        <input id="sale" name="sale" type="text" inputmode="numeric" autocomplete="off" spellcheck="false" placeholder="예: 1500000000" data-amount aria-describedby="sale-error sale-preview">
+        <p class="error" id="sale-error" hidden></p>
+        <p class="preview" id="sale-preview"></p>
+      </div>
+
+      <div class="field">
+        <label for="acquisition"><span class="label-text">취득가액 (산 가격)</span> <span class="req">필수</span> <span class="unit">(원)</span></label>
+        <input id="acquisition" name="acquisition" type="text" inputmode="numeric" autocomplete="off" spellcheck="false" placeholder="예: 800000000" data-amount aria-describedby="acquisition-error acquisition-preview">
+        <p class="error" id="acquisition-error" hidden></p>
+        <p class="preview" id="acquisition-preview"></p>
+      </div>
+
+      <div class="field">
+        <label for="expenses"><span class="label-text">필요경비</span> <span class="opt">선택</span> <span class="unit">(원)</span></label>
+        <input id="expenses" name="expenses" type="text" inputmode="numeric" autocomplete="off" spellcheck="false" value="0" data-amount aria-describedby="expenses-error expenses-preview expenses-hint">
+        <p class="error" id="expenses-error" hidden></p>
+        <p class="preview" id="expenses-preview"></p>
+        <p class="hint" id="expenses-hint">취득세, 중개수수료, 자본적 지출 등 증빙 있는 비용입니다.</p>
+      </div>
+
+      <div class="field">
+        <label for="acqDate"><span class="label-text">취득일 (잔금일)</span> <span class="req">필수</span></label>
+        <input id="acqDate" name="acqDate" type="date" aria-describedby="acqDate-error">
+        <p class="error" id="acqDate-error" hidden></p>
+      </div>
+
+      <div class="field">
+        <label for="saleDate"><span class="label-text">양도일 (잔금일)</span> <span class="req">필수</span></label>
+        <input id="saleDate" name="saleDate" type="date" aria-describedby="saleDate-error">
+        <p class="error" id="saleDate-error" hidden></p>
+      </div>
+
+      <div class="field">
+        <label for="residence"><span class="label-text">거주기간</span> <span class="opt">선택</span> <span class="unit">(년)</span></label>
+        <input id="residence" name="residence" type="text" inputmode="numeric" autocomplete="off" spellcheck="false" value="0" aria-describedby="residence-error residence-hint">
+        <p class="error" id="residence-error" hidden></p>
+        <p class="hint" id="residence-hint">해당 주택에 실제 거주한 기간(만 년)입니다.</p>
+      </div>
+
+      <div class="field">
+        <label for="houseType"><span class="label-text">주택 보유 상황</span></label>
+        <select id="houseType" name="houseType" aria-describedby="houseType-error"><option value="oneHouse" selected>1세대1주택 (비과세 요건 충족)</option><option value="general">일반 (비과세 아님·중과 아님)</option><option value="heavy2">조정대상지역 2주택 중과</option><option value="heavy3">조정대상지역 3주택 이상 중과</option></select>
+        <p class="error" id="houseType-error" hidden></p>
+      </div>
+
+      <div class="actions actions-sticky">
+        <button type="submit" class="btn btn-primary" id="submit">계산하기</button>
+        <button type="button" class="btn btn-reset" id="reset-all">초기화</button>
+      </div>
+    </form>
+
+    <div id="result-status" class="sr-only" role="status" aria-live="polite" aria-atomic="true"></div>
+
+    <section id="result" class="panel result" hidden aria-labelledby="result-title">
+      <h2 id="result-title" class="panel-title" tabindex="-1"><span class="step">2</span> 계산 결과</h2>
+      <div id="result-unavailable" class="notice notice-warn" hidden>
+        <p><strong>계산할 수 없습니다.</strong> <span id="unavailable-reason"></span></p>
+        <p>공식 기준이 확인되지 않은 값은 임의로 쓰지 않습니다. 다른 기준 연도를 선택해 주세요.</p>
+      </div>
+      <div id="result-body">
+        <p class="result-meta" id="result-meta"></p>
+        <div class="headline result-stats" id="result-stats"></div>
+        <h3 class="table-title">항목별 상세 내역</h3>
+        <div id="result-table"></div>
+        <dl class="kv-list" id="result-rows"></dl>
+        <div data-block>
+          <h3 class="table-title">계산 공식</h3>
+          <ul class="formula-list" id="result-formulas"></ul>
+        </div>
+        <div data-block class="caution">
+          <h3 class="table-title">주의사항</h3>
+          <ul id="result-warnings"></ul>
+        </div>
+        <p class="disclaimer result-disclaimer">본 계산 결과는 단순 모의 계산이며, 법적 확정 금액이나 효력을 갖는 증빙자료가 아닙니다.</p>
+      </div>
+    </section>
+
+    <!-- 공통 아코디언: 계산 방법 · 실제 예제 · 공식출처 (기본 접힘) -->
+    <details class="content basis-fold info-fold" id="basis-fold">
+      <summary class="fold-summary"><h2 id="info-title">계산 방법 · 실제 예제 · 공식출처</h2><span class="fold-icon" aria-hidden="true"></span></summary>
+      <div class="fold-body">
+      <section class="howto" aria-labelledby="howto-title">
+      <h3 id="howto-title">양도소득세 계산 방법</h3>
+      <ol>
+        <li>양도차익 = 양도가액 − 취득가액 − 필요경비입니다. 1세대1주택은 12억 원 이하면 비과세, 넘으면 12억 초과 비율만큼만 과세합니다.</li>
+        <li>장기보유특별공제: 1세대1주택은 보유·거주 각각 연 4%(최대 80%), 그 외는 3년 이상 6%부터 연 2%(최대 30%). 중과 대상은 공제가 없습니다.</li>
+        <li>과세표준(양도소득금액 − 250만 원)에 세율(1년 미만 70%, 2년 미만 60%, 그 외 기본세율, 중과 +20%p·+30%p)을 적용하고 지방소득세 10%를 더합니다.</li>
+      </ol>
+      <h4>실제 계산 예제</h4>
+      <div class="example">
+        <p class="example-case"><strong>예시</strong> 2016년 8억에 사서 2026년 15억에 판 1세대1주택, 10년 보유·6년 거주, 경비 2천만 원</p>
+        <dl class="kv-list example-result">
+          <div class="kv"><dt>양도소득세</dt><dd>5,709,000원</dd></div>
+          <div class="kv"><dt>지방소득세</dt><dd>570,900원</dd></div>
+          <div class="kv"><dt>합계</dt><dd>6,279,900원</dd></div>
+        </dl>
+        <ol class="example-steps">
+          <li>양도차익: 1,500,000,000원 − 800,000,000원 − 경비 20,000,000원 = 680,000,000원</li>
+          <li>과세 대상 양도차익: 12억 초과분 안분: 680,000,000원 × (1,500,000,000원 − 12억) ÷ 1,500,000,000원 = 136,000,000원</li>
+          <li>장기보유특별공제: 1세대1주택: 보유 40% + 거주 24% → − 87,040,000원</li>
+          <li>양도소득금액: 48,960,000원</li>
+          <li>기본공제: − 2,500,000원</li>
+          <li>과세표준: 46,460,000원</li>
+          <li>적용 세율: 기본세율</li>
+          <li>산출세액: 5,709,000원</li>
+        </ol>
+      </div>
+      </section>
+      <section class="basis" aria-labelledby="basis-title">
+      <h3 id="basis-title">적용 기준 및 공식 출처</h3>
+      <p>적용 기준: 양도일이 속한 연도 기준 (2026년). 연도별 요율·세율은 기준 데이터로 따로 관리하며, 공식 확정 전인 연도는 계산하지 않습니다.</p>
+      <ul class="sources">
+        <li><a href="https://www.law.go.kr/법령/%EC%86%8C%EB%93%9D%EC%84%B8%EB%B2%95/%EC%A0%9C95%EC%A1%B0" target="_blank" rel="noopener noreferrer">소득세법 제89조(1세대1주택 비과세, 고가주택 12억 원)·제95조(장기보유특별공제)·제103조(기본공제 250만 원)<span class="sr-only"> — 새 창에서 열림</span></a></li>
+        <li><a href="https://www.law.go.kr/법령/%EC%86%8C%EB%93%9D%EC%84%B8%EB%B2%95/%EC%A0%9C104%EC%A1%B0" target="_blank" rel="noopener noreferrer">소득세법 제104조 (양도소득세율 — 주택 1년 미만 70%, 2년 미만 60%, 조정대상지역 다주택 +20%p·+30%p)<span class="sr-only"> — 새 창에서 열림</span></a></li>
+        <li><a href="https://www.mofe.go.kr/" target="_blank" rel="noopener noreferrer">재정경제부 — 다주택자 양도세 중과 한시 배제 2026.5.9. 종료 (2026.5.10. 이후 양도분 중과)<span class="sr-only"> — 새 창에서 열림</span></a></li>
+        <li><a href="https://www.law.go.kr/법령/%EC%86%8C%EB%93%9D%EC%84%B8%EB%B2%95/%EC%A0%9C55%EC%A1%B0" target="_blank" rel="noopener noreferrer">소득세법 제55조 (세율) — 과세표준 1,400만 원 이하 6% ~ 10억 원 초과 45%<span class="sr-only"> — 새 창에서 열림</span></a></li>
+        <li><a href="https://www.law.go.kr/법령/%EC%A7%80%EB%B0%A9%EC%84%B8%EB%B2%95/%EC%A0%9C103%EC%A1%B0%EC%9D%983" target="_blank" rel="noopener noreferrer">지방세법 제103조의3 (개인지방소득세 표준세율 — 소득세액의 10%)<span class="sr-only"> — 새 창에서 열림</span></a></li>
+      </ul>
+      <p class="checked-date">공식 자료 확인일: <time datetime="2026-11-21">2026년 11월 21일</time></p>
+      </section>
+    </div>
+    </details>
+
+    <details class="content faq faq-fold" id="faq-fold">
+      <summary class="fold-summary"><h2 id="faq-title">자주 묻는 질문</h2></summary>
+      <div class="fold-body">
+      <h3>12억 원이 넘으면 전체에 세금이 붙나요?</h3>
+      <p>아닙니다. 양도차익 중 (양도가액 − 12억) ÷ 양도가액 비율만큼만 과세됩니다.</p>
+      <h3>다주택 중과는 지금 적용되나요?</h3>
+      <p>한시 중과 배제가 2026년 5월 9일 종료되어, 5월 10일 이후 조정대상지역 주택 양도분은 2주택 +20%p, 3주택 이상 +30%p가 적용됩니다(일부 보완 기한·예외 있음).</p>
+      <h3>비과세 요건은 무엇인가요?</h3>
+      <p>1세대가 양도일 현재 1주택을 2년 이상 보유(조정대상지역에서 취득했다면 2년 이상 거주)해야 합니다. 일시적 2주택 등 특례는 세무 전문가와 확인하세요.</p>
+    </div>
+    </details>
+
+    <section class="content related" aria-labelledby="related-title">
+      <h2 id="related-title">관련 계산기</h2>
+      <ul class="related-list">
+        <li><a class="related-link cat-realty" href="/acquisition-tax"><span class="related-cat">주거·부동산</span><strong>취득세 계산기</strong><span>주택 수와 가격에 따른 취득세를 확인합니다.</span></a></li>
+        <li><a class="related-link cat-realty" href="/property-tax"><span class="related-cat">주거·부동산</span><strong>재산세 계산기</strong><span>공시가격 기준 주택 재산세를 확인합니다.</span></a></li>
+        <li><a class="related-link cat-tax" href="/gift-tax"><span class="related-cat">세금·보험</span><strong>증여세 계산기</strong><span>증여재산 공제를 반영한 예상 증여세를 확인합니다.</span></a></li>
+      </ul>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container container-wide">
+      <p class="footer-brand">정산노트<span aria-hidden="true">.</span></p>
+      <p>정산노트의 계산 결과는 단순 모의 계산이며, 법적 효력을 갖는 증빙자료가 아닙니다.</p>
+      <p>입력한 값은 브라우저 안에서만 계산되며 서버나 분석 도구로 전송되지 않습니다.</p>
+      <p><a href="/">정산노트 홈</a></p>
+    </div>
+  </footer>
+</body>
+</html>

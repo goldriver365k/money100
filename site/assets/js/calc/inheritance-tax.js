@@ -74,9 +74,9 @@ export function calculate(raw) {
     meta: `${year}년 상속개시 · 상속재산 ${won(estate)} · ${spouse ? '배우자 있음' : '배우자 없음'} · 자녀 ${children}명${parents ? ` · 직계존속 ${parents}명` : ''}`,
     headline: { label: '예상 상속세 (납부할 세액)', value: won(due) },
     stats: [
+      { label: '예상 납부세액', value: won(due) },
       { label: '상속세 과세가액', value: won(taxable) },
       { label: '상속공제 합계', value: won(deduction) },
-      { label: '예상 납부세액', value: won(due) },
     ],
     rows: [
       { label: '과세가액', value: `${won(estate)} + 사전증여 ${won(gifts)} − 채무 ${won(debts)} − 장례비 ${won(funeral)} = ${won(taxable)}` },

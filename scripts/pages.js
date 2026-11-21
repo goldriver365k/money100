@@ -26,4 +26,13 @@ export const PAGES = [
   { path: '/national-pension', file: 'national-pension/index.html', priority: '0.8', public: true },
   { path: '/gift-tax', file: 'gift-tax/index.html', priority: '0.8', public: true },
   { path: '/inheritance-tax', file: 'inheritance-tax/index.html', priority: '0.8', public: true },
+  { path: '/acquisition-tax', file: 'acquisition-tax/index.html', priority: '0.8', public: true },
+  { path: '/capital-gains-tax', file: 'capital-gains-tax/index.html', priority: '0.8', public: true },
+  { path: '/brokerage-fee', file: 'brokerage-fee/index.html', priority: '0.8', public: true },
+  { path: '/rent-conversion', file: 'rent-conversion/index.html', priority: '0.8', public: true },
+  { path: '/dsr-limit', file: 'dsr-limit/index.html', priority: '0.8', public: true },
+  { path: '/property-tax', file: 'property-tax/index.html', priority: '0.8', public: true },
+  { path: '/pyeong', file: 'pyeong/index.html', priority: '0.8', public: true },
+  { path: '/subscription-points', file: 'subscription-points/index.html', priority: '0.8', public: true },
+  { path: '/jeonse-safety', file: 'jeonse-safety/index.html', priority: '0.8', public: true },
 ];

@@ -58,9 +58,9 @@ export function calculate(raw) {
     meta: `${year}년 증여 · ${RELATIONS[raw.relation]} · 이번 증여 ${won(value)}${prior ? ` · 10년 내 합산 ${won(prior)}` : ''}`,
     headline: { label: '예상 증여세 (납부할 세액)', value: won(due) },
     stats: [
+      { label: '예상 납부세액', value: won(due) },
       { label: '과세표준', value: won(taxBase) },
       { label: '산출세액', value: won(calc + surcharge) },
-      { label: '예상 납부세액', value: won(due) },
     ],
     rows: [
       { label: '증여세 과세가액', value: `${won(value)} + 합산 ${won(prior)} = ${won(taxable)}` },

@@ -1,0 +1,232 @@
+<!doctype html>
+<html lang="ko" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'none'; form-action 'none'; base-uri 'none'">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <title>청약가점 계산기 — 무주택기간·부양가족·통장 가입기간 84점 | 정산노트</title>
+  <meta name="description" content="생년월일, 혼인신고일, 주택 처분일, 부양가족 수, 청약통장 가입일(배우자 포함)로 민영주택 청약 가점(무주택기간 32점·부양가족 35점·통장 17점, 총 84점)을 계산합니다. 국민주택 순차제와의 차이도 안내합니다.">
+  <!-- seo:start -->
+  <meta name="robots" content="noindex, nofollow">
+  <!-- seo:end -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="정산노트">
+  <meta property="og:title" content="청약가점 계산기 — 무주택기간·부양가족·통장 가입기간 84점 | 정산노트">
+  <meta property="og:description" content="입주자모집공고일 기준 청약 가점을 항목별로 확인하세요.">
+  <meta property="og:locale" content="ko_KR">
+  <meta name="theme-color" content="#2563e2">
+  <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/assets/css/style.css">
+  <script type="module" src="/assets/js/nav.js"></script>
+  <script type="module" src="/assets/js/calc-page.js"></script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "국민주택도 가점으로 뽑나요?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "아닙니다. 국민주택(공공분양) 일반공급은 순차제(무주택기간·납입 횟수·저축 총액)로 선정합니다. 가점제는 민영주택 일반공급에 적용됩니다."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "부양가족에 부모님이 포함되나요?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "입주자모집공고일 기준 3년 이상 같은 주민등록 세대에 있는 직계존속(배우자의 직계존속 포함)이면 포함됩니다."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "배우자 통장 점수는?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "2024년 3월부터 배우자 통장 가입기간 점수의 50%를 최대 3점까지 합산합니다. 본인과 합쳐 17점이 한도입니다."
+        }
+      }
+    ]
+  }
+  </script>
+</head>
+<body class="calc-page">
+<!-- 이 파일은 scripts/gen-calculators.js 로 생성됩니다. 직접 고치지 말고 scripts/calculators.js 를 수정하세요. -->
+  <a class="skip-link" href="#main">본문 바로가기</a>
+  <header class="site-header">
+    <div class="container container-wide header-inner">
+      <a class="brand" href="/"><span class="brand-mark" aria-hidden="true"></span>정산노트</a>
+      <nav class="main-nav" aria-label="주요 메뉴"><ul><li><a href="/#calculators">계산기 모음</a></li><li><a href="#basis-fold" data-open-fold>이용 가이드</a></li><li><a href="#faq-fold" data-open-fold>자주 묻는 질문</a></li></ul></nav>
+    </div>
+  </header>
+
+  <main id="main" class="container">
+    <nav class="breadcrumb" aria-label="현재 위치">
+      <ol>
+        <li><a href="/" id="home-link">← 계산기 목록(홈)</a></li>
+        <li aria-current="page">청약가점 계산기</li>
+      </ol>
+    </nav>
+
+    <section class="hero calc-hero" aria-labelledby="page-title">
+      <p class="calc-badges"><span class="cat-badge cat-realty">주거·부동산</span><span class="basis-badge">적용 기준: 주택공급에 관한 규칙 별표 1</span></p>
+      <h1 id="page-title">청약가점 계산기</h1>
+      <p class="lead">입주자모집공고일 기준 청약 가점을 항목별로 확인하세요.</p>
+    </section>
+
+    <noscript>
+      <p class="notice notice-warn">이 계산기는 브라우저의 JavaScript로 동작합니다. JavaScript를 켠 뒤 다시 열어 주세요.</p>
+    </noscript>
+
+    <form id="calc-form" class="panel" data-calc="subscription-points" novalidate autocomplete="off" aria-labelledby="form-title">
+      <h2 id="form-title" class="panel-title"><span class="step">1</span> 입력</h2>
+      <div class="field">
+        <label for="announce"><span class="label-text">입주자모집공고일</span> <span class="req">필수</span></label>
+        <input id="announce" name="announce" type="date" aria-describedby="announce-error">
+        <p class="error" id="announce-error" hidden></p>
+      </div>
+
+      <div class="field">
+        <label for="birth"><span class="label-text">본인 생년월일</span> <span class="req">필수</span></label>
+        <input id="birth" name="birth" type="date" aria-describedby="birth-error">
+        <p class="error" id="birth-error" hidden></p>
+      </div>
+
+      <div class="field">
+        <label for="marriage"><span class="label-text">혼인신고일 (해당 시)</span> <span class="opt">선택</span></label>
+        <input id="marriage" name="marriage" type="date" aria-describedby="marriage-error">
+        <p class="error" id="marriage-error" hidden></p>
+      </div>
+
+      <div class="field">
+        <label for="homeless"><span class="label-text">마지막 주택 처분일 (주택을 가진 적이 있을 때)</span> <span class="opt">선택</span></label>
+        <input id="homeless" name="homeless" type="date" aria-describedby="homeless-error">
+        <p class="error" id="homeless-error" hidden></p>
+      </div>
+
+      <div class="field">
+        <label for="dependents"><span class="label-text">부양가족 수 (본인 제외)</span> <span class="opt">선택</span> <span class="unit">(명)</span></label>
+        <input id="dependents" name="dependents" type="text" inputmode="numeric" autocomplete="off" spellcheck="false" value="0" aria-describedby="dependents-error dependents-hint">
+        <p class="error" id="dependents-error" hidden></p>
+        <p class="hint" id="dependents-hint">세대원인 배우자, 3년 이상 같은 세대인 직계존속, 미혼 자녀 등입니다.</p>
+      </div>
+
+      <div class="field">
+        <label for="account"><span class="label-text">본인 청약통장 가입일</span> <span class="req">필수</span></label>
+        <input id="account" name="account" type="date" aria-describedby="account-error">
+        <p class="error" id="account-error" hidden></p>
+      </div>
+
+      <div class="field">
+        <label for="spouseAccount"><span class="label-text">배우자 청약통장 가입일 (선택)</span> <span class="opt">선택</span></label>
+        <input id="spouseAccount" name="spouseAccount" type="date" aria-describedby="spouseAccount-error">
+        <p class="error" id="spouseAccount-error" hidden></p>
+      </div>
+
+      <div class="actions actions-sticky">
+        <button type="submit" class="btn btn-primary" id="submit">계산하기</button>
+        <button type="button" class="btn btn-reset" id="reset-all">초기화</button>
+      </div>
+    </form>
+
+    <div id="result-status" class="sr-only" role="status" aria-live="polite" aria-atomic="true"></div>
+
+    <section id="result" class="panel result" hidden aria-labelledby="result-title">
+      <h2 id="result-title" class="panel-title" tabindex="-1"><span class="step">2</span> 계산 결과</h2>
+      <div id="result-unavailable" class="notice notice-warn" hidden>
+        <p><strong>계산할 수 없습니다.</strong> <span id="unavailable-reason"></span></p>
+        <p>공식 기준이 확인되지 않은 값은 임의로 쓰지 않습니다. 다른 기준 연도를 선택해 주세요.</p>
+      </div>
+      <div id="result-body">
+        <p class="result-meta" id="result-meta"></p>
+        <div class="headline result-stats" id="result-stats"></div>
+        <h3 class="table-title">항목별 상세 내역</h3>
+        <div id="result-table"></div>
+        <dl class="kv-list" id="result-rows"></dl>
+        <div data-block>
+          <h3 class="table-title">계산 공식</h3>
+          <ul class="formula-list" id="result-formulas"></ul>
+        </div>
+        <div data-block class="caution">
+          <h3 class="table-title">주의사항</h3>
+          <ul id="result-warnings"></ul>
+        </div>
+        <p class="disclaimer result-disclaimer">본 계산 결과는 단순 모의 계산이며, 법적 확정 금액이나 효력을 갖는 증빙자료가 아닙니다.</p>
+      </div>
+    </section>
+
+    <!-- 공통 아코디언: 계산 방법 · 실제 예제 · 공식출처 (기본 접힘) -->
+    <details class="content basis-fold info-fold" id="basis-fold">
+      <summary class="fold-summary"><h2 id="info-title">계산 방법 · 실제 예제 · 공식출처</h2><span class="fold-icon" aria-hidden="true"></span></summary>
+      <div class="fold-body">
+      <section class="howto" aria-labelledby="howto-title">
+      <h3 id="howto-title">청약가점 계산 방법</h3>
+      <ol>
+        <li>무주택기간은 만 30세(그 전에 혼인했다면 혼인신고일)부터 계산하며, 1년 미만 2점에서 1년마다 2점씩 올라 15년 이상 32점입니다. 만 30세 미만 미혼이면 0점입니다.</li>
+        <li>부양가족은 0명 5점에서 1명마다 5점씩, 6명 이상 35점입니다.</li>
+        <li>통장 가입기간은 6개월 미만 1점, 1년 미만 2점, 이후 1년마다 1점씩 15년 이상 17점이며, 배우자 가입기간 점수의 50%(최대 3점)를 더할 수 있습니다.</li>
+      </ol>
+      <h4>실제 계산 예제</h4>
+      <div class="example">
+        <p class="example-case"><strong>예시</strong> 1988년생, 2016년 혼인, 부양가족 3명(배우자·자녀 2), 2012년 통장 가입, 배우자 2015년 가입</p>
+        <dl class="kv-list example-result">
+          <div class="kv"><dt>무주택기간</dt><dd>22점 / 32</dd></div>
+          <div class="kv"><dt>부양가족</dt><dd>20점 / 35</dd></div>
+          <div class="kv"><dt>청약통장 가입기간</dt><dd>17점 / 17</dd></div>
+        </dl>
+        <ol class="example-steps">
+          <li>무주택기간 시작: 2016년 10월 1일 (30세 전 혼인신고일)</li>
+          <li>무주택기간: 10년 → 22점</li>
+          <li>부양가족: 3명 → 20점</li>
+          <li>본인 통장: 2012년 3월 10일 가입 → 16점</li>
+          <li>배우자 통장 (50%, 최대 3점): 3점</li>
+          <li>합계: 22 + 20 + 17 = 59점</li>
+        </ol>
+      </div>
+      </section>
+      <section class="basis" aria-labelledby="basis-title">
+      <h3 id="basis-title">적용 기준 및 공식 출처</h3>
+      <p>적용 기준: 주택공급에 관한 규칙 별표 1. 연도별 요율·세율은 기준 데이터로 따로 관리하며, 공식 확정 전인 연도는 계산하지 않습니다.</p>
+      <ul class="sources">
+        <li><a href="https://www.law.go.kr/법령/%EC%A3%BC%ED%83%9D%EA%B3%B5%EA%B8%89%EC%97%90%EA%B4%80%ED%95%9C%EA%B7%9C%EC%B9%99/%EC%A0%9C28%EC%A1%B0" target="_blank" rel="noopener noreferrer">주택공급에 관한 규칙 제28조 및 별표 1 (청약 가점제 — 무주택기간 32점·부양가족 35점·입주자저축 17점, 배우자 통장 50% 최대 3점)<span class="sr-only"> — 새 창에서 열림</span></a></li>
+      </ul>
+      <p class="checked-date">공식 자료 확인일: <time datetime="2026-11-21">2026년 11월 21일</time></p>
+      </section>
+    </div>
+    </details>
+
+    <details class="content faq faq-fold" id="faq-fold">
+      <summary class="fold-summary"><h2 id="faq-title">자주 묻는 질문</h2></summary>
+      <div class="fold-body">
+      <h3>국민주택도 가점으로 뽑나요?</h3>
+      <p>아닙니다. 국민주택(공공분양) 일반공급은 순차제(무주택기간·납입 횟수·저축 총액)로 선정합니다. 가점제는 민영주택 일반공급에 적용됩니다.</p>
+      <h3>부양가족에 부모님이 포함되나요?</h3>
+      <p>입주자모집공고일 기준 3년 이상 같은 주민등록 세대에 있는 직계존속(배우자의 직계존속 포함)이면 포함됩니다.</p>
+      <h3>배우자 통장 점수는?</h3>
+      <p>2024년 3월부터 배우자 통장 가입기간 점수의 50%를 최대 3점까지 합산합니다. 본인과 합쳐 17점이 한도입니다.</p>
+    </div>
+    </details>
+
+    <section class="content related" aria-labelledby="related-title">
+      <h2 id="related-title">관련 계산기</h2>
+      <ul class="related-list">
+        <li><a class="related-link cat-realty" href="/jeonse-safety"><span class="related-cat">주거·부동산</span><strong>전세보증금 안전 계산기</strong><span>매매가 대비 보증금 비율로 위험도를 점검합니다.</span></a></li>
+        <li><a class="related-link cat-realty" href="/pyeong"><span class="related-cat">주거·부동산</span><strong>평수 계산기</strong><span>제곱미터와 평을 서로 환산합니다.</span></a></li>
+        <li><a class="related-link cat-realty" href="/dsr-limit"><span class="related-cat">주거·부동산</span><strong>DSR 대출한도 계산기</strong><span>소득과 기존 대출로 DSR 기준 대출 한도를 확인합니다.</span></a></li>
+      </ul>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container container-wide">
+      <p class="footer-brand">정산노트<span aria-hidden="true">.</span></p>
+      <p>정산노트의 계산 결과는 단순 모의 계산이며, 법적 효력을 갖는 증빙자료가 아닙니다.</p>
+      <p>입력한 값은 브라우저 안에서만 계산되며 서버나 분석 도구로 전송되지 않습니다.</p>
+      <p><a href="/">정산노트 홈</a></p>
+    </div>
+  </footer>
+</body>
+</html>
