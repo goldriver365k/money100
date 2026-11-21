@@ -143,8 +143,14 @@ describe('Netlify 빌드 (공개 전환 스위치 PUBLIC_LAUNCH)', () => {
     for (const p of PAGES) {
       const f = p.path === '/' ? 'index.html' : `${p.path.slice(1)}.html`;
       const html = b.read(f);
-      assert.ok(html.includes(`<link rel="canonical" href="${SITE}${p.path}">`), f);
-      assert.ok(!html.includes('noindex'), f);
+      if (p.public) {
+        assert.ok(html.includes(`<link rel="canonical" href="${SITE}${p.path}">`), f);
+        assert.ok(!html.includes('noindex'), f);
+      } else {
+        // 정책 페이지 등 public:false 는 공개 빌드에서도 noindex 유지, canonical 없음
+        assert.ok(html.includes('noindex, nofollow'), f);
+        assert.ok(!html.includes('rel="canonical"'), f);
+      }
     }
     const locs = [...b.read('sitemap.xml').matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => m[1]);
     assert.deepEqual(locs, PAGES.filter((p) => p.public).map((p) => SITE + p.path));

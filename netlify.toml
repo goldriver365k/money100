@@ -1,8 +1,13 @@
 # 정산노트 — Netlify 설정 (GitHub 저장소 연결 시 자동 적용)
-# 공개 전환: Netlify 환경변수 PUBLIC_LAUNCH=true (도메인 HTTPS 확인 후). 자세한 절차는 docs/netlify.md
+# 공개 전환: PUBLIC_LAUNCH=true — 2026-11-21 공개 전 최종 점검 통과 후 아래 [context.production.environment] 에 설정.
+#   production 배포에만 적용되며 deploy preview·branch deploy 는 계속 noindex 미리보기다.
+#   되돌리기: 아래 PUBLIC_LAUNCH 줄을 지우거나 "false" 로 바꿔 다시 배포. 자세한 절차는 docs/netlify.md
 [build]
   command = "node scripts/netlify-build.js"
   publish = "dist"
 
 [build.environment]
   NODE_VERSION = "22"
+
+[context.production.environment]
+  PUBLIC_LAUNCH = "true"

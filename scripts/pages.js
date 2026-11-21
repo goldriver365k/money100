@@ -35,4 +35,6 @@ export const PAGES = [
   { path: '/pyeong', file: 'pyeong/index.html', priority: '0.8', public: true },
   { path: '/subscription-points', file: 'subscription-points/index.html', priority: '0.8', public: true },
   { path: '/jeonse-safety', file: 'jeonse-safety/index.html', priority: '0.8', public: true },
+  // 정책 페이지: 누구나 접근 가능하지만 색인·사이트맵에서는 제외 (public: false)
+  { path: '/privacy', file: 'privacy/index.html', priority: '0.1', public: false },
 ];

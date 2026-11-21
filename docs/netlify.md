@@ -3,7 +3,7 @@
 - 작성: 2026-11-21 (9차)
 - 운영 도메인(사용자 확정): **급여계산기.site** · ASCII `xn--989a2xnd520fn5f.site`
   - 9차 지시문의 표기는 ‘급여계산서.site’였다. 이 주소는 2026-11-21 12:20 KST 기준 Radix 레지스트리 RDAP에서 “available for registration”이었다. 같은 시각 ‘급여계산기.site’가 가비아를 통해 등록된 것을 확인했고, 사용자가 급여계산기.site로 확정했다.
-- 현재 상태(2026-11-21 12:39 KST 확인): **Netlify 연결·도메인 연결·HTTPS 완료, 공개 전환(PUBLIC_LAUNCH) 대기**
+- 현재 상태(2026-11-21): **공개 전환 — `netlify.toml` 의 `[context.production.environment]` 에 `PUBLIC_LAUNCH = "true"` 설정** (계산기 30종 공개 전 최종 점검 통과 후). 되돌리려면 그 줄을 삭제하거나 `"false"` 로 바꿔 재배포한다. Netlify 화면의 환경변수보다 netlify.toml 값이 우선한다.
   - DNS: `@` A `75.2.60.5`(Netlify), `www` → `apex-loadbalancer.netlify.com`(Netlify), 네임서버 가비아
   - HTTPS: 인증서 유효, `http://` → `https://` 301, `www` → 루트 301, 끝 슬래시 → 슬래시 없는 주소 301, 없는 주소 404
   - 배포: 커밋 6b23002, 미리보기 모드(noindex 메타·`X-Robots-Tag`·robots `Disallow`), sitemap 없음
