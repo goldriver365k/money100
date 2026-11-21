@@ -1,0 +1,214 @@
+<!doctype html>
+<html lang="ko" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'none'; form-action 'none'; base-uri 'none'">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <title>대출이자 계산기 — 원리금균등·원금균등·만기일시 월 상환액 | 정산노트</title>
+  <meta name="description" content="대출 원금, 연 이자율, 기간으로 원리금균등·원금균등·만기일시 상환의 월 상환액, 총이자, 월별 상환 계획표를 계산합니다.">
+  <!-- seo:start -->
+  <meta name="robots" content="noindex, nofollow">
+  <!-- seo:end -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="정산노트">
+  <meta property="og:title" content="대출이자 계산기 — 원리금균등·원금균등·만기일시 월 상환액 | 정산노트">
+  <meta property="og:description" content="상환 방식별 월 상환액과 총이자를 비교하고 월별 상환 계획표를 확인하세요.">
+  <meta property="og:locale" content="ko_KR">
+  <meta name="theme-color" content="#2563e2">
+  <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/assets/css/style.css">
+  <script type="module" src="/assets/js/nav.js"></script>
+  <script type="module" src="/assets/js/calc-page.js"></script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "은행 상환 계획표와 몇 원 차이가 나요.",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "금융회사마다 이자를 일 단위(365일)로 계산하거나 끝수 처리가 달라 몇 원~수천 원 차이가 날 수 있습니다. 실제 금액은 대출 약정서의 상환 계획표를 확인하세요."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "거치기간이나 변동금리도 반영되나요?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "현재는 고정금리, 거치기간 없는 상환만 계산합니다."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "원리금균등과 원금균등 중 무엇이 유리한가요?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "총이자는 원금균등이 적지만 초기 상환액이 큽니다. 원리금균등은 매달 금액이 같아 계획을 세우기 쉽습니다."
+        }
+      }
+    ]
+  }
+  </script>
+</head>
+<body class="calc-page">
+<!-- 이 파일은 scripts/gen-calculators.js 로 생성됩니다. 직접 고치지 말고 scripts/calculators.js 를 수정하세요. -->
+  <a class="skip-link" href="#main">본문 바로가기</a>
+  <header class="site-header">
+    <div class="container container-wide header-inner">
+      <a class="brand" href="/"><span class="brand-mark" aria-hidden="true"></span>정산노트</a>
+      <nav class="main-nav" aria-label="주요 메뉴"><ul><li><a href="/#calculators">계산기 모음</a></li><li><a href="#basis-fold" data-open-fold>이용 가이드</a></li><li><a href="#faq-fold" data-open-fold>자주 묻는 질문</a></li></ul></nav>
+    </div>
+  </header>
+
+  <main id="main" class="container">
+    <nav class="breadcrumb" aria-label="현재 위치">
+      <ol>
+        <li><a href="/" id="home-link">← 계산기 목록(홈)</a></li>
+        <li aria-current="page">대출이자 계산기</li>
+      </ol>
+    </nav>
+
+    <section class="hero calc-hero" aria-labelledby="page-title">
+      <p class="calc-badges"><span class="cat-badge cat-realty">주거·부동산</span><span class="basis-badge">적용 기준: 상환 방식 산식 (연도와 무관)</span></p>
+      <h1 id="page-title">대출이자 계산기</h1>
+      <p class="lead">상환 방식별 월 상환액과 총이자를 비교하고 월별 상환 계획표를 확인하세요.</p>
+    </section>
+
+    <noscript>
+      <p class="notice notice-warn">이 계산기는 브라우저의 JavaScript로 동작합니다. JavaScript를 켠 뒤 다시 열어 주세요.</p>
+    </noscript>
+
+    <form id="calc-form" class="panel" data-calc="loan" novalidate autocomplete="off" aria-labelledby="form-title">
+      <h2 id="form-title" class="panel-title"><span class="step">1</span> 입력</h2>
+      <div class="field">
+        <label for="principal"><span class="label-text">대출 원금</span> <span class="req">필수</span> <span class="unit">(원)</span></label>
+        <input id="principal" name="principal" type="text" inputmode="numeric" autocomplete="off" spellcheck="false" placeholder="예: 100000000" data-amount aria-describedby="principal-error principal-preview">
+        <p class="error" id="principal-error" hidden></p>
+        <p class="preview" id="principal-preview"></p>
+      </div>
+
+      <div class="field">
+        <label for="rate"><span class="label-text">연 이자율</span> <span class="req">필수</span> <span class="unit">(%)</span></label>
+        <input id="rate" name="rate" type="text" inputmode="decimal" autocomplete="off" spellcheck="false" placeholder="예: 4.5" aria-describedby="rate-error rate-hint">
+        <p class="error" id="rate-error" hidden></p>
+        <p class="hint" id="rate-hint">연 0~30%, 소수점 셋째 자리까지 입력할 수 있습니다.</p>
+      </div>
+
+      <div class="field">
+        <label for="months"><span class="label-text">대출 기간</span> <span class="req">필수</span> <span class="unit">(개월)</span></label>
+        <input id="months" name="months" type="text" inputmode="numeric" autocomplete="off" spellcheck="false" placeholder="예: 360" aria-describedby="months-error months-hint">
+        <p class="error" id="months-error" hidden></p>
+        <p class="hint" id="months-hint">1~600개월. 30년은 360개월입니다.</p>
+      </div>
+
+      <fieldset class="field">
+        <legend>상환 방식</legend>
+        <div class="choices">
+          <label class="choice"><input type="radio" name="method" value="equalPayment" checked> <span>원리금균등</span></label>
+          <label class="choice"><input type="radio" name="method" value="equalPrincipal"> <span>원금균등</span></label>
+          <label class="choice"><input type="radio" name="method" value="bullet"> <span>만기일시</span></label>
+        </div>
+        <p class="error" id="method-error" hidden></p>
+      </fieldset>
+
+      <div class="actions actions-sticky">
+        <button type="submit" class="btn btn-primary" id="submit">계산하기</button>
+        <button type="button" class="btn btn-reset" id="reset-all">초기화</button>
+      </div>
+    </form>
+
+    <div id="result-status" class="sr-only" role="status" aria-live="polite" aria-atomic="true"></div>
+
+    <section id="result" class="panel result" hidden aria-labelledby="result-title">
+      <h2 id="result-title" class="panel-title" tabindex="-1"><span class="step">2</span> 계산 결과</h2>
+      <div id="result-unavailable" class="notice notice-warn" hidden>
+        <p><strong>계산할 수 없습니다.</strong> <span id="unavailable-reason"></span></p>
+        <p>공식 기준이 확인되지 않은 값은 임의로 쓰지 않습니다. 다른 기준 연도를 선택해 주세요.</p>
+      </div>
+      <div id="result-body">
+        <p class="result-meta" id="result-meta"></p>
+        <div class="headline result-stats" id="result-stats"></div>
+        <h3 class="table-title">항목별 상세 내역</h3>
+        <div id="result-table"></div>
+        <dl class="kv-list" id="result-rows"></dl>
+        <div data-block>
+          <h3 class="table-title">계산 공식</h3>
+          <ul class="formula-list" id="result-formulas"></ul>
+        </div>
+        <div data-block class="caution">
+          <h3 class="table-title">주의사항</h3>
+          <ul id="result-warnings"></ul>
+        </div>
+        <p class="disclaimer result-disclaimer">본 계산 결과는 단순 모의 계산이며, 법적 확정 금액이나 효력을 갖는 증빙자료가 아닙니다.</p>
+      </div>
+    </section>
+
+    <section class="content howto" aria-labelledby="howto-title">
+      <h2 id="howto-title">대출이자 계산 방법</h2>
+      <ol>
+        <li>월 이자율은 연 이자율을 12로 나눈 값이고, 매달 이자는 남은 원금 × 월 이자율입니다.</li>
+        <li>원리금균등은 매달 같은 금액(원금+이자)을, 원금균등은 매달 같은 원금과 줄어드는 이자를, 만기일시는 매달 이자만 내고 마지막에 원금을 갚습니다.</li>
+        <li>총이자는 원금균등 &lt; 원리금균등 &lt; 만기일시 순으로 커집니다.</li>
+      </ol>
+      <h3>실제 계산 예제</h3>
+      <div class="example">
+        <p class="example-case"><strong>예시</strong> 1억 원을 연 4.5%로 30년(360개월) 원리금균등 상환</p>
+        <dl class="kv-list example-result">
+          <div class="kv"><dt>매달 상환액</dt><dd>506,685원</dd></div>
+          <div class="kv"><dt>총 이자</dt><dd>82,406,841원</dd></div>
+          <div class="kv"><dt>총 상환액</dt><dd>182,406,841원</dd></div>
+        </dl>
+        <ol class="example-steps">
+          <li>월 이자율: 4.5% ÷ 12 = 0.375%</li>
+          <li>첫 달: 원금 131,685원 + 이자 375,000원 = 506,685원</li>
+          <li>마지막 달 (360회차): 원금 505,032원 + 이자 1,894원 = 506,926원</li>
+        </ol>
+      </div>
+    </section>
+
+    <details class="content basis-fold" id="basis-fold">
+      <summary class="fold-summary"><h2 id="basis-title">적용 기준 및 공식 출처</h2></summary>
+      <div class="fold-body">
+      <p>적용 기준: 상환 방식 산식 (연도와 무관). 연도별 요율·세율은 기준 데이터로 따로 관리하며, 공식 확정 전인 연도는 계산하지 않습니다.</p>
+      <ul class="sources">
+        <li><a href="https://finlife.fss.or.kr/" target="_blank" rel="noopener noreferrer">금융감독원 — 금융상품 한눈에 (대출 상환방식 안내)<span class="sr-only"> — 새 창에서 열림</span></a></li>
+      </ul>
+      <p class="checked-date">공식 자료 확인일: <time datetime="2026-11-21">2026년 11월 21일</time></p>
+    </div>
+    </details>
+
+    <details class="content faq faq-fold" id="faq-fold">
+      <summary class="fold-summary"><h2 id="faq-title">자주 묻는 질문</h2></summary>
+      <div class="fold-body">
+      <h3>은행 상환 계획표와 몇 원 차이가 나요.</h3>
+      <p>금융회사마다 이자를 일 단위(365일)로 계산하거나 끝수 처리가 달라 몇 원~수천 원 차이가 날 수 있습니다. 실제 금액은 대출 약정서의 상환 계획표를 확인하세요.</p>
+      <h3>거치기간이나 변동금리도 반영되나요?</h3>
+      <p>현재는 고정금리, 거치기간 없는 상환만 계산합니다.</p>
+      <h3>원리금균등과 원금균등 중 무엇이 유리한가요?</h3>
+      <p>총이자는 원금균등이 적지만 초기 상환액이 큽니다. 원리금균등은 매달 금액이 같아 계획을 세우기 쉽습니다.</p>
+    </div>
+    </details>
+
+    <section class="content related" aria-labelledby="related-title">
+      <h2 id="related-title">관련 계산기</h2>
+      <ul class="related-list">
+        <li><a class="related-link cat-labor" href="/annual-salary-net"><span class="related-cat">노동·급여</span><strong>연봉 실수령액 계산기</strong><span>연봉에서 4대보험과 소득세를 뺀 월·연 실수령액을 확인합니다.</span></a></li>
+        <li><a class="related-link cat-tax" href="/vat"><span class="related-cat">세금·보험</span><strong>부가세 계산기</strong><span>공급가액과 부가세 포함 금액을 서로 환산합니다.</span></a></li>
+        <li><a class="related-link cat-tax" href="/social-insurance"><span class="related-cat">세금·보험</span><strong>4대보험 계산기</strong><span>국민연금·건강·장기요양·고용보험의 근로자·사업주 부담을 계산합니다.</span></a></li>
+      </ul>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container container-wide">
+      <p class="footer-brand">정산노트<span aria-hidden="true">.</span></p>
+      <p>정산노트의 계산 결과는 단순 모의 계산이며, 법적 효력을 갖는 증빙자료가 아닙니다.</p>
+      <p>입력한 값은 브라우저 안에서만 계산되며 서버나 분석 도구로 전송되지 않습니다.</p>
+      <p><a href="/">정산노트 홈</a></p>
+    </div>
+  </footer>
+</body>
+</html>

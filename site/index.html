@@ -51,88 +51,250 @@
           <button type="button" class="chip chip-realty" data-filter="realty" aria-pressed="false">주거·부동산</button>
         </div>
       </div>
-      <p class="calc-count" id="calc-count" role="status" aria-live="polite">계산기 10개 · 이용 가능 2개 · 준비 중 8개</p>
+      <p class="calc-count" id="calc-count" role="status" aria-live="polite">계산기 30개 · 이용 가능 8개 · 준비 중 22개</p>
       <ul class="calc-grid calc-grid-2" id="calc-grid">
-          <li class="calc-item is-featured" data-category="labor" data-status="live" data-keywords="월급 일할 중도 입사 퇴사 급여 일할계산 달력일 소정근로일 중도 입·퇴사자 월급 일할계산기 노동·급여">
+          <!-- catalog:start -->
+          <li class="calc-item" data-category="labor" data-status="live" data-keywords="연봉 실수령액 세후 월급 4대보험 소득세 연봉표 연봉 실수령액 계산기 노동·급여">
+            <a class="card calc-card tone-c1" href="/annual-salary-net">
+              <span class="card-badges"><span class="card-no" aria-label="노동·급여 1번">1</span><span class="card-cat cat-labor">노동·급여</span><span class="status status-live">이용 가능</span></span>
+              <h3 class="card-title">연봉 실수령액 계산기</h3>
+              <span class="card-desc">연봉에서 4대보험과 소득세를 뺀 월·연 실수령액을 확인합니다.</span>
+              <span class="card-btn">계산기 열기</span>
+            </a>
+          </li>
+          <li class="calc-item" data-category="labor" data-status="soon" data-keywords="월급 실수령액 세후 월급 실수령액 계산기 노동·급여">
+            <div class="card calc-card card-soon tone-c2">
+              <span class="card-badges"><span class="card-no" aria-label="노동·급여 2번">2</span><span class="card-cat cat-labor">노동·급여</span><span class="status status-soon">준비 중</span></span>
+              <h3 class="card-title">월급 실수령액 계산기</h3>
+              <span class="card-desc">세전 월급에서 공제액을 뺀 실수령액을 확인합니다.</span>
+              <span class="card-btn card-btn-soon">공개 준비 중 · 아직 계산할 수 없습니다</span>
+            </div>
+          </li>
+          <li class="calc-item" data-category="labor" data-status="live" data-keywords="퇴직금 평균임금 재직일수 퇴직 퇴직금 계산기 노동·급여">
+            <a class="card calc-card tone-c3" href="/severance-pay">
+              <span class="card-badges"><span class="card-no" aria-label="노동·급여 3번">3</span><span class="card-cat cat-labor">노동·급여</span><span class="status status-live">이용 가능</span></span>
+              <h3 class="card-title">퇴직금 계산기</h3>
+              <span class="card-desc">평균임금과 재직일수로 예상 퇴직금을 계산합니다.</span>
+              <span class="card-btn">계산기 열기</span>
+            </a>
+          </li>
+          <li class="calc-item" data-category="labor" data-status="live" data-keywords="주휴수당 주휴 15시간 알바 아르바이트 초단시간 판독기 주휴수당 계산기 노동·급여">
+            <a class="card calc-card tone-c4" href="/weekly-holiday-pay">
+              <span class="card-badges"><span class="card-no" aria-label="노동·급여 4번">4</span><span class="card-cat cat-labor">노동·급여</span><span class="status status-live">이용 가능</span></span>
+              <h3 class="card-title">주휴수당 계산기</h3>
+              <span class="card-desc">주 15시간 기준으로 주휴수당 지급 여부와 금액을 판독합니다.</span>
+              <span class="card-btn">계산기 열기</span>
+            </a>
+          </li>
+          <li class="calc-item" data-category="labor" data-status="live" data-keywords="시급 월급 환산 최저임금 209시간 시급 계산기 노동·급여">
+            <a class="card calc-card tone-c2" href="/hourly-wage">
+              <span class="card-badges"><span class="card-no" aria-label="노동·급여 5번">5</span><span class="card-cat cat-labor">노동·급여</span><span class="status status-live">이용 가능</span></span>
+              <h3 class="card-title">시급 계산기</h3>
+              <span class="card-desc">월급과 시급을 서로 환산하고 최저임금과 비교합니다.</span>
+              <span class="card-btn">계산기 열기</span>
+            </a>
+          </li>
+          <li class="calc-item" data-category="labor" data-status="soon" data-keywords="실업급여 구직급여 실업급여 계산기 노동·급여">
+            <div class="card calc-card card-soon tone-c1">
+              <span class="card-badges"><span class="card-no" aria-label="노동·급여 6번">6</span><span class="card-cat cat-labor">노동·급여</span><span class="status status-soon">준비 중</span></span>
+              <h3 class="card-title">실업급여 계산기</h3>
+              <span class="card-desc">구직급여 예상 일액과 지급일수를 확인합니다.</span>
+              <span class="card-btn card-btn-soon">공개 준비 중 · 아직 계산할 수 없습니다</span>
+            </div>
+          </li>
+          <li class="calc-item" data-category="labor" data-status="soon" data-keywords="연차수당 연차 유급휴가 연차수당 계산기 노동·급여">
+            <div class="card calc-card card-soon tone-c4">
+              <span class="card-badges"><span class="card-no" aria-label="노동·급여 7번">7</span><span class="card-cat cat-labor">노동·급여</span><span class="status status-soon">준비 중</span></span>
+              <h3 class="card-title">연차수당 계산기</h3>
+              <span class="card-desc">연차 발생일수와 미사용 연차수당을 계산합니다.</span>
+              <span class="card-btn card-btn-soon">공개 준비 중 · 아직 계산할 수 없습니다</span>
+            </div>
+          </li>
+          <li class="calc-item" data-category="labor" data-status="soon" data-keywords="야간수당 연장수당 휴일수당 가산 야간·연장·휴일수당 계산기 노동·급여">
+            <div class="card calc-card card-soon tone-c3">
+              <span class="card-badges"><span class="card-no" aria-label="노동·급여 8번">8</span><span class="card-cat cat-labor">노동·급여</span><span class="status status-soon">준비 중</span></span>
+              <h3 class="card-title">야간·연장·휴일수당 계산기</h3>
+              <span class="card-desc">가산임금이 붙는 근로시간의 수당을 계산합니다.</span>
+              <span class="card-btn card-btn-soon">공개 준비 중 · 아직 계산할 수 없습니다</span>
+            </div>
+          </li>
+          <li class="calc-item" data-category="labor" data-status="live" data-keywords="월급 일할 중도 입사 퇴사 급여 일할계산 월급 일할계산기 노동·급여">
             <a class="card calc-card tone-c1" href="/salary-proration">
-              <span class="card-badges"><span class="card-no" aria-label="1번">1</span><span class="card-cat cat-labor">노동·급여</span><span class="status status-live">이용 가능</span><span class="card-tag">대표 계산기</span></span>
-              <h3 class="card-title">중도 입·퇴사자 월급 일할계산기</h3>
-              <span class="card-desc">중도 입사·퇴사한 달의 세전 예상 급여를 달력일 기준과 소정근로일 기준으로 비교합니다.</span>
-              <span class="card-btn">먼저 사용해 보세요</span>
+              <span class="card-badges"><span class="card-no" aria-label="노동·급여 9번">9</span><span class="card-cat cat-labor">노동·급여</span><span class="status status-live">이용 가능</span></span>
+              <h3 class="card-title">월급 일할계산기</h3>
+              <span class="card-desc">중도 입사·퇴사한 달의 급여를 달력일·소정근로일 기준으로 비교합니다.</span>
+              <span class="card-btn">계산기 열기</span>
             </a>
           </li>
-          <li class="calc-item" data-category="labor" data-status="live" data-keywords="주휴수당 주휴 15시간 초단시간 아르바이트 알바 개근 판독기 주 15시간 전후 주휴수당 판독기 노동·급여">
-            <a class="card calc-card tone-c2" href="/weekly-holiday-pay">
-              <span class="card-badges"><span class="card-no" aria-label="2번">2</span><span class="card-cat cat-labor">노동·급여</span><span class="status status-live">이용 가능</span></span>
-              <h3 class="card-title">주 15시간 전후 주휴수당 판독기</h3>
-              <span class="card-desc">주휴수당 지급 가능 여부와 예상 금액을 빠르게 확인합니다.</span>
-              <span class="card-btn">먼저 사용해 보세요</span>
+          <li class="calc-item" data-category="labor" data-status="soon" data-keywords="육아휴직급여 육아휴직 육아휴직급여 계산기 노동·급여">
+            <div class="card calc-card card-soon tone-c2">
+              <span class="card-badges"><span class="card-no" aria-label="노동·급여 10번">10</span><span class="card-cat cat-labor">노동·급여</span><span class="status status-soon">준비 중</span></span>
+              <h3 class="card-title">육아휴직급여 계산기</h3>
+              <span class="card-desc">육아휴직 기간별 예상 급여를 확인합니다.</span>
+              <span class="card-btn card-btn-soon">공개 준비 중 · 아직 계산할 수 없습니다</span>
+            </div>
+          </li>
+          <li class="calc-item" data-category="tax" data-status="live" data-keywords="4대보험 국민연금 건강보험 장기요양 고용보험 산재 사대보험 4대보험 계산기 세금·보험">
+            <a class="card calc-card tone-c1" href="/social-insurance">
+              <span class="card-badges"><span class="card-no" aria-label="세금·보험 1번">1</span><span class="card-cat cat-tax">세금·보험</span><span class="status status-live">이용 가능</span></span>
+              <h3 class="card-title">4대보험 계산기</h3>
+              <span class="card-desc">국민연금·건강·장기요양·고용보험의 근로자·사업주 부담을 계산합니다.</span>
+              <span class="card-btn">계산기 열기</span>
             </a>
           </li>
-          <li class="calc-item" data-category="labor" data-status="soon" data-keywords="퇴직금 육아휴직 단축근무 복직 평균임금 육아휴직·단축근무 복직자 퇴직금 노동·급여">
-            <div class="card calc-card card-soon tone-c3">
-              <span class="card-badges"><span class="card-no" aria-label="3번">3</span><span class="card-cat cat-labor">노동·급여</span><span class="status status-soon">준비 중</span></span>
-              <h3 class="card-title">육아휴직·단축근무 복직자 퇴직금 계산기</h3>
-              <span class="card-desc">복직자의 평균임금과 퇴직금 예상액을 계산합니다.</span>
-              <span class="card-btn card-btn-soon">공개 준비 중 · 아직 계산할 수 없습니다</span>
-            </div>
-          </li>
-          <li class="calc-item" data-category="labor" data-status="soon" data-keywords="야간수당 연장수당 교대근무 자정 가산 야간·연장근무 수당 노동·급여">
-            <div class="card calc-card card-soon tone-c4">
-              <span class="card-badges"><span class="card-no" aria-label="4번">4</span><span class="card-cat cat-labor">노동·급여</span><span class="status status-soon">준비 중</span></span>
-              <h3 class="card-title">야간·연장근무 수당 계산기</h3>
-              <span class="card-desc">자정 경과 교대근무의 야간·연장수당을 계산합니다.</span>
-              <span class="card-btn card-btn-soon">공개 준비 중 · 아직 계산할 수 없습니다</span>
-            </div>
-          </li>
-          <li class="calc-item" data-category="labor" data-status="soon" data-keywords="연차수당 연차 유급휴가 5인 미만 소규모 소규모 사업장 연차수당 노동·급여">
+          <li class="calc-item" data-category="tax" data-status="soon" data-keywords="종합소득세 종소세 종합소득세 계산기 세금·보험">
             <div class="card calc-card card-soon tone-c2">
-              <span class="card-badges"><span class="card-no" aria-label="5번">5</span><span class="card-cat cat-labor">노동·급여</span><span class="status status-soon">준비 중</span></span>
-              <h3 class="card-title">소규모 사업장 연차수당 계산기</h3>
-              <span class="card-desc">연차 발생일수와 연차수당 예상액을 확인합니다.</span>
+              <span class="card-badges"><span class="card-no" aria-label="세금·보험 2번">2</span><span class="card-cat cat-tax">세금·보험</span><span class="status status-soon">준비 중</span></span>
+              <h3 class="card-title">종합소득세 계산기</h3>
+              <span class="card-desc">종합소득 과세표준에 따른 예상 세액을 확인합니다.</span>
               <span class="card-btn card-btn-soon">공개 준비 중 · 아직 계산할 수 없습니다</span>
             </div>
           </li>
-          <li class="calc-item" data-category="tax" data-status="soon" data-keywords="4대보험 국민연금 건강보험 고용보험 산재 일용직 건설 아르바이트 건설일용직·아르바이트 4대보험 세금·보험">
-            <div class="card calc-card card-soon tone-c1">
-              <span class="card-badges"><span class="card-no" aria-label="6번">6</span><span class="card-cat cat-tax">세금·보험</span><span class="status status-soon">준비 중</span></span>
-              <h3 class="card-title">건설일용직·아르바이트 4대보험 계산기</h3>
-              <span class="card-desc">근무 형태에 따른 4대보험 적용과 공제액을 계산합니다.</span>
-              <span class="card-btn card-btn-soon">공개 준비 중 · 아직 계산할 수 없습니다</span>
-            </div>
+          <li class="calc-item" data-category="tax" data-status="live" data-keywords="부가세 부가가치세 공급가액 10% vat 부가세 계산기 세금·보험">
+            <a class="card calc-card tone-c3" href="/vat">
+              <span class="card-badges"><span class="card-no" aria-label="세금·보험 3번">3</span><span class="card-cat cat-tax">세금·보험</span><span class="status status-live">이용 가능</span></span>
+              <h3 class="card-title">부가세 계산기</h3>
+              <span class="card-desc">공급가액과 부가세 포함 금액을 서로 환산합니다.</span>
+              <span class="card-btn">계산기 열기</span>
+            </a>
           </li>
-          <li class="calc-item" data-category="tax" data-status="soon" data-keywords="3.3% 프리랜서 경비율 종합소득세 원천징수 플랫폼 프리랜서 3.3% 세액 세금·보험">
+          <li class="calc-item" data-category="tax" data-status="soon" data-keywords="연말정산 환급금 연말정산 환급금 계산기 세금·보험">
             <div class="card calc-card card-soon tone-c4">
-              <span class="card-badges"><span class="card-no" aria-label="7번">7</span><span class="card-cat cat-tax">세금·보험</span><span class="status status-soon">준비 중</span></span>
-              <h3 class="card-title">프리랜서 3.3% 세액 계산기</h3>
-              <span class="card-desc">플랫폼·프리랜서 소득의 원천징수 세액을 계산합니다.</span>
+              <span class="card-badges"><span class="card-no" aria-label="세금·보험 4번">4</span><span class="card-cat cat-tax">세금·보험</span><span class="status status-soon">준비 중</span></span>
+              <h3 class="card-title">연말정산 환급금 계산기</h3>
+              <span class="card-desc">공제 항목을 반영한 예상 환급·추가 납부액을 확인합니다.</span>
               <span class="card-btn card-btn-soon">공개 준비 중 · 아직 계산할 수 없습니다</span>
             </div>
           </li>
-          <li class="calc-item" data-category="tax" data-status="soon" data-keywords="실업급여 조기재취업수당 구직급여 잔여 재취업 조기재취업수당·잔여 실업급여 세금·보험">
-            <div class="card calc-card card-soon tone-c3">
-              <span class="card-badges"><span class="card-no" aria-label="8번">8</span><span class="card-cat cat-tax">세금·보험</span><span class="status status-soon">준비 중</span></span>
-              <h3 class="card-title">조기재취업수당·잔여 실업급여 계산기</h3>
-              <span class="card-desc">조기재취업수당과 남은 실업급여를 확인합니다.</span>
-              <span class="card-btn card-btn-soon">공개 준비 중 · 아직 계산할 수 없습니다</span>
-            </div>
-          </li>
-          <li class="calc-item" data-category="realty" data-status="soon" data-keywords="최우선변제금 소액임차인 보증금 전세 월세 경매 주거 부동산 소액임차인 최우선변제금 주거·부동산">
-            <div class="card calc-card card-soon tone-c1">
-              <span class="card-badges"><span class="card-no" aria-label="9번">9</span><span class="card-cat cat-realty">주거·부동산</span><span class="status status-soon">준비 중</span></span>
-              <h3 class="card-title">소액임차인 최우선변제금 계산기</h3>
-              <span class="card-desc">지역별 소액임차인 보호 범위와 최우선변제금을 확인합니다.</span>
-              <span class="card-btn card-btn-soon">공개 준비 중 · 아직 계산할 수 없습니다</span>
-            </div>
-          </li>
-          <li class="calc-item" data-category="realty" data-status="soon" data-keywords="양도세 양도소득세 장기보유특별공제 1세대 1주택 부동산 1세대 1주택 양도세 주거·부동산">
+          <li class="calc-item" data-category="tax" data-status="soon" data-keywords="3.3% 프리랜서 원천징수 3.3% 프리랜서 세금 계산기 세금·보험">
             <div class="card calc-card card-soon tone-c2">
-              <span class="card-badges"><span class="card-no" aria-label="10번">10</span><span class="card-cat cat-realty">주거·부동산</span><span class="status status-soon">준비 중</span></span>
-              <h3 class="card-title">1세대 1주택 양도세 계산기</h3>
-              <span class="card-desc">장기보유특별공제를 반영한 양도세를 계산합니다.</span>
+              <span class="card-badges"><span class="card-no" aria-label="세금·보험 5번">5</span><span class="card-cat cat-tax">세금·보험</span><span class="status status-soon">준비 중</span></span>
+              <h3 class="card-title">3.3% 프리랜서 세금 계산기</h3>
+              <span class="card-desc">사업소득 원천징수 3.3%와 실수령액을 계산합니다.</span>
               <span class="card-btn card-btn-soon">공개 준비 중 · 아직 계산할 수 없습니다</span>
             </div>
           </li>
+          <li class="calc-item" data-category="tax" data-status="soon" data-keywords="소득세 세율 소득세 계산기 세금·보험">
+            <div class="card calc-card card-soon tone-c1">
+              <span class="card-badges"><span class="card-no" aria-label="세금·보험 6번">6</span><span class="card-cat cat-tax">세금·보험</span><span class="status status-soon">준비 중</span></span>
+              <h3 class="card-title">소득세 계산기</h3>
+              <span class="card-desc">과세표준별 기본세율로 소득세를 계산합니다.</span>
+              <span class="card-btn card-btn-soon">공개 준비 중 · 아직 계산할 수 없습니다</span>
+            </div>
+          </li>
+          <li class="calc-item" data-category="tax" data-status="soon" data-keywords="건강보험료 건보료 건강보험료 계산기 세금·보험">
+            <div class="card calc-card card-soon tone-c4">
+              <span class="card-badges"><span class="card-no" aria-label="세금·보험 7번">7</span><span class="card-cat cat-tax">세금·보험</span><span class="status status-soon">준비 중</span></span>
+              <h3 class="card-title">건강보험료 계산기</h3>
+              <span class="card-desc">직장·지역가입자 건강보험료를 확인합니다.</span>
+              <span class="card-btn card-btn-soon">공개 준비 중 · 아직 계산할 수 없습니다</span>
+            </div>
+          </li>
+          <li class="calc-item" data-category="tax" data-status="soon" data-keywords="국민연금 보험료 국민연금 계산기 세금·보험">
+            <div class="card calc-card card-soon tone-c3">
+              <span class="card-badges"><span class="card-no" aria-label="세금·보험 8번">8</span><span class="card-cat cat-tax">세금·보험</span><span class="status status-soon">준비 중</span></span>
+              <h3 class="card-title">국민연금 계산기</h3>
+              <span class="card-desc">기준소득월액에 따른 국민연금 보험료를 계산합니다.</span>
+              <span class="card-btn card-btn-soon">공개 준비 중 · 아직 계산할 수 없습니다</span>
+            </div>
+          </li>
+          <li class="calc-item" data-category="tax" data-status="soon" data-keywords="증여세 증여세 계산기 세금·보험">
+            <div class="card calc-card card-soon tone-c1">
+              <span class="card-badges"><span class="card-no" aria-label="세금·보험 9번">9</span><span class="card-cat cat-tax">세금·보험</span><span class="status status-soon">준비 중</span></span>
+              <h3 class="card-title">증여세 계산기</h3>
+              <span class="card-desc">증여재산 공제를 반영한 예상 증여세를 확인합니다.</span>
+              <span class="card-btn card-btn-soon">공개 준비 중 · 아직 계산할 수 없습니다</span>
+            </div>
+          </li>
+          <li class="calc-item" data-category="tax" data-status="soon" data-keywords="상속세 상속세 계산기 세금·보험">
+            <div class="card calc-card card-soon tone-c2">
+              <span class="card-badges"><span class="card-no" aria-label="세금·보험 10번">10</span><span class="card-cat cat-tax">세금·보험</span><span class="status status-soon">준비 중</span></span>
+              <h3 class="card-title">상속세 계산기</h3>
+              <span class="card-desc">상속공제를 반영한 예상 상속세를 확인합니다.</span>
+              <span class="card-btn card-btn-soon">공개 준비 중 · 아직 계산할 수 없습니다</span>
+            </div>
+          </li>
+          <li class="calc-item" data-category="realty" data-status="live" data-keywords="대출이자 원리금균등 원금균등 만기일시 주택담보대출 상환 대출이자 계산기 주거·부동산">
+            <a class="card calc-card tone-c1" href="/loan-interest">
+              <span class="card-badges"><span class="card-no" aria-label="주거·부동산 1번">1</span><span class="card-cat cat-realty">주거·부동산</span><span class="status status-live">이용 가능</span></span>
+              <h3 class="card-title">대출이자 계산기</h3>
+              <span class="card-desc">원리금균등·원금균등·만기일시 상환의 월 상환액과 총이자를 계산합니다.</span>
+              <span class="card-btn">계산기 열기</span>
+            </a>
+          </li>
+          <li class="calc-item" data-category="realty" data-status="soon" data-keywords="취득세 취득세 계산기 주거·부동산">
+            <div class="card calc-card card-soon tone-c2">
+              <span class="card-badges"><span class="card-no" aria-label="주거·부동산 2번">2</span><span class="card-cat cat-realty">주거·부동산</span><span class="status status-soon">준비 중</span></span>
+              <h3 class="card-title">취득세 계산기</h3>
+              <span class="card-desc">주택 수와 가격에 따른 취득세를 확인합니다.</span>
+              <span class="card-btn card-btn-soon">공개 준비 중 · 아직 계산할 수 없습니다</span>
+            </div>
+          </li>
+          <li class="calc-item" data-category="realty" data-status="soon" data-keywords="양도소득세 양도세 양도소득세 계산기 주거·부동산">
+            <div class="card calc-card card-soon tone-c3">
+              <span class="card-badges"><span class="card-no" aria-label="주거·부동산 3번">3</span><span class="card-cat cat-realty">주거·부동산</span><span class="status status-soon">준비 중</span></span>
+              <h3 class="card-title">양도소득세 계산기</h3>
+              <span class="card-desc">보유기간과 공제를 반영한 양도세를 확인합니다.</span>
+              <span class="card-btn card-btn-soon">공개 준비 중 · 아직 계산할 수 없습니다</span>
+            </div>
+          </li>
+          <li class="calc-item" data-category="realty" data-status="soon" data-keywords="중개수수료 복비 중개보수 중개수수료 계산기 주거·부동산">
+            <div class="card calc-card card-soon tone-c4">
+              <span class="card-badges"><span class="card-no" aria-label="주거·부동산 4번">4</span><span class="card-cat cat-realty">주거·부동산</span><span class="status status-soon">준비 중</span></span>
+              <h3 class="card-title">중개수수료 계산기</h3>
+              <span class="card-desc">거래금액별 부동산 중개보수 상한을 확인합니다.</span>
+              <span class="card-btn card-btn-soon">공개 준비 중 · 아직 계산할 수 없습니다</span>
+            </div>
+          </li>
+          <li class="calc-item" data-category="realty" data-status="soon" data-keywords="전월세 전환율 전월세 전환 계산기 주거·부동산">
+            <div class="card calc-card card-soon tone-c2">
+              <span class="card-badges"><span class="card-no" aria-label="주거·부동산 5번">5</span><span class="card-cat cat-realty">주거·부동산</span><span class="status status-soon">준비 중</span></span>
+              <h3 class="card-title">전월세 전환 계산기</h3>
+              <span class="card-desc">전세와 월세를 전환율로 서로 환산합니다.</span>
+              <span class="card-btn card-btn-soon">공개 준비 중 · 아직 계산할 수 없습니다</span>
+            </div>
+          </li>
+          <li class="calc-item" data-category="realty" data-status="soon" data-keywords="DSR 대출한도 DSR 대출한도 계산기 주거·부동산">
+            <div class="card calc-card card-soon tone-c1">
+              <span class="card-badges"><span class="card-no" aria-label="주거·부동산 6번">6</span><span class="card-cat cat-realty">주거·부동산</span><span class="status status-soon">준비 중</span></span>
+              <h3 class="card-title">DSR 대출한도 계산기</h3>
+              <span class="card-desc">소득과 기존 대출로 DSR 기준 대출 한도를 확인합니다.</span>
+              <span class="card-btn card-btn-soon">공개 준비 중 · 아직 계산할 수 없습니다</span>
+            </div>
+          </li>
+          <li class="calc-item" data-category="realty" data-status="soon" data-keywords="재산세 재산세 계산기 주거·부동산">
+            <div class="card calc-card card-soon tone-c4">
+              <span class="card-badges"><span class="card-no" aria-label="주거·부동산 7번">7</span><span class="card-cat cat-realty">주거·부동산</span><span class="status status-soon">준비 중</span></span>
+              <h3 class="card-title">재산세 계산기</h3>
+              <span class="card-desc">공시가격 기준 주택 재산세를 확인합니다.</span>
+              <span class="card-btn card-btn-soon">공개 준비 중 · 아직 계산할 수 없습니다</span>
+            </div>
+          </li>
+          <li class="calc-item" data-category="realty" data-status="soon" data-keywords="평수 제곱미터 평수 계산기 주거·부동산">
+            <div class="card calc-card card-soon tone-c3">
+              <span class="card-badges"><span class="card-no" aria-label="주거·부동산 8번">8</span><span class="card-cat cat-realty">주거·부동산</span><span class="status status-soon">준비 중</span></span>
+              <h3 class="card-title">평수 계산기</h3>
+              <span class="card-desc">제곱미터와 평을 서로 환산합니다.</span>
+              <span class="card-btn card-btn-soon">공개 준비 중 · 아직 계산할 수 없습니다</span>
+            </div>
+          </li>
+          <li class="calc-item" data-category="realty" data-status="soon" data-keywords="청약가점 청약가점 계산기 주거·부동산">
+            <div class="card calc-card card-soon tone-c1">
+              <span class="card-badges"><span class="card-no" aria-label="주거·부동산 9번">9</span><span class="card-cat cat-realty">주거·부동산</span><span class="status status-soon">준비 중</span></span>
+              <h3 class="card-title">청약가점 계산기</h3>
+              <span class="card-desc">무주택기간·부양가족·통장 가입기간으로 가점을 계산합니다.</span>
+              <span class="card-btn card-btn-soon">공개 준비 중 · 아직 계산할 수 없습니다</span>
+            </div>
+          </li>
+          <li class="calc-item" data-category="realty" data-status="soon" data-keywords="전세보증금 깡통전세 전세보증금 안전 계산기 주거·부동산">
+            <div class="card calc-card card-soon tone-c2">
+              <span class="card-badges"><span class="card-no" aria-label="주거·부동산 10번">10</span><span class="card-cat cat-realty">주거·부동산</span><span class="status status-soon">준비 중</span></span>
+              <h3 class="card-title">전세보증금 안전 계산기</h3>
+              <span class="card-desc">매매가 대비 보증금 비율로 위험도를 점검합니다.</span>
+              <span class="card-btn card-btn-soon">공개 준비 중 · 아직 계산할 수 없습니다</span>
+            </div>
+          </li>
+          <!-- catalog:end -->
       </ul>
       <p class="no-results" id="no-results" hidden>검색 결과가 없습니다. 다른 낱말로 찾거나 ‘전체’를 눌러 주세요.</p>
     </section>

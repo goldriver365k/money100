@@ -1,7 +1,7 @@
 # 정산노트 검수 결과표
 
-- 실행: 2026-11-21T06:14:38.747Z · 운영용 빌드(dist/, SITE_URL=https://xn--989a2xnd520fn5f.site) · `npm run verify:production` · Chromium(Playwright) · 시간대 Pacific/Kiritimati(UTC+14)
-- 집계: 통과 106 · 실패 0 · 미확인 3
+- 실행: 2026-11-21T06:39:02.852Z · 운영용 빌드(dist/, SITE_URL=https://xn--989a2xnd520fn5f.site) · `npm run verify:production` · Chromium(Playwright) · 시간대 Pacific/Kiritimati(UTC+14)
+- 집계: 통과 112 · 실패 0 · 미확인 3
 
 ## 월급 일할계산기 — 필수 검증 사례 5건 (회귀, 브라우저 직접 입력)
 
@@ -53,7 +53,7 @@
 | /salary-proration 직접 접속 후 새로고침 | 새 탭에서 /salary-proration 주소 입력 → 새로고침 | HTTP 200, 제목 “월급 일할계산기 — 중도 입사·퇴사 급여 계산 \| 정산노트”, 화면 제목 “월급 일할계산기” | 200/200 · “월급 일할계산기 — 중도 입사·퇴사 급여 계산 \| 정산노트” · “월급 일할계산기” | 통과 |
 | 끝 슬래시 주소 | /salary-proration/ 접속 | 계산기가 열리고, 슬래시 없는 주소로 이동하거나 canonical 이 슬래시 없는 주소를 가리킴 | /salary-proration (200) · canonical https://xn--989a2xnd520fn5f.site/salary-proration | 통과 |
 | 없는 주소 | /salary-proration-x 접속 | 404 안내 페이지와 홈 링크 | 404 · 페이지를 찾을 수 없습니다 | 통과 |
-| 홈 → 계산기 이동 | 홈에서 “월급 일할계산기” 카드 클릭 | 카드 2개(월급 일할계산기·주휴수당 계산기), /salary-proration 으로 이동 | 카드 2개 → /salary-proration “월급 일할계산기 — 중도 입사·퇴사 급여 계산 \| 정산노트” | 통과 |
+| 홈 → 계산기 이동 | 홈에서 “월급 일할계산기” 카드 클릭 | 이용 가능 카드 8개(30종 중), /salary-proration 으로 이동 | 카드 8개 → /salary-proration “월급 일할계산기 — 중도 입사·퇴사 급여 계산 \| 정산노트” | 통과 |
 | 계산기 → 홈 이동 | 계산기 상단 “← 계산기 목록(홈)” 클릭 | / 로 이동 | / “급여 계산기 모음 \| 정산노트” | 통과 |
 | 계산기 → 홈 이동(브랜드) | 상단 “정산노트” 로고 클릭 | / 로 이동 | / | 통과 |
 
@@ -178,6 +178,12 @@
 | canonical: / | 운영 빌드 /의 link rel=canonical·og:url·meta robots 확인 | canonical·og:url = https://xn--989a2xnd520fn5f.site/, noindex 없음 | canonical https://xn--989a2xnd520fn5f.site/ · og:url https://xn--989a2xnd520fn5f.site/ · robots 없음 | 통과 |
 | canonical: /salary-proration | 운영 빌드 /salary-proration의 link rel=canonical·og:url·meta robots 확인 | canonical·og:url = https://xn--989a2xnd520fn5f.site/salary-proration, noindex 없음 | canonical https://xn--989a2xnd520fn5f.site/salary-proration · og:url https://xn--989a2xnd520fn5f.site/salary-proration · robots 없음 | 통과 |
 | canonical: /weekly-holiday-pay | 운영 빌드 /weekly-holiday-pay의 link rel=canonical·og:url·meta robots 확인 | canonical·og:url = https://xn--989a2xnd520fn5f.site/weekly-holiday-pay, noindex 없음 | canonical https://xn--989a2xnd520fn5f.site/weekly-holiday-pay · og:url https://xn--989a2xnd520fn5f.site/weekly-holiday-pay · robots 없음 | 통과 |
-| sitemap.xml | /sitemap.xml 요청 | 200, <loc> 3개: https://xn--989a2xnd520fn5f.site/, https://xn--989a2xnd520fn5f.site/salary-proration, https://xn--989a2xnd520fn5f.site/weekly-holiday-pay | 200 · https://xn--989a2xnd520fn5f.site/, https://xn--989a2xnd520fn5f.site/salary-proration, https://xn--989a2xnd520fn5f.site/weekly-holiday-pay | 통과 |
+| canonical: /annual-salary-net | 운영 빌드 /annual-salary-net의 link rel=canonical·og:url·meta robots 확인 | canonical·og:url = https://xn--989a2xnd520fn5f.site/annual-salary-net, noindex 없음 | canonical https://xn--989a2xnd520fn5f.site/annual-salary-net · og:url https://xn--989a2xnd520fn5f.site/annual-salary-net · robots 없음 | 통과 |
+| canonical: /severance-pay | 운영 빌드 /severance-pay의 link rel=canonical·og:url·meta robots 확인 | canonical·og:url = https://xn--989a2xnd520fn5f.site/severance-pay, noindex 없음 | canonical https://xn--989a2xnd520fn5f.site/severance-pay · og:url https://xn--989a2xnd520fn5f.site/severance-pay · robots 없음 | 통과 |
+| canonical: /hourly-wage | 운영 빌드 /hourly-wage의 link rel=canonical·og:url·meta robots 확인 | canonical·og:url = https://xn--989a2xnd520fn5f.site/hourly-wage, noindex 없음 | canonical https://xn--989a2xnd520fn5f.site/hourly-wage · og:url https://xn--989a2xnd520fn5f.site/hourly-wage · robots 없음 | 통과 |
+| canonical: /social-insurance | 운영 빌드 /social-insurance의 link rel=canonical·og:url·meta robots 확인 | canonical·og:url = https://xn--989a2xnd520fn5f.site/social-insurance, noindex 없음 | canonical https://xn--989a2xnd520fn5f.site/social-insurance · og:url https://xn--989a2xnd520fn5f.site/social-insurance · robots 없음 | 통과 |
+| canonical: /vat | 운영 빌드 /vat의 link rel=canonical·og:url·meta robots 확인 | canonical·og:url = https://xn--989a2xnd520fn5f.site/vat, noindex 없음 | canonical https://xn--989a2xnd520fn5f.site/vat · og:url https://xn--989a2xnd520fn5f.site/vat · robots 없음 | 통과 |
+| canonical: /loan-interest | 운영 빌드 /loan-interest의 link rel=canonical·og:url·meta robots 확인 | canonical·og:url = https://xn--989a2xnd520fn5f.site/loan-interest, noindex 없음 | canonical https://xn--989a2xnd520fn5f.site/loan-interest · og:url https://xn--989a2xnd520fn5f.site/loan-interest · robots 없음 | 통과 |
+| sitemap.xml | /sitemap.xml 요청 | 200, <loc> 9개: https://xn--989a2xnd520fn5f.site/, https://xn--989a2xnd520fn5f.site/salary-proration, https://xn--989a2xnd520fn5f.site/weekly-holiday-pay, https://xn--989a2xnd520fn5f.site/annual-salary-net, https://xn--989a2xnd520fn5f.site/severance-pay, https://xn--989a2xnd520fn5f.site/hourly-wage, https://xn--989a2xnd520fn5f.site/social-insurance, https://xn--989a2xnd520fn5f.site/vat, https://xn--989a2xnd520fn5f.site/loan-interest | 200 · https://xn--989a2xnd520fn5f.site/, https://xn--989a2xnd520fn5f.site/salary-proration, https://xn--989a2xnd520fn5f.site/weekly-holiday-pay, https://xn--989a2xnd520fn5f.site/annual-salary-net, https://xn--989a2xnd520fn5f.site/severance-pay, https://xn--989a2xnd520fn5f.site/hourly-wage, https://xn--989a2xnd520fn5f.site/social-insurance, https://xn--989a2xnd520fn5f.site/vat, https://xn--989a2xnd520fn5f.site/loan-interest | 통과 |
 | robots.txt | /robots.txt 요청 | Allow: / · Sitemap: https://xn--989a2xnd520fn5f.site/sitemap.xml | User-agent: * / Allow: / / Sitemap: https://xn--989a2xnd520fn5f.site/sitemap.xml | 통과 |
 | 없는 주소의 404 페이지는 검색 제외 | /no-such-page 요청 | 404, noindex | 404 · noindex 있음 | 통과 |

@@ -7,4 +7,10 @@ export const PAGES = [
   { path: '/', file: 'index.html', priority: '1.0', public: true },
   { path: '/salary-proration', file: 'salary-proration/index.html', priority: '0.9', public: true },
   { path: '/weekly-holiday-pay', file: 'weekly-holiday-pay/index.html', priority: '0.9', public: true },
+  { path: '/annual-salary-net', file: 'annual-salary-net/index.html', priority: '0.9', public: true },
+  { path: '/severance-pay', file: 'severance-pay/index.html', priority: '0.9', public: true },
+  { path: '/hourly-wage', file: 'hourly-wage/index.html', priority: '0.9', public: true },
+  { path: '/social-insurance', file: 'social-insurance/index.html', priority: '0.9', public: true },
+  { path: '/vat', file: 'vat/index.html', priority: '0.8', public: true },
+  { path: '/loan-interest', file: 'loan-interest/index.html', priority: '0.8', public: true },
 ];

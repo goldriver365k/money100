@@ -1,0 +1,247 @@
+<!doctype html>
+<html lang="ko" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'none'; form-action 'none'; base-uri 'none'">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <title>퇴직금 계산기 — 평균임금·재직일수로 예상 퇴직금 계산 | 정산노트</title>
+  <meta name="description" content="입사일, 마지막 근무일, 퇴직 전 3개월 임금으로 1일 평균임금과 예상 퇴직금을 계산합니다. 상여금·연차수당 가산, 통상임금 비교, 1년 미만·주 15시간 미만 판단을 포함합니다.">
+  <!-- seo:start -->
+  <meta name="robots" content="noindex, nofollow">
+  <!-- seo:end -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="정산노트">
+  <meta property="og:title" content="퇴직금 계산기 — 평균임금·재직일수로 예상 퇴직금 계산 | 정산노트">
+  <meta property="og:description" content="평균임금 × 30일 × 재직일수 ÷ 365 공식으로 예상 퇴직금(세전)을 계산하세요.">
+  <meta property="og:locale" content="ko_KR">
+  <meta name="theme-color" content="#2563e2">
+  <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/assets/css/style.css">
+  <script type="module" src="/assets/js/nav.js"></script>
+  <script type="module" src="/assets/js/calc-page.js"></script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "퇴직일은 언제로 보나요?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "마지막으로 근무한 날의 다음 날이 퇴직일입니다. 그래서 이 계산기는 마지막 근무일을 입력받고, 재직일수는 입사일부터 마지막 근무일까지 셉니다."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "1년을 하루라도 못 채우면 퇴직금이 없나요?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "법정 퇴직금은 계속근로기간 1년 이상일 때 발생합니다. 다만 회사 규정으로 더 유리하게 정했다면 그에 따릅니다."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "퇴직소득세도 계산되나요?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "아니요. 이 결과는 세전 퇴직금입니다. 퇴직소득세는 근속연수공제·환산급여공제 등 별도 산식으로 계산됩니다."
+        }
+      }
+    ]
+  }
+  </script>
+</head>
+<body class="calc-page">
+<!-- 이 파일은 scripts/gen-calculators.js 로 생성됩니다. 직접 고치지 말고 scripts/calculators.js 를 수정하세요. -->
+  <a class="skip-link" href="#main">본문 바로가기</a>
+  <header class="site-header">
+    <div class="container container-wide header-inner">
+      <a class="brand" href="/"><span class="brand-mark" aria-hidden="true"></span>정산노트</a>
+      <nav class="main-nav" aria-label="주요 메뉴"><ul><li><a href="/#calculators">계산기 모음</a></li><li><a href="#basis-fold" data-open-fold>이용 가이드</a></li><li><a href="#faq-fold" data-open-fold>자주 묻는 질문</a></li></ul></nav>
+    </div>
+  </header>
+
+  <main id="main" class="container">
+    <nav class="breadcrumb" aria-label="현재 위치">
+      <ol>
+        <li><a href="/" id="home-link">← 계산기 목록(홈)</a></li>
+        <li aria-current="page">퇴직금 계산기</li>
+      </ol>
+    </nav>
+
+    <section class="hero calc-hero" aria-labelledby="page-title">
+      <p class="calc-badges"><span class="cat-badge cat-labor">노동·급여</span><span class="basis-badge">적용 기준: 근로자퇴직급여 보장법 산식 (연도와 무관)</span></p>
+      <h1 id="page-title">퇴직금 계산기</h1>
+      <p class="lead">평균임금 × 30일 × 재직일수 ÷ 365 공식으로 예상 퇴직금(세전)을 계산하세요.</p>
+    </section>
+
+    <noscript>
+      <p class="notice notice-warn">이 계산기는 브라우저의 JavaScript로 동작합니다. JavaScript를 켠 뒤 다시 열어 주세요.</p>
+    </noscript>
+
+    <form id="calc-form" class="panel" data-calc="severance" novalidate autocomplete="off" aria-labelledby="form-title">
+      <h2 id="form-title" class="panel-title"><span class="step">1</span> 입력</h2>
+      <div class="field">
+        <label for="startDate"><span class="label-text">입사일</span> <span class="req">필수</span></label>
+        <input id="startDate" name="startDate" type="date" aria-describedby="startDate-error startDate-hint">
+        <p class="error" id="startDate-error" hidden></p>
+        <p class="hint" id="startDate-hint">계속근로가 시작된 날입니다.</p>
+      </div>
+
+      <div class="field">
+        <label for="lastDate"><span class="label-text">마지막 근무일</span> <span class="req">필수</span></label>
+        <input id="lastDate" name="lastDate" type="date" aria-describedby="lastDate-error lastDate-hint">
+        <p class="error" id="lastDate-error" hidden></p>
+        <p class="hint" id="lastDate-hint">마지막으로 근무(재직)한 날입니다. 퇴직일은 그다음 날로 계산합니다.</p>
+      </div>
+
+      <div class="field">
+        <label for="wages3m"><span class="label-text">퇴직 전 3개월 임금총액 (세전)</span> <span class="req">필수</span> <span class="unit">(원)</span></label>
+        <input id="wages3m" name="wages3m" type="text" inputmode="numeric" autocomplete="off" spellcheck="false" placeholder="예: 9000000" data-amount aria-describedby="wages3m-error wages3m-preview wages3m-hint">
+        <p class="error" id="wages3m-error" hidden></p>
+        <p class="preview" id="wages3m-preview"></p>
+        <p class="hint" id="wages3m-hint">퇴직일 전 3개월 동안 받은 기본급·수당 등 세전 임금의 합계입니다. 상여금·연차수당은 아래에 따로 넣으세요.</p>
+      </div>
+
+      <div class="field">
+        <label for="bonus"><span class="label-text">최근 1년 상여금 총액</span> <span class="opt">선택</span> <span class="unit">(원)</span></label>
+        <input id="bonus" name="bonus" type="text" inputmode="numeric" autocomplete="off" spellcheck="false" value="0" data-amount aria-describedby="bonus-error bonus-preview bonus-hint">
+        <p class="error" id="bonus-error" hidden></p>
+        <p class="preview" id="bonus-preview"></p>
+        <p class="hint" id="bonus-hint">퇴직 전 1년간 받은 정기 상여금 총액입니다. 3/12만큼 평균임금에 더합니다.</p>
+      </div>
+
+      <div class="field">
+        <label for="leavePay"><span class="label-text">연차수당</span> <span class="opt">선택</span> <span class="unit">(원)</span></label>
+        <input id="leavePay" name="leavePay" type="text" inputmode="numeric" autocomplete="off" spellcheck="false" value="0" data-amount aria-describedby="leavePay-error leavePay-preview leavePay-hint">
+        <p class="error" id="leavePay-error" hidden></p>
+        <p class="preview" id="leavePay-preview"></p>
+        <p class="hint" id="leavePay-hint">퇴직 전 1년간 받은(전년도 미사용분) 연차수당입니다. 3/12만큼 더합니다.</p>
+      </div>
+
+      <div class="field">
+        <label for="ordinaryDaily"><span class="label-text">1일 통상임금 (선택)</span> <span class="opt">선택</span> <span class="unit">(원)</span></label>
+        <input id="ordinaryDaily" name="ordinaryDaily" type="text" inputmode="numeric" autocomplete="off" spellcheck="false" placeholder="예: 100000" data-amount aria-describedby="ordinaryDaily-error ordinaryDaily-preview ordinaryDaily-hint">
+        <p class="error" id="ordinaryDaily-error" hidden></p>
+        <p class="preview" id="ordinaryDaily-preview"></p>
+        <p class="hint" id="ordinaryDaily-hint">입력하면 평균임금과 비교해 더 큰 금액을 적용합니다.</p>
+      </div>
+
+      <fieldset class="field">
+        <legend>4주 평균 주 15시간 이상 근무했나요?</legend>
+        <div class="choices">
+          <label class="choice"><input type="radio" name="hours15" value="yes" checked> <span>예</span></label>
+          <label class="choice"><input type="radio" name="hours15" value="no"> <span>아니요</span></label>
+        </div>
+        <p class="error" id="hours15-error" hidden></p>
+      </fieldset>
+
+      <div class="actions actions-sticky">
+        <button type="submit" class="btn btn-primary" id="submit">계산하기</button>
+        <button type="button" class="btn btn-reset" id="reset-all">초기화</button>
+      </div>
+    </form>
+
+    <div id="result-status" class="sr-only" role="status" aria-live="polite" aria-atomic="true"></div>
+
+    <section id="result" class="panel result" hidden aria-labelledby="result-title">
+      <h2 id="result-title" class="panel-title" tabindex="-1"><span class="step">2</span> 계산 결과</h2>
+      <div id="result-unavailable" class="notice notice-warn" hidden>
+        <p><strong>계산할 수 없습니다.</strong> <span id="unavailable-reason"></span></p>
+        <p>공식 기준이 확인되지 않은 값은 임의로 쓰지 않습니다. 다른 기준 연도를 선택해 주세요.</p>
+      </div>
+      <div id="result-body">
+        <p class="result-meta" id="result-meta"></p>
+        <div class="headline result-stats" id="result-stats"></div>
+        <h3 class="table-title">항목별 상세 내역</h3>
+        <div id="result-table"></div>
+        <dl class="kv-list" id="result-rows"></dl>
+        <div data-block>
+          <h3 class="table-title">계산 공식</h3>
+          <ul class="formula-list" id="result-formulas"></ul>
+        </div>
+        <div data-block class="caution">
+          <h3 class="table-title">주의사항</h3>
+          <ul id="result-warnings"></ul>
+        </div>
+        <p class="disclaimer result-disclaimer">본 계산 결과는 단순 모의 계산이며, 법적 확정 금액이나 효력을 갖는 증빙자료가 아닙니다.</p>
+      </div>
+    </section>
+
+    <section class="content howto" aria-labelledby="howto-title">
+      <h2 id="howto-title">퇴직금 계산 방법</h2>
+      <ol>
+        <li>퇴직일(마지막 근무일 다음 날) 전 3개월의 임금총액에 최근 1년 상여금과 연차수당의 3/12을 더해, 그 기간의 달력일수로 나누면 1일 평균임금입니다.</li>
+        <li>1일 평균임금이 1일 통상임금보다 적으면 통상임금을 씁니다.</li>
+        <li>퇴직금 = 1일 평균임금 × 30일 × 재직일수 ÷ 365. 계속근로 1년 미만이거나 4주 평균 주 15시간 미만이면 지급 대상이 아닙니다.</li>
+      </ol>
+      <h3>실제 계산 예제</h3>
+      <div class="example">
+        <p class="example-case"><strong>예시</strong> 2023년 3월 2일 입사, 2026년 2월 28일 마지막 근무, 3개월 임금 900만 원, 연간 상여금 300만 원</p>
+        <dl class="kv-list example-result">
+          <div class="kv"><dt>예상 퇴직금 (세전)</dt><dd>9,750,000원</dd></div>
+          <div class="kv"><dt>1일 평균임금</dt><dd>108,333.33원</dd></div>
+          <div class="kv"><dt>재직일수</dt><dd>1,095일</dd></div>
+        </dl>
+        <ol class="example-steps">
+          <li>평균임금 산정기간: 2025년 12월 1일 ~ 2026년 2월 28일 (90일)</li>
+          <li>3개월 임금총액: 9,000,000원</li>
+          <li>상여금 가산 (연간 × 3/12): 3,000,000원 × 3/12 = 750,000원</li>
+          <li>연차수당 가산 (× 3/12): 0원 × 3/12 = 0원</li>
+          <li>평균임금 계산 총액: 9,750,000원</li>
+          <li>1일 평균임금: 9,750,000 ÷ 90일 = 108,333.33원</li>
+          <li>1일 통상임금 비교: 입력 안 함</li>
+          <li>퇴직금: 108,333.33원 × 30일 × 1,095 ÷ 365 = 9,750,000원</li>
+        </ol>
+      </div>
+    </section>
+
+    <details class="content basis-fold" id="basis-fold">
+      <summary class="fold-summary"><h2 id="basis-title">적용 기준 및 공식 출처</h2></summary>
+      <div class="fold-body">
+      <p>적용 기준: 근로자퇴직급여 보장법 산식 (연도와 무관). 연도별 요율·세율은 기준 데이터로 따로 관리하며, 공식 확정 전인 연도는 계산하지 않습니다.</p>
+      <ul class="sources">
+        <li><a href="https://www.law.go.kr/법령/%EA%B7%BC%EB%A1%9C%EC%9E%90%ED%87%B4%EC%A7%81%EA%B8%89%EC%97%AC%EB%B3%B4%EC%9E%A5%EB%B2%95/%EC%A0%9C8%EC%A1%B0" target="_blank" rel="noopener noreferrer">근로자퇴직급여 보장법 제8조 (퇴직금제도의 설정) — 계속근로기간 1년에 30일분 이상의 평균임금<span class="sr-only"> — 새 창에서 열림</span></a></li>
+        <li><a href="https://www.law.go.kr/법령/%EA%B7%BC%EB%A1%9C%EC%9E%90%ED%87%B4%EC%A7%81%EA%B8%89%EC%97%AC%EB%B3%B4%EC%9E%A5%EB%B2%95/%EC%A0%9C4%EC%A1%B0" target="_blank" rel="noopener noreferrer">근로자퇴직급여 보장법 제4조 (적용 범위 — 4주 평균 1주 소정근로시간 15시간 미만 제외)<span class="sr-only"> — 새 창에서 열림</span></a></li>
+        <li><a href="https://www.law.go.kr/법령/%EA%B7%BC%EB%A1%9C%EA%B8%B0%EC%A4%80%EB%B2%95/%EC%A0%9C2%EC%A1%B0" target="_blank" rel="noopener noreferrer">근로기준법 제2조 제1항 제6호·제2항 (평균임금, 통상임금보다 적으면 통상임금)<span class="sr-only"> — 새 창에서 열림</span></a></li>
+        <li><a href="https://www.law.go.kr/법령/%EA%B7%BC%EB%A1%9C%EA%B8%B0%EC%A4%80%EB%B2%95%EC%8B%9C%ED%96%89%EB%A0%B9/%EC%A0%9C2%EC%A1%B0" target="_blank" rel="noopener noreferrer">근로기준법 시행령 제2조 (평균임금 산정에서 제외되는 기간과 임금)<span class="sr-only"> — 새 창에서 열림</span></a></li>
+        <li><a href="https://www.moel.go.kr/" target="_blank" rel="noopener noreferrer">고용노동부 — 퇴직금 계산 안내 (평균임금 × 30일 × 재직일수 ÷ 365)<span class="sr-only"> — 새 창에서 열림</span></a></li>
+      </ul>
+      <p class="checked-date">공식 자료 확인일: <time datetime="2026-11-21">2026년 11월 21일</time></p>
+    </div>
+    </details>
+
+    <details class="content faq faq-fold" id="faq-fold">
+      <summary class="fold-summary"><h2 id="faq-title">자주 묻는 질문</h2></summary>
+      <div class="fold-body">
+      <h3>퇴직일은 언제로 보나요?</h3>
+      <p>마지막으로 근무한 날의 다음 날이 퇴직일입니다. 그래서 이 계산기는 마지막 근무일을 입력받고, 재직일수는 입사일부터 마지막 근무일까지 셉니다.</p>
+      <h3>1년을 하루라도 못 채우면 퇴직금이 없나요?</h3>
+      <p>법정 퇴직금은 계속근로기간 1년 이상일 때 발생합니다. 다만 회사 규정으로 더 유리하게 정했다면 그에 따릅니다.</p>
+      <h3>퇴직소득세도 계산되나요?</h3>
+      <p>아니요. 이 결과는 세전 퇴직금입니다. 퇴직소득세는 근속연수공제·환산급여공제 등 별도 산식으로 계산됩니다.</p>
+    </div>
+    </details>
+
+    <section class="content related" aria-labelledby="related-title">
+      <h2 id="related-title">관련 계산기</h2>
+      <ul class="related-list">
+        <li><a class="related-link cat-labor" href="/annual-salary-net"><span class="related-cat">노동·급여</span><strong>연봉 실수령액 계산기</strong><span>연봉에서 4대보험과 소득세를 뺀 월·연 실수령액을 확인합니다.</span></a></li>
+        <li><a class="related-link cat-labor" href="/hourly-wage"><span class="related-cat">노동·급여</span><strong>시급 계산기</strong><span>월급과 시급을 서로 환산하고 최저임금과 비교합니다.</span></a></li>
+        <li><a class="related-link cat-labor" href="/weekly-holiday-pay"><span class="related-cat">노동·급여</span><strong>주휴수당 계산기</strong><span>주 15시간 기준으로 주휴수당 지급 여부와 금액을 판독합니다.</span></a></li>
+      </ul>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container container-wide">
+      <p class="footer-brand">정산노트<span aria-hidden="true">.</span></p>
+      <p>정산노트의 계산 결과는 단순 모의 계산이며, 법적 효력을 갖는 증빙자료가 아닙니다.</p>
+      <p>입력한 값은 브라우저 안에서만 계산되며 서버나 분석 도구로 전송되지 않습니다.</p>
+      <p><a href="/">정산노트 홈</a></p>
+    </div>
+  </footer>
+</body>
+</html>

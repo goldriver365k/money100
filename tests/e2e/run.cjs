@@ -354,8 +354,8 @@ const CASES = [
     const cards = await page.locator('a.card').count();
     await page.click('a.card[href="/salary-proration"]');
     await page.waitForURL(`${baseURL}/salary-proration`);
-    T('홈 → 계산기 이동', '홈에서 “월급 일할계산기” 카드 클릭', '카드 2개(월급 일할계산기·주휴수당 계산기), /salary-proration 으로 이동',
-      `카드 ${cards}개 → ${page.url().replace(baseURL, '')} “${await page.title()}”`, cards === 2 && (await page.locator('h1').innerText()) === '월급 일할계산기');
+    T('홈 → 계산기 이동', '홈에서 “월급 일할계산기” 카드 클릭', '이용 가능 카드 8개(30종 중), /salary-proration 으로 이동',
+      `카드 ${cards}개 → ${page.url().replace(baseURL, '')} “${await page.title()}”`, cards === 8 && (await page.locator('h1').innerText()) === '월급 일할계산기');
     await page.click('#home-link');
     await page.waitForURL(`${baseURL}/`);
     T('계산기 → 홈 이동', '계산기 상단 “← 계산기 목록(홈)” 클릭', '/ 로 이동', `${page.url().replace(baseURL, '') || '/'} “${await page.title()}”`,
@@ -1082,7 +1082,7 @@ const CASES = [
       '다른 출처 요청 0건', `${externalRequests.length}건 ${externalRequests.slice(0, 3).join(', ')}`, externalRequests.length === 0);
     T('실행 중 콘솔 오류', '위 모든 검수 중 브라우저 콘솔 기록', '오류 0건', `${consoleErrors.length}건 ${consoleErrors.slice(0, 2).join(' | ')}`, consoleErrors.length === 0);
 
-    const PAGE_LIST = ['/', '/salary-proration', '/weekly-holiday-pay'];
+    const PAGE_LIST = ['/', '/salary-proration', '/weekly-holiday-pay', '/annual-salary-net', '/severance-pay', '/hourly-wage', '/social-insurance', '/vat', '/loan-interest'];
     const metas = [];
     for (const u of PAGE_LIST) {
       const res = await page.goto(u);
@@ -1112,7 +1112,7 @@ const CASES = [
       const sitemapRes = await page.request.get('/sitemap.xml');
       const sitemap = await sitemapRes.text();
       const locs = [...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].map((x) => x[1]);
-      T('sitemap.xml', '/sitemap.xml 요청', `200, <loc> 3개: ${PAGE_LIST.map((u) => SITE_URL + u).join(', ')}`,
+      T('sitemap.xml', '/sitemap.xml 요청', `200, <loc> ${PAGE_LIST.length}개: ${PAGE_LIST.map((u) => SITE_URL + u).join(', ')}`,
         `${sitemapRes.status()} · ${locs.join(', ')}`, sitemapRes.status() === 200 && JSON.stringify(locs) === JSON.stringify(PAGE_LIST.map((u) => SITE_URL + u)));
       T('robots.txt', '/robots.txt 요청', `Allow: / · Sitemap: ${SITE_URL}/sitemap.xml`, robotsTxt.trim().replace(/\n+/g, ' / '),
         robotsTxt.includes('Allow: /') && !robotsTxt.includes('Disallow: /') && robotsTxt.includes(`Sitemap: ${SITE_URL}/sitemap.xml`));

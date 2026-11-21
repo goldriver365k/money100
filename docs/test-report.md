@@ -1,6 +1,6 @@
 # 정산노트 검수 결과표
 
-- 실행: 2026-11-21T06:13:22.623Z · 미리보기(site/) · `npm run test:e2e` · Chromium(Playwright) · 시간대 Pacific/Kiritimati(UTC+14)
+- 실행: 2026-11-21T06:37:47.368Z · 미리보기(site/) · `npm run test:e2e` · Chromium(Playwright) · 시간대 Pacific/Kiritimati(UTC+14)
 - 집계: 통과 101 · 실패 0 · 미확인 3
 
 ## 월급 일할계산기 — 필수 검증 사례 5건 (회귀, 브라우저 직접 입력)
@@ -53,7 +53,7 @@
 | /salary-proration 직접 접속 후 새로고침 | 새 탭에서 /salary-proration 주소 입력 → 새로고침 | HTTP 200, 제목 “월급 일할계산기 — 중도 입사·퇴사 급여 계산 \| 정산노트”, 화면 제목 “월급 일할계산기” | 200/200 · “월급 일할계산기 — 중도 입사·퇴사 급여 계산 \| 정산노트” · “월급 일할계산기” | 통과 |
 | 끝 슬래시 주소 | /salary-proration/ 접속 | 계산기가 열리고, 슬래시 없는 주소로 이동하거나 canonical 이 슬래시 없는 주소를 가리킴 | /salary-proration (200) · canonical 없음(미리보기) | 통과 |
 | 없는 주소 | /salary-proration-x 접속 | 404 안내 페이지와 홈 링크 | 404 · 페이지를 찾을 수 없습니다 | 통과 |
-| 홈 → 계산기 이동 | 홈에서 “월급 일할계산기” 카드 클릭 | 카드 2개(월급 일할계산기·주휴수당 계산기), /salary-proration 으로 이동 | 카드 2개 → /salary-proration “월급 일할계산기 — 중도 입사·퇴사 급여 계산 \| 정산노트” | 통과 |
+| 홈 → 계산기 이동 | 홈에서 “월급 일할계산기” 카드 클릭 | 이용 가능 카드 8개(30종 중), /salary-proration 으로 이동 | 카드 8개 → /salary-proration “월급 일할계산기 — 중도 입사·퇴사 급여 계산 \| 정산노트” | 통과 |
 | 계산기 → 홈 이동 | 계산기 상단 “← 계산기 목록(홈)” 클릭 | / 로 이동 | / “급여 계산기 모음 \| 정산노트” | 통과 |
 | 계산기 → 홈 이동(브랜드) | 상단 “정산노트” 로고 클릭 | / 로 이동 | / | 통과 |
 
@@ -175,4 +175,4 @@
 
 | 검수 항목 | 입력 또는 재현 방법 | 기대값 | 실제값 | 상태 |
 |---|---|---|---|---|
-| 검색 노출 차단 | 세 페이지의 meta robots, X-Robots-Tag 헤더, robots.txt 확인 | noindex, nofollow · Disallow: / | / noindex, nofollow / noindex, nofollow · /salary-proration noindex, nofollow / noindex, nofollow · /weekly-holiday-pay noindex, nofollow / noindex, nofollow · robots.txt Disallow: / | 통과 |
+| 검색 노출 차단 | 세 페이지의 meta robots, X-Robots-Tag 헤더, robots.txt 확인 | noindex, nofollow · Disallow: / | / noindex, nofollow / noindex, nofollow · /salary-proration noindex, nofollow / noindex, nofollow · /weekly-holiday-pay noindex, nofollow / noindex, nofollow · /annual-salary-net noindex, nofollow / noindex, nofollow · /severance-pay noindex, nofollow / noindex, nofollow · /hourly-wage noindex, nofollow / noindex, nofollow · /social-insurance noindex, nofollow / noindex, nofollow · /vat noindex, nofollow / noindex, nofollow · /loan-interest noindex, nofollow / noindex, nofollow · robots.txt Disallow: / | 통과 |

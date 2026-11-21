@@ -1,0 +1,217 @@
+<!doctype html>
+<html lang="ko" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'none'; form-action 'none'; base-uri 'none'">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <title>시급 계산기 2026 — 월급 시급 환산·최저임금 10,320원 비교 | 정산노트</title>
+  <meta name="description" content="월급을 시급으로, 시급을 월급으로 환산합니다. 주휴시간을 포함한 월 소정근로시간(주 40시간 209시간)과 2026년 최저임금 10,320원 비교 결과를 보여 줍니다.">
+  <!-- seo:start -->
+  <meta name="robots" content="noindex, nofollow">
+  <!-- seo:end -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="정산노트">
+  <meta property="og:title" content="시급 계산기 2026 — 월급 시급 환산·최저임금 10,320원 비교 | 정산노트">
+  <meta property="og:description" content="주휴시간을 포함한 월 소정근로시간으로 월급과 시급을 환산하고 최저임금과 비교하세요.">
+  <meta property="og:locale" content="ko_KR">
+  <meta name="theme-color" content="#2563e2">
+  <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/assets/css/style.css">
+  <script type="module" src="/assets/js/nav.js"></script>
+  <script type="module" src="/assets/js/calc-page.js"></script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "209시간은 어떻게 나오나요?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "(주 40시간 + 주휴 8시간) × 365일 ÷ 7일 ÷ 12개월 = 208.57시간을 반올림한 값입니다. 고용노동부 최저임금 월 환산액도 209시간을 기준으로 합니다."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "주 15시간 미만이면 어떻게 되나요?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "4주 평균 1주 소정근로시간이 15시간 미만이면 주휴수당이 적용되지 않아 주휴시간을 0으로 계산합니다."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "최저임금 비교가 정확한가요?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "단순 비교입니다. 연장·야간수당, 일부 상여금·복리후생비처럼 최저임금에 산입되지 않는 임금이 포함되어 있으면 결과가 달라집니다."
+        }
+      }
+    ]
+  }
+  </script>
+</head>
+<body class="calc-page">
+<!-- 이 파일은 scripts/gen-calculators.js 로 생성됩니다. 직접 고치지 말고 scripts/calculators.js 를 수정하세요. -->
+  <a class="skip-link" href="#main">본문 바로가기</a>
+  <header class="site-header">
+    <div class="container container-wide header-inner">
+      <a class="brand" href="/"><span class="brand-mark" aria-hidden="true"></span>정산노트</a>
+      <nav class="main-nav" aria-label="주요 메뉴"><ul><li><a href="/#calculators">계산기 모음</a></li><li><a href="#basis-fold" data-open-fold>이용 가이드</a></li><li><a href="#faq-fold" data-open-fold>자주 묻는 질문</a></li></ul></nav>
+    </div>
+  </header>
+
+  <main id="main" class="container">
+    <nav class="breadcrumb" aria-label="현재 위치">
+      <ol>
+        <li><a href="/" id="home-link">← 계산기 목록(홈)</a></li>
+        <li aria-current="page">시급 계산기</li>
+      </ol>
+    </nav>
+
+    <section class="hero calc-hero" aria-labelledby="page-title">
+      <p class="calc-badges"><span class="cat-badge cat-labor">노동·급여</span><span class="basis-badge">적용 기준: 2026년 최저임금 기준</span></p>
+      <h1 id="page-title">시급 계산기</h1>
+      <p class="lead">주휴시간을 포함한 월 소정근로시간으로 월급과 시급을 환산하고 최저임금과 비교하세요.</p>
+    </section>
+
+    <noscript>
+      <p class="notice notice-warn">이 계산기는 브라우저의 JavaScript로 동작합니다. JavaScript를 켠 뒤 다시 열어 주세요.</p>
+    </noscript>
+
+    <form id="calc-form" class="panel" data-calc="hourly" novalidate autocomplete="off" aria-labelledby="form-title">
+      <h2 id="form-title" class="panel-title"><span class="step">1</span> 입력</h2>
+      <div class="field">
+        <label for="year"><span class="label-text">적용 기준 연도</span></label>
+        <select id="year" name="year" data-years aria-describedby="year-error year-hint"></select>
+        <p class="error" id="year-error" hidden></p>
+        <p class="hint" id="year-hint">연도를 바꾸면 그해 기준(요율·세율)으로 계산합니다. 공식 확정 전인 항목은 계산하지 않고 사유를 알려 드립니다.</p>
+      </div>
+
+      <fieldset class="field">
+        <legend>계산 방향</legend>
+        <div class="choices">
+          <label class="choice"><input type="radio" name="mode" value="monthlyToHourly" checked> <span>월급 → 시급</span></label>
+          <label class="choice"><input type="radio" name="mode" value="hourlyToMonthly"> <span>시급 → 월급</span></label>
+        </div>
+        <p class="error" id="mode-error" hidden></p>
+      </fieldset>
+
+      <div class="field">
+        <label for="amount" data-mode-label data-label-monthly-to-hourly="월급 (세전)" data-label-hourly-to-monthly="시급"><span class="label-text">월급 (세전)</span> <span class="req">필수</span> <span class="unit">(원)</span></label>
+        <input id="amount" name="amount" type="text" inputmode="numeric" autocomplete="off" spellcheck="false" placeholder="예: 2156880" data-amount aria-describedby="amount-error amount-preview">
+        <p class="error" id="amount-error" hidden></p>
+        <p class="preview" id="amount-preview"></p>
+      </div>
+
+      <div class="field">
+        <label for="weeklyHours"><span class="label-text">1주 소정근로시간</span> <span class="req">필수</span> <span class="unit">(시간)</span></label>
+        <input id="weeklyHours" name="weeklyHours" type="text" inputmode="decimal" autocomplete="off" spellcheck="false" value="40" aria-describedby="weeklyHours-error weeklyHours-hint">
+        <p class="error" id="weeklyHours-error" hidden></p>
+        <p class="hint" id="weeklyHours-hint">연장근로를 뺀 계약상 1주 근로시간입니다 (1~40시간, 소수점 첫째 자리까지).</p>
+      </div>
+
+      <div class="actions actions-sticky">
+        <button type="submit" class="btn btn-primary" id="submit">계산하기</button>
+        <button type="button" class="btn btn-reset" id="reset-all">초기화</button>
+      </div>
+    </form>
+
+    <div id="result-status" class="sr-only" role="status" aria-live="polite" aria-atomic="true"></div>
+
+    <section id="result" class="panel result" hidden aria-labelledby="result-title">
+      <h2 id="result-title" class="panel-title" tabindex="-1"><span class="step">2</span> 계산 결과</h2>
+      <div id="result-unavailable" class="notice notice-warn" hidden>
+        <p><strong>계산할 수 없습니다.</strong> <span id="unavailable-reason"></span></p>
+        <p>공식 기준이 확인되지 않은 값은 임의로 쓰지 않습니다. 다른 기준 연도를 선택해 주세요.</p>
+      </div>
+      <div id="result-body">
+        <p class="result-meta" id="result-meta"></p>
+        <div class="headline result-stats" id="result-stats"></div>
+        <h3 class="table-title">항목별 상세 내역</h3>
+        <div id="result-table"></div>
+        <dl class="kv-list" id="result-rows"></dl>
+        <div data-block>
+          <h3 class="table-title">계산 공식</h3>
+          <ul class="formula-list" id="result-formulas"></ul>
+        </div>
+        <div data-block class="caution">
+          <h3 class="table-title">주의사항</h3>
+          <ul id="result-warnings"></ul>
+        </div>
+        <p class="disclaimer result-disclaimer">본 계산 결과는 단순 모의 계산이며, 법적 확정 금액이나 효력을 갖는 증빙자료가 아닙니다.</p>
+      </div>
+    </section>
+
+    <section class="content howto" aria-labelledby="howto-title">
+      <h2 id="howto-title">시급 계산 방법</h2>
+      <ol>
+        <li>주 15시간 이상이면 주휴시간(1주 소정근로시간 ÷ 40 × 8, 최대 8시간)을 더합니다.</li>
+        <li>월 소정근로시간 = (1주 소정근로시간 + 주휴시간) × 365 ÷ 7 ÷ 12를 반올림합니다. 주 40시간이면 209시간입니다.</li>
+        <li>시급 = 월급 ÷ 월 소정근로시간, 월급 = 시급 × 월 소정근로시간으로 환산하고 그해 최저임금과 비교합니다.</li>
+      </ol>
+      <h3>실제 계산 예제</h3>
+      <div class="example">
+        <p class="example-case"><strong>예시</strong> 주 40시간 근무, 월급 250만 원 (2026년)</p>
+        <dl class="kv-list example-result">
+          <div class="kv"><dt>환산 시급</dt><dd>11,961원</dd></div>
+          <div class="kv"><dt>2026년 최저임금 (시급)</dt><dd>10,320원</dd></div>
+          <div class="kv"><dt>최저임금 비교</dt><dd>최저임금 이상</dd></div>
+        </dl>
+        <ol class="example-steps">
+          <li>주휴시간: 40 ÷ 40 × 8 = 8시간 (최대 8시간)</li>
+          <li>월 소정근로시간 (유급 포함): (40 + 8) × 365 ÷ 7 ÷ 12 = 208.57 → 209시간</li>
+          <li>시급: 2,500,000원 ÷ 209시간 = 11,961원 (원 미만 버림)</li>
+          <li>2026년 최저임금 월 환산액: 10,320원 × 209시간 = 2,156,880원</li>
+        </ol>
+      </div>
+    </section>
+
+    <details class="content basis-fold" id="basis-fold">
+      <summary class="fold-summary"><h2 id="basis-title">적용 기준 및 공식 출처</h2></summary>
+      <div class="fold-body">
+      <p>적용 기준: 2026년 최저임금 기준. 연도별 요율·세율은 기준 데이터로 따로 관리하며, 공식 확정 전인 연도는 계산하지 않습니다.</p>
+      <ul class="sources">
+        <li><a href="https://www.minimumwage.go.kr/" target="_blank" rel="noopener noreferrer">최저임금위원회 — 2026년 적용 최저임금 시간급 10,320원 (고용노동부 고시)<span class="sr-only"> — 새 창에서 열림</span></a></li>
+        <li><a href="https://www.law.go.kr/법령/%EC%B5%9C%EC%A0%80%EC%9E%84%EA%B8%88%EB%B2%95/%EC%A0%9C5%EC%A1%B0%EC%9D%982" target="_blank" rel="noopener noreferrer">최저임금법 제5조의2 (최저임금의 적용을 위한 임금의 환산)<span class="sr-only"> — 새 창에서 열림</span></a></li>
+        <li><a href="https://www.law.go.kr/법령/%EA%B7%BC%EB%A1%9C%EA%B8%B0%EC%A4%80%EB%B2%95/%EC%A0%9C55%EC%A1%B0" target="_blank" rel="noopener noreferrer">근로기준법 제55조·시행령 제30조 (주휴일 — 1주 소정근로일 개근 시 유급휴일)<span class="sr-only"> — 새 창에서 열림</span></a></li>
+        <li><a href="https://www.law.go.kr/법령/%EA%B7%BC%EB%A1%9C%EA%B8%B0%EC%A4%80%EB%B2%95/%EC%A0%9C18%EC%A1%B0" target="_blank" rel="noopener noreferrer">근로기준법 제18조 제3항 (4주 평균 1주 15시간 미만 근로자 — 주휴 미적용)<span class="sr-only"> — 새 창에서 열림</span></a></li>
+      </ul>
+      <p class="checked-date">공식 자료 확인일: <time datetime="2026-11-21">2026년 11월 21일</time></p>
+    </div>
+    </details>
+
+    <details class="content faq faq-fold" id="faq-fold">
+      <summary class="fold-summary"><h2 id="faq-title">자주 묻는 질문</h2></summary>
+      <div class="fold-body">
+      <h3>209시간은 어떻게 나오나요?</h3>
+      <p>(주 40시간 + 주휴 8시간) × 365일 ÷ 7일 ÷ 12개월 = 208.57시간을 반올림한 값입니다. 고용노동부 최저임금 월 환산액도 209시간을 기준으로 합니다.</p>
+      <h3>주 15시간 미만이면 어떻게 되나요?</h3>
+      <p>4주 평균 1주 소정근로시간이 15시간 미만이면 주휴수당이 적용되지 않아 주휴시간을 0으로 계산합니다.</p>
+      <h3>최저임금 비교가 정확한가요?</h3>
+      <p>단순 비교입니다. 연장·야간수당, 일부 상여금·복리후생비처럼 최저임금에 산입되지 않는 임금이 포함되어 있으면 결과가 달라집니다.</p>
+    </div>
+    </details>
+
+    <section class="content related" aria-labelledby="related-title">
+      <h2 id="related-title">관련 계산기</h2>
+      <ul class="related-list">
+        <li><a class="related-link cat-labor" href="/weekly-holiday-pay"><span class="related-cat">노동·급여</span><strong>주휴수당 계산기</strong><span>주 15시간 기준으로 주휴수당 지급 여부와 금액을 판독합니다.</span></a></li>
+        <li><a class="related-link cat-labor" href="/annual-salary-net"><span class="related-cat">노동·급여</span><strong>연봉 실수령액 계산기</strong><span>연봉에서 4대보험과 소득세를 뺀 월·연 실수령액을 확인합니다.</span></a></li>
+        <li><a class="related-link cat-labor" href="/salary-proration"><span class="related-cat">노동·급여</span><strong>월급 일할계산기</strong><span>중도 입사·퇴사한 달의 급여를 달력일·소정근로일 기준으로 비교합니다.</span></a></li>
+      </ul>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container container-wide">
+      <p class="footer-brand">정산노트<span aria-hidden="true">.</span></p>
+      <p>정산노트의 계산 결과는 단순 모의 계산이며, 법적 효력을 갖는 증빙자료가 아닙니다.</p>
+      <p>입력한 값은 브라우저 안에서만 계산되며 서버나 분석 도구로 전송되지 않습니다.</p>
+      <p><a href="/">정산노트 홈</a></p>
+    </div>
+  </footer>
+</body>
+</html>

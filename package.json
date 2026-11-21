@@ -16,6 +16,8 @@
     "build": "node scripts/build.js",
     "build:production": "node scripts/build.js --production",
     "preview": "node scripts/serve.js --dir dist",
-    "verify:production": "node scripts/build.js --production && E2E_DIR=dist E2E_PRODUCTION=1 node tests/e2e/run.cjs"
+    "verify:production": "node scripts/build.js --production && E2E_DIR=dist E2E_PRODUCTION=1 node tests/e2e/run.cjs",
+    "test:calc-ui": "node tests/ui/calc-pages.cjs",
+    "gen": "node scripts/gen-calculators.js"
   }
 }
