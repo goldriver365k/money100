@@ -13,4 +13,9 @@ export const PAGES = [
   { path: '/social-insurance', file: 'social-insurance/index.html', priority: '0.9', public: true },
   { path: '/vat', file: 'vat/index.html', priority: '0.8', public: true },
   { path: '/loan-interest', file: 'loan-interest/index.html', priority: '0.8', public: true },
+  { path: '/monthly-salary-net', file: 'monthly-salary-net/index.html', priority: '0.8', public: true },
+  { path: '/unemployment-benefit', file: 'unemployment-benefit/index.html', priority: '0.8', public: true },
+  { path: '/annual-leave-pay', file: 'annual-leave-pay/index.html', priority: '0.8', public: true },
+  { path: '/overtime-pay', file: 'overtime-pay/index.html', priority: '0.8', public: true },
+  { path: '/parental-leave-pay', file: 'parental-leave-pay/index.html', priority: '0.8', public: true },
 ];

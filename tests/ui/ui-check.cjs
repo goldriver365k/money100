@@ -115,6 +115,8 @@ async function layout(p, scope) {
 const foldOpen = (p) => p.evaluate(() => document.querySelector('details.basis-fold').open);
 
 (async () => {
+  const { CATALOG } = await import(require('node:url').pathToFileURL(path.join(ROOT, 'scripts', 'calculators.js')).href);
+  const LIVE = CATALOG.filter((c) => c.slug).map((c) => c.name);
   let base = process.env.UI_BASE;
   let server = null;
   if (!base) {
@@ -151,14 +153,14 @@ const foldOpen = (p) => p.evaluate(() => document.querySelector('details.basis-f
       const allCards = await p.locator('.calc-item').count();
       const soonLinks = await p.locator('.calc-item[data-status="soon"] a').count();
       const soonLabels = await p.locator('.calc-item[data-status="soon"] .status-soon').count();
-      check('home', w, '계산기 30종: 이용 가능 8개만 링크, 준비 중 22개는 링크 없음·‘준비 중’ 표시', allCards === 30 && cardCount === 8 && soonLinks === 0 && soonLabels === 22,
+      check('home', w, `계산기 30종: 이용 가능 ${LIVE.length}개만 링크, 준비 중 ${30 - LIVE.length}개는 링크 없음·‘준비 중’ 표시`, allCards === 30 && cardCount === LIVE.length && soonLinks === 0 && soonLabels === 30 - LIVE.length,
         `카드 ${allCards} · 링크 ${cardCount} · 준비 중 링크 ${soonLinks} · 준비 중 표시 ${soonLabels}`);
       const cols = await p.evaluate(() => getComputedStyle(document.getElementById('calc-grid')).gridTemplateColumns.split(' ').length);
       const expectCols = w >= 720 ? 2 : 1; // 확정 시안: PC 2열·모바일 1열
       const first = await p.evaluate(() => document.querySelector('.calc-item .card-title').textContent);
       check('home', w, `카드 ${expectCols}열·노동·급여 1번(연봉 실수령액) 맨 앞`, cols === expectCols && first === '연봉 실수령액 계산기', `${cols}열 · 첫 카드 ${first}`);
       // 확정 시안: 카드 색 순서·흰 글자·흰 테두리 버튼·미구현 '이용 가능' 금지·입력 미리보기 삭제
-      const design = await p.evaluate(() => {
+      const design = await p.evaluate((liveWant) => {
         const items = [...document.querySelectorAll('.calc-item')];
         const rgb = (h) => { const n = parseInt(h.slice(1), 16); return `rgb(${n >> 16}, ${(n >> 8) & 255}, ${n & 255})`; };
         const want = { 1: '#102FA8', 6: '#102FA8', 9: '#102FA8', 2: '#075CF5', 5: '#075CF5', 10: '#075CF5', 3: '#3036B7', 8: '#3036B7', 4: '#5635ED', 7: '#5635ED' };
@@ -175,14 +177,13 @@ const foldOpen = (p) => p.evaluate(() => document.querySelector('details.basis-f
         const catOk = items.every((it, i) => { const k = catOrder[i]; const b = it.querySelector('.card-cat'); const cs = getComputedStyle(b);
           return it.dataset.category === k && b.textContent === catWant[k][0] && cs.color === catWant[k][1] && cs.backgroundColor === catWant[k][2]; });
         const names = ['연봉 실수령액', '월급 실수령액', '퇴직금', '주휴수당', '시급', '실업급여', '연차수당', '야간·연장·휴일수당', '월급 일할', '육아휴직급여', '4대보험', '종합소득세', '부가세', '연말정산 환급금', '3.3% 프리랜서 세금', '소득세', '건강보험료', '국민연금', '증여세', '상속세', '대출이자', '취득세', '양도소득세', '중개수수료', '전월세 전환', 'DSR 대출한도', '재산세', '평수', '청약가점', '전세보증금 안전'].map((n) => (n === '월급 일할' ? '월급 일할계산기' : `${n} 계산기`));
-        const liveWant = ['연봉 실수령액 계산기', '퇴직금 계산기', '주휴수당 계산기', '시급 계산기', '월급 일할계산기', '4대보험 계산기', '부가세 계산기', '대출이자 계산기'];
         const liveOk = items.filter((it) => it.dataset.status === 'live').map((it) => it.querySelector('.card-title').textContent).join() === liveWant.join();
         const namesOk = items.every((it, i) => it.querySelector('.card-title').textContent === names[i]);
         const chipOk = ['labor', 'tax', 'realty'].every((k) => getComputedStyle(document.querySelector(`.chip[data-filter="${k}"]`)).color === catWant[k][1]);
         return { colorOk, liveOk, sameHeight, catOk, namesOk, chipOk, whiteText, whiteBtn, soonLive, liveCount, sameSize, preview: !!document.querySelector('.hero-preview, .preview-card'), dupes: !!document.querySelector('.eyebrow, .hero-stat, .section-desc') };
-      });
+      }, LIVE);
       check('home', w, '확정 시안: 카드 색 순서(1·6·9/2·5·10/3·8/4·7)·흰 제목·설명·흰 테두리 버튼·동일 카드·미구현 이용 가능 0·미리보기·중복 문구 삭제',
-        design.colorOk && design.liveOk && design.sameHeight && design.catOk && design.namesOk && design.chipOk && design.whiteText && design.whiteBtn && design.sameSize && design.soonLive === 0 && design.liveCount === 8 && !design.preview && !design.dupes,
+        design.colorOk && design.liveOk && design.sameHeight && design.catOk && design.namesOk && design.chipOk && design.whiteText && design.whiteBtn && design.sameSize && design.soonLive === 0 && design.liveCount === LIVE.length && !design.preview && !design.dupes,
         JSON.stringify(design));
       // 검색·분야별 보기
       await p.fill('#calc-search', '주휴');

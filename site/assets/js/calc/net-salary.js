@@ -43,7 +43,15 @@ export function earnedCredit(calculatedTax, totalPay, rule) {
 }
 
 /** 연간 근로소득세 결정세액 (간이 추정). */
-export function annualIncomeTax({ totalPay, dependents, pensionPaid, otherInsurancePaid }, rule) {
+export function childTaxCredit(children, rule) {
+  if (!children) return 0;
+  if (children === 1) return rule.one;
+  if (children === 2) return rule.two;
+  return rule.two + rule.extra * (children - 2);
+}
+
+/** 연간 근로소득세 결정세액 (간이 추정). otherCredit = 자녀세액공제 등 표준세액공제와 함께 받을 수 있는 세액공제 */
+export function annualIncomeTax({ totalPay, dependents, pensionPaid, otherInsurancePaid, otherCredit = 0 }, rule) {
   const deduction = earnedIncomeDeduction(totalPay, rule);
   const earnedIncome = Math.max(totalPay - deduction, 0);
   const personal = rule.personalDeductionPerPerson * dependents;
@@ -52,30 +60,29 @@ export function annualIncomeTax({ totalPay, dependents, pensionPaid, otherInsura
     const calc = basicTax(base, rule);
     const credit = earnedCredit(calc, totalPay, rule);
     const standard = useInsurance ? 0 : rule.standardCredit;
-    const tax = Math.max(calc - credit - standard, 0);
-    return { useInsurance, base, calc, credit, standard, tax };
+    const other = Math.min(otherCredit, Math.max(calc - credit, 0));
+    const tax = Math.max(calc - credit - standard - other, 0);
+    return { useInsurance, base, calc, credit, standard, other, tax };
   };
   const a = run(true); const b = run(false);
   const best = b.tax < a.tax ? b : a;
   return { deduction, earnedIncome, personal, ...best };
 }
 
-export function calculate(raw) {
-  const v = collect({
-    year: parseCount(raw.year, { label: '기준 연도', min: 2000, max: 2100 }),
-    salary: parseAmount(raw.salary, { label: '연봉(세전)' }),
-    nonTaxable: parseAmount(raw.nonTaxable, { label: '월 비과세 금액', required: false, allowZero: true }),
-    dependents: parseCount(raw.dependents, { label: '부양가족 수(본인 포함)', min: 1, max: 20, unit: '명' }),
-  });
-  if (v.ok && v.values.salary < 12) { v.ok = false; v.errors.salary = '연봉은 12원 이상이어야 월 급여를 계산할 수 있습니다.'; }
-  if (v.ok && v.values.nonTaxable * 12 >= v.values.salary) { v.ok = false; v.errors.nonTaxable = '월 비과세 금액 × 12가 연봉보다 작아야 합니다.'; }
-  if (!v.ok) return fail(v.errors);
-  const { year, salary, nonTaxable, dependents } = v.values;
-
+/**
+ * 월 급여 기준 실수령액 공통 계산 (연봉·월급 실수령액 계산기 공용).
+ * opts: { year, monthly, nonTaxable, dependents, children=0, meta, monthlyNote, extraWarnings }
+ */
+export function netCore({ year, monthly, nonTaxable, dependents, children = 0, meta, monthlyNote = '연봉 ÷ 12', extraWarnings = [] }) {
   const taxRule = getRule(year, 'incomeTax');
   if (!taxRule.ok) return unavailable(taxRule.reason, sourceList(['incomeTaxRate']));
+  let childCredit = 0;
+  if (children > 0) {
+    const cr = getRule(year, 'childCredit');
+    if (!cr.ok) return unavailable(cr.reason, sourceList(['childCredit']));
+    childCredit = childTaxCredit(children, cr.value);
+  }
 
-  const monthly = floorWon(salary / 12);
   const taxableMonthly = monthly - nonTaxable;
   const months = [];
   for (let m = 1; m <= 12; m += 1) {
@@ -88,7 +95,7 @@ export function calculate(raw) {
   const insYear = sum(ins);
   const totalPay = taxableMonthly * 12; // 총급여 (비과세 제외)
 
-  const t = annualIncomeTax({ totalPay, dependents, pensionPaid: ins.pension, otherInsurancePaid: ins.health + ins.ltc + ins.employment }, taxRule.value);
+  const t = annualIncomeTax({ totalPay, dependents, pensionPaid: ins.pension, otherInsurancePaid: ins.health + ins.ltc + ins.employment, otherCredit: childCredit }, taxRule.value);
   const localYear = floorWon(t.tax * taxRule.value.localTaxRate);
   const taxMonthly = floorWon(t.tax / 12);
   const localMonthly = floorWon(localYear / 12);
@@ -103,12 +110,14 @@ export function calculate(raw) {
 
   const warnings = [
     '매달 실제 원천징수 소득세는 국세청 근로소득 간이세액표로 정해져 이 금액과 다를 수 있으며, 차이는 연말정산에서 정산됩니다.',
-    '자녀세액공제, 신용카드·의료비·교육비·월세 등 개인별 공제와 상여·성과급 지급 시기는 반영하지 않았습니다.',
+    children > 0
+      ? '자녀세액공제는 입력한 공제 대상 자녀 수(연령·소득 요건 충족)로 반영했습니다. 신용카드·의료비·교육비·월세 등 개인별 공제와 상여 지급 시기는 반영하지 않았습니다.'
+      : '자녀세액공제, 신용카드·의료비·교육비·월세 등 개인별 공제와 상여·성과급 지급 시기는 반영하지 않았습니다.',
+    ...extraWarnings,
   ];
-  if (salary % 12 !== 0) warnings.push(`연봉 ÷ 12의 원 미만(${num((salary / 12) - monthly, 2)}원)은 버렸습니다.`);
 
   return result({
-    meta: `${year}년 기준 · 연봉 ${won(salary)} · 월 비과세 ${won(nonTaxable)} · 부양가족 ${dependents}명(본인 포함)`,
+    meta,
     headline: { label: '월 예상 실수령액', value: won(netMonthly) },
     stats: [
       { label: '월 예상 실수령액', value: won(netMonthly) },
@@ -118,7 +127,7 @@ export function calculate(raw) {
     table: {
       head: ['항목', '월 (평균)', '연간', '산정 방법'],
       rows: [
-        ['세전 월급', won(monthly), won(monthly * 12), '연봉 ÷ 12'],
+        ['세전 월급', won(monthly), won(monthly * 12), monthlyNote],
         ['국민연금', won(floorWon(ins.pension / 12)), won(ins.pension), pensionNote],
         ['건강보험', won(first.employee.health), won(ins.health), `월 과세 보수 × ${num(first.rates.health * 50, 3)}%`],
         ['장기요양보험', won(first.employee.ltc), won(ins.ltc), `월 과세 보수 × ${num(first.rates.ltc * 50, 4)}%`],
@@ -139,6 +148,7 @@ export function calculate(raw) {
       { label: '산출세액 (기본세율)', value: won(t.calc) },
       { label: '근로소득세액공제', value: `− ${won(t.credit)}` },
       { label: '표준세액공제', value: t.standard ? `− ${won(t.standard)}` : '적용 안 함 (보험료 공제가 유리)' },
+      ...(children > 0 ? [{ label: `자녀세액공제 (${children}명)`, value: `− ${won(t.other)}` }] : []),
       { label: '결정세액 (연간 소득세)', value: won(t.tax) },
     ],
     formulas: [
@@ -148,6 +158,23 @@ export function calculate(raw) {
       '4대보험은 비과세를 뺀 월 보수로 계산하고 10원 미만을 버립니다.',
     ],
     warnings,
-    sources: sourceList([...months[0].sources, ...months[11].sources, ...taxRule.value.sources]),
+    sources: sourceList([...months[0].sources, ...months[11].sources, ...taxRule.value.sources, ...(children > 0 ? ['childCredit'] : [])]),
   });
+}
+
+export function calculate(raw) {
+  const v = collect({
+    year: parseCount(raw.year, { label: '기준 연도', min: 2000, max: 2100 }),
+    salary: parseAmount(raw.salary, { label: '연봉(세전)' }),
+    nonTaxable: parseAmount(raw.nonTaxable, { label: '월 비과세 금액', required: false, allowZero: true }),
+    dependents: parseCount(raw.dependents, { label: '부양가족 수(본인 포함)', min: 1, max: 20, unit: '명' }),
+  });
+  if (v.ok && v.values.salary < 12) { v.ok = false; v.errors.salary = '연봉은 12원 이상이어야 월 급여를 계산할 수 있습니다.'; }
+  if (v.ok && v.values.nonTaxable * 12 >= v.values.salary) { v.ok = false; v.errors.nonTaxable = '월 비과세 금액 × 12가 연봉보다 작아야 합니다.'; }
+  if (!v.ok) return fail(v.errors);
+  const { year, salary, nonTaxable, dependents } = v.values;
+
+  return netCore({ year, monthly: floorWon(salary / 12), nonTaxable, dependents, children: v.values.children ?? 0,
+    meta: `${year}년 기준 · 연봉 ${won(salary)} · 월 비과세 ${won(nonTaxable)} · 부양가족 ${dependents}명(본인 포함)`,
+    extraWarnings: salary % 12 !== 0 ? [`연봉 ÷ 12의 원 미만(${num((salary / 12) - floorWon(salary / 12), 2)}원)은 버렸습니다.`] : [] });
 }

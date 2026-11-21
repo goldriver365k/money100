@@ -2,9 +2,9 @@
  * 기준 데이터 조회. 계산 모듈은 값을 직접 import 하지 않고 이 함수로 꺼낸다.
  * 값이 없거나(null) 연도가 없으면 { ok:false, reason } 을 돌려준다 — 임의 값으로 대신하지 않는다.
  */
-import { YEARS, SOURCES, AVAILABLE_YEARS, DEFAULT_YEAR, CHECKED_DATE } from './rules-data.js';
+import { YEARS, SOURCES, AVAILABLE_YEARS, DEFAULT_YEAR, CHECKED_DATE, STATIC_RULES } from './rules-data.js';
 
-export { SOURCES, AVAILABLE_YEARS, DEFAULT_YEAR, CHECKED_DATE };
+export { SOURCES, AVAILABLE_YEARS, DEFAULT_YEAR, CHECKED_DATE, STATIC_RULES };
 
 export function getYear(year) {
   const y = YEARS[Number(year)];

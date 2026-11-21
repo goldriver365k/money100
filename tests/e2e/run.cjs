@@ -120,6 +120,9 @@ const CASES = [
 ];
 
 (async () => {
+  const { CATALOG } = await import(require('node:url').pathToFileURL(path.join(__dirname, '..', '..', 'scripts', 'calculators.js')).href);
+  const { PAGES } = await import(require('node:url').pathToFileURL(path.join(__dirname, '..', '..', 'scripts', 'pages.js')).href);
+  const LIVE_COUNT = CATALOG.filter((c) => c.slug).length;
   const { createServer } = await import(path.join(ROOT, 'scripts', 'serve.js'));
   // E2E_BASE_URL 을 주면 로컬 서버 대신 배포된 주소를 검수한다 (배포 후 검증).
   let server = null;
@@ -354,8 +357,8 @@ const CASES = [
     const cards = await page.locator('a.card').count();
     await page.click('a.card[href="/salary-proration"]');
     await page.waitForURL(`${baseURL}/salary-proration`);
-    T('홈 → 계산기 이동', '홈에서 “월급 일할계산기” 카드 클릭', '이용 가능 카드 8개(30종 중), /salary-proration 으로 이동',
-      `카드 ${cards}개 → ${page.url().replace(baseURL, '')} “${await page.title()}”`, cards === 8 && (await page.locator('h1').innerText()) === '월급 일할계산기');
+    T('홈 → 계산기 이동', '홈에서 “월급 일할계산기” 카드 클릭', `이용 가능 카드 ${LIVE_COUNT}개(30종 중), /salary-proration 으로 이동`,
+      `카드 ${cards}개 → ${page.url().replace(baseURL, '')} “${await page.title()}”`, cards === LIVE_COUNT && (await page.locator('h1').innerText()) === '월급 일할계산기');
     await page.click('#home-link');
     await page.waitForURL(`${baseURL}/`);
     T('계산기 → 홈 이동', '계산기 상단 “← 계산기 목록(홈)” 클릭', '/ 로 이동', `${page.url().replace(baseURL, '') || '/'} “${await page.title()}”`,
@@ -1082,7 +1085,7 @@ const CASES = [
       '다른 출처 요청 0건', `${externalRequests.length}건 ${externalRequests.slice(0, 3).join(', ')}`, externalRequests.length === 0);
     T('실행 중 콘솔 오류', '위 모든 검수 중 브라우저 콘솔 기록', '오류 0건', `${consoleErrors.length}건 ${consoleErrors.slice(0, 2).join(' | ')}`, consoleErrors.length === 0);
 
-    const PAGE_LIST = ['/', '/salary-proration', '/weekly-holiday-pay', '/annual-salary-net', '/severance-pay', '/hourly-wage', '/social-insurance', '/vat', '/loan-interest'];
+    const PAGE_LIST = PAGES.filter((p) => p.public).map((p) => p.path);
     const metas = [];
     for (const u of PAGE_LIST) {
       const res = await page.goto(u);

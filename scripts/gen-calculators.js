@@ -37,8 +37,8 @@ function field(f) {
   if (f.type === 'year' || f.type === 'month' || f.type === 'select') {
     const opts = f.type === 'select' ? f.options.map(([v, l, on]) => `<option value="${v}"${on ? ' selected' : ''}>${esc(l)}</option>`).join('') : '';
     control = `<select id="${id}" name="${id}"${f.type === 'year' ? ' data-years' : ''}${f.type === 'month' ? ' data-months' : ''} aria-describedby="${desc}">${opts}</select>`;
-  } else if (f.type === 'date') {
-    control = `<input id="${id}" name="${id}" type="date" aria-describedby="${desc}">`;
+  } else if (f.type === 'date' || f.type === 'time') {
+    control = `<input id="${id}" name="${id}" type="${f.type}"${f.value ? ` value="${esc(f.value)}"` : ''} aria-describedby="${desc}">`;
   } else {
     const mode = f.type === 'decimal' ? 'decimal' : 'numeric';
     control = `<input id="${id}" name="${id}" type="text" inputmode="${mode}" autocomplete="off" spellcheck="false"${f.value ? ` value="${esc(f.value)}"` : ''}${f.placeholder ? ` placeholder="${esc(f.placeholder)}"` : ''}${f.type === 'amount' ? ' data-amount' : ''} aria-describedby="${desc}">`;

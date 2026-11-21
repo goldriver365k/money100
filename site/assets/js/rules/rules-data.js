@@ -10,7 +10,10 @@
  * 비율은 소수(0.095 = 9.5%)로 적는다.
  */
 
+import { EXTRA_SOURCES, EXTRA_2026, EXTRA_UNAVAILABLE_2027, STATIC_RULES } from './rules-extra.js';
+
 export const CHECKED_DATE = '2026-11-21';
+export { STATIC_RULES };
 
 const law = (name, article) => `https://www.law.go.kr/법령/${encodeURIComponent(name)}/${encodeURIComponent(article)}`;
 
@@ -147,6 +150,18 @@ export const YEARS = {
     },
   },
 };
+
+// 2차 계산기 기준 합치기
+Object.assign(SOURCES, EXTRA_SOURCES);
+Object.assign(YEARS[2026], EXTRA_2026);
+Object.assign(YEARS[2027], Object.fromEntries(Object.keys(EXTRA_2026).map((k) => [k, null])), {
+  freelancer: EXTRA_2026.freelancer,
+  healthExtra: EXTRA_2026.healthExtra,
+  standardCreditBiz: EXTRA_2026.standardCreditBiz,
+  rentConversion: EXTRA_2026.rentConversion,
+  dsr: EXTRA_2026.dsr,
+});
+for (const [k, v] of Object.entries(EXTRA_UNAVAILABLE_2027)) if (v) YEARS[2027].unavailable[k] = v;
 
 export const AVAILABLE_YEARS = Object.keys(YEARS).map(Number).sort((a, b) => a - b);
 export const DEFAULT_YEAR = 2026;

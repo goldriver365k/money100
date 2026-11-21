@@ -1,0 +1,247 @@
+<!doctype html>
+<html lang="ko" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'none'; form-action 'none'; base-uri 'none'">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <title>야간수당·연장수당·휴일수당 계산기 — 자정 넘김·중복 가산 | 정산노트</title>
+  <meta name="description" content="시급과 근무 시작·종료 시각, 휴게시간으로 하루 기본임금과 연장·야간(22~06시)·휴일근로 가산수당을 계산합니다. 자정을 넘는 근무와 야간·연장 중복 가산, 5명 미만 사업장 예외를 반영합니다.">
+  <!-- seo:start -->
+  <meta name="robots" content="noindex, nofollow">
+  <!-- seo:end -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="정산노트">
+  <meta property="og:title" content="야간수당·연장수당·휴일수당 계산기 — 자정 넘김·중복 가산 | 정산노트">
+  <meta property="og:description" content="근무 시간대를 입력하면 기본임금과 연장·야간·휴일 가산수당을 나눠 계산합니다.">
+  <meta property="og:locale" content="ko_KR">
+  <meta name="theme-color" content="#2563e2">
+  <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/assets/css/style.css">
+  <script type="module" src="/assets/js/nav.js"></script>
+  <script type="module" src="/assets/js/calc-page.js"></script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "야간근로와 연장근로가 겹치면?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "두 가산을 모두 적용합니다. 예를 들어 연장근로이면서 야간인 시간은 기본 100% + 연장 50% + 야간 50% = 200%를 받습니다."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "휴일에 10시간 일하면?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "8시간까지는 시급의 150%, 8시간을 넘는 2시간은 200%입니다. 야간에 해당하면 야간 50%가 더해집니다."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "알바도 가산수당을 받나요?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "상시 5명 이상 사업장이면 받습니다. 단시간근로자는 계약한 1일 소정근로시간을 넘어 일하면 8시간 이내라도 50%를 더 받습니다."
+        }
+      }
+    ]
+  }
+  </script>
+</head>
+<body class="calc-page">
+<!-- 이 파일은 scripts/gen-calculators.js 로 생성됩니다. 직접 고치지 말고 scripts/calculators.js 를 수정하세요. -->
+  <a class="skip-link" href="#main">본문 바로가기</a>
+  <header class="site-header">
+    <div class="container container-wide header-inner">
+      <a class="brand" href="/"><span class="brand-mark" aria-hidden="true"></span>정산노트</a>
+      <nav class="main-nav" aria-label="주요 메뉴"><ul><li><a href="/#calculators">계산기 모음</a></li><li><a href="#basis-fold" data-open-fold>이용 가이드</a></li><li><a href="#faq-fold" data-open-fold>자주 묻는 질문</a></li></ul></nav>
+    </div>
+  </header>
+
+  <main id="main" class="container">
+    <nav class="breadcrumb" aria-label="현재 위치">
+      <ol>
+        <li><a href="/" id="home-link">← 계산기 목록(홈)</a></li>
+        <li aria-current="page">야간·연장·휴일수당 계산기</li>
+      </ol>
+    </nav>
+
+    <section class="hero calc-hero" aria-labelledby="page-title">
+      <p class="calc-badges"><span class="cat-badge cat-labor">노동·급여</span><span class="basis-badge">적용 기준: 근로기준법 제56조 (연도와 무관)</span></p>
+      <h1 id="page-title">야간·연장·휴일수당 계산기</h1>
+      <p class="lead">근무 시간대를 입력하면 기본임금과 연장·야간·휴일 가산수당을 나눠 계산합니다.</p>
+    </section>
+
+    <noscript>
+      <p class="notice notice-warn">이 계산기는 브라우저의 JavaScript로 동작합니다. JavaScript를 켠 뒤 다시 열어 주세요.</p>
+    </noscript>
+
+    <form id="calc-form" class="panel" data-calc="overtime" novalidate autocomplete="off" aria-labelledby="form-title">
+      <h2 id="form-title" class="panel-title"><span class="step">1</span> 입력</h2>
+      <div class="field">
+        <label for="hourly"><span class="label-text">시급 (통상시급)</span> <span class="req">필수</span> <span class="unit">(원)</span></label>
+        <input id="hourly" name="hourly" type="text" inputmode="numeric" autocomplete="off" spellcheck="false" placeholder="예: 10320" data-amount aria-describedby="hourly-error hourly-preview">
+        <p class="error" id="hourly-error" hidden></p>
+        <p class="preview" id="hourly-preview"></p>
+      </div>
+
+      <div class="field">
+        <label for="start"><span class="label-text">근무 시작 시각</span> <span class="opt">선택</span></label>
+        <input id="start" name="start" type="time" value="18:00" aria-describedby="start-error">
+        <p class="error" id="start-error" hidden></p>
+      </div>
+
+      <div class="field">
+        <label for="end"><span class="label-text">근무 종료 시각</span> <span class="opt">선택</span></label>
+        <input id="end" name="end" type="time" value="06:00" aria-describedby="end-error end-hint">
+        <p class="error" id="end-error" hidden></p>
+        <p class="hint" id="end-hint">시작보다 이르거나 같으면 다음 날로 계산합니다 (자정 넘김).</p>
+      </div>
+
+      <div class="field">
+        <label for="breakMin"><span class="label-text">휴게시간 (전체)</span> <span class="opt">선택</span> <span class="unit">(분)</span></label>
+        <input id="breakMin" name="breakMin" type="text" inputmode="numeric" autocomplete="off" spellcheck="false" value="60" aria-describedby="breakMin-error">
+        <p class="error" id="breakMin-error" hidden></p>
+      </div>
+
+      <div class="field">
+        <label for="nightBreakMin"><span class="label-text">그중 22시~06시에 쉰 시간</span> <span class="opt">선택</span> <span class="unit">(분)</span></label>
+        <input id="nightBreakMin" name="nightBreakMin" type="text" inputmode="numeric" autocomplete="off" spellcheck="false" value="60" aria-describedby="nightBreakMin-error nightBreakMin-hint">
+        <p class="error" id="nightBreakMin-error" hidden></p>
+        <p class="hint" id="nightBreakMin-hint">야간 가산에서 빼야 하는 휴게시간입니다.</p>
+      </div>
+
+      <div class="field">
+        <label for="contractHours"><span class="label-text">1일 소정근로시간</span> <span class="opt">선택</span> <span class="unit">(시간)</span></label>
+        <input id="contractHours" name="contractHours" type="text" inputmode="decimal" autocomplete="off" spellcheck="false" value="8" aria-describedby="contractHours-error contractHours-hint">
+        <p class="error" id="contractHours-error" hidden></p>
+        <p class="hint" id="contractHours-hint">단시간근로자는 이 시간을 넘으면 연장 가산이 붙습니다.</p>
+      </div>
+
+      <fieldset class="field">
+        <legend>휴일(주휴일·약정휴일) 근무인가요?</legend>
+        <div class="choices">
+          <label class="choice"><input type="radio" name="holiday" value="no" checked> <span>아니요</span></label>
+          <label class="choice"><input type="radio" name="holiday" value="yes"> <span>예</span></label>
+        </div>
+        <p class="error" id="holiday-error" hidden></p>
+      </fieldset>
+
+      <fieldset class="field">
+        <legend>상시 근로자 5명 이상 사업장인가요?</legend>
+        <div class="choices">
+          <label class="choice"><input type="radio" name="size5" value="yes" checked> <span>예</span></label>
+          <label class="choice"><input type="radio" name="size5" value="no"> <span>아니요</span></label>
+        </div>
+        <p class="error" id="size5-error" hidden></p>
+      </fieldset>
+
+      <div class="actions actions-sticky">
+        <button type="submit" class="btn btn-primary" id="submit">계산하기</button>
+        <button type="button" class="btn btn-reset" id="reset-all">초기화</button>
+      </div>
+    </form>
+
+    <div id="result-status" class="sr-only" role="status" aria-live="polite" aria-atomic="true"></div>
+
+    <section id="result" class="panel result" hidden aria-labelledby="result-title">
+      <h2 id="result-title" class="panel-title" tabindex="-1"><span class="step">2</span> 계산 결과</h2>
+      <div id="result-unavailable" class="notice notice-warn" hidden>
+        <p><strong>계산할 수 없습니다.</strong> <span id="unavailable-reason"></span></p>
+        <p>공식 기준이 확인되지 않은 값은 임의로 쓰지 않습니다. 다른 기준 연도를 선택해 주세요.</p>
+      </div>
+      <div id="result-body">
+        <p class="result-meta" id="result-meta"></p>
+        <div class="headline result-stats" id="result-stats"></div>
+        <h3 class="table-title">항목별 상세 내역</h3>
+        <div id="result-table"></div>
+        <dl class="kv-list" id="result-rows"></dl>
+        <div data-block>
+          <h3 class="table-title">계산 공식</h3>
+          <ul class="formula-list" id="result-formulas"></ul>
+        </div>
+        <div data-block class="caution">
+          <h3 class="table-title">주의사항</h3>
+          <ul id="result-warnings"></ul>
+        </div>
+        <p class="disclaimer result-disclaimer">본 계산 결과는 단순 모의 계산이며, 법적 확정 금액이나 효력을 갖는 증빙자료가 아닙니다.</p>
+      </div>
+    </section>
+
+    <!-- 공통 아코디언: 계산 방법 · 실제 예제 · 공식출처 (기본 접힘) -->
+    <details class="content basis-fold info-fold" id="basis-fold">
+      <summary class="fold-summary"><h2 id="info-title">계산 방법 · 실제 예제 · 공식출처</h2><span class="fold-icon" aria-hidden="true"></span></summary>
+      <div class="fold-body">
+      <section class="howto" aria-labelledby="howto-title">
+      <h3 id="howto-title">야간·연장·휴일수당 계산 방법</h3>
+      <ol>
+        <li>실근로시간 = 근무 시간 − 휴게시간, 기본임금 = 실근로시간 × 시급입니다.</li>
+        <li>1일 8시간을 넘는 연장근로, 22시~06시 야간근로에는 각각 시급의 50%를 더하며 두 가산은 겹쳐서 적용됩니다.</li>
+        <li>휴일근로는 8시간까지 50%, 8시간을 넘는 부분은 100%를 더합니다. 5명 미만 사업장은 가산수당이 없습니다.</li>
+      </ol>
+      <h4>실제 계산 예제</h4>
+      <div class="example">
+        <p class="example-case"><strong>예시</strong> 시급 12,000원, 18시~다음 날 06시 근무, 휴게 1시간(야간 중), 평일</p>
+        <dl class="kv-list example-result">
+          <div class="kv"><dt>예상 총지급액</dt><dd>192,000원</dd></div>
+          <div class="kv"><dt>가산수당 합계</dt><dd>60,000원</dd></div>
+          <div class="kv"><dt>실근로시간</dt><dd>11시간</dd></div>
+        </dl>
+        <ol class="example-steps">
+          <li>기본임금: 11시간 · 12,000원 × 11시간 · 132,000원</li>
+          <li>연장근로 가산: 3시간 · 기준 8시간 초과 × 50% · 18,000원</li>
+          <li>야간근로 가산: 7시간 · 22:00~06:00 × 50% · 42,000원</li>
+          <li>휴일근로 가산: 0시간 · 8시간 이내 50%, 초과 100% · 0원</li>
+        </ol>
+      </div>
+      </section>
+      <section class="basis" aria-labelledby="basis-title">
+      <h3 id="basis-title">적용 기준 및 공식 출처</h3>
+      <p>적용 기준: 근로기준법 제56조 (연도와 무관). 연도별 요율·세율은 기준 데이터로 따로 관리하며, 공식 확정 전인 연도는 계산하지 않습니다.</p>
+      <ul class="sources">
+        <li><a href="https://www.law.go.kr/법령/%EA%B7%BC%EB%A1%9C%EA%B8%B0%EC%A4%80%EB%B2%95/%EC%A0%9C56%EC%A1%B0" target="_blank" rel="noopener noreferrer">근로기준법 제56조 (연장·야간·휴일근로 — 통상임금 50% 가산, 휴일 8시간 초과 100%)<span class="sr-only"> — 새 창에서 열림</span></a></li>
+        <li><a href="https://www.law.go.kr/법령/%EA%B8%B0%EA%B0%84%EC%A0%9C%EB%B0%8F%EB%8B%A8%EC%8B%9C%EA%B0%84%EA%B7%BC%EB%A1%9C%EC%9E%90%EB%B3%B4%ED%98%B8%EB%93%B1%EC%97%90%EA%B4%80%ED%95%9C%EB%B2%95%EB%A5%A0/%EC%A0%9C6%EC%A1%B0" target="_blank" rel="noopener noreferrer">기간제 및 단시간근로자 보호 등에 관한 법률 제6조 (단시간근로자 소정근로시간 초과 근로 50% 가산)<span class="sr-only"> — 새 창에서 열림</span></a></li>
+        <li><a href="https://www.law.go.kr/법령/%EA%B7%BC%EB%A1%9C%EA%B8%B0%EC%A4%80%EB%B2%95%EC%8B%9C%ED%96%89%EB%A0%B9/%EC%A0%9C7%EC%A1%B0" target="_blank" rel="noopener noreferrer">근로기준법 시행령 제7조 및 별표 1 (상시 4명 이하 사업장 — 연차 규정 미적용)<span class="sr-only"> — 새 창에서 열림</span></a></li>
+      </ul>
+      <p class="checked-date">공식 자료 확인일: <time datetime="2026-11-21">2026년 11월 21일</time></p>
+      </section>
+    </div>
+    </details>
+
+    <details class="content faq faq-fold" id="faq-fold">
+      <summary class="fold-summary"><h2 id="faq-title">자주 묻는 질문</h2></summary>
+      <div class="fold-body">
+      <h3>야간근로와 연장근로가 겹치면?</h3>
+      <p>두 가산을 모두 적용합니다. 예를 들어 연장근로이면서 야간인 시간은 기본 100% + 연장 50% + 야간 50% = 200%를 받습니다.</p>
+      <h3>휴일에 10시간 일하면?</h3>
+      <p>8시간까지는 시급의 150%, 8시간을 넘는 2시간은 200%입니다. 야간에 해당하면 야간 50%가 더해집니다.</p>
+      <h3>알바도 가산수당을 받나요?</h3>
+      <p>상시 5명 이상 사업장이면 받습니다. 단시간근로자는 계약한 1일 소정근로시간을 넘어 일하면 8시간 이내라도 50%를 더 받습니다.</p>
+    </div>
+    </details>
+
+    <section class="content related" aria-labelledby="related-title">
+      <h2 id="related-title">관련 계산기</h2>
+      <ul class="related-list">
+        <li><a class="related-link cat-labor" href="/hourly-wage"><span class="related-cat">노동·급여</span><strong>시급 계산기</strong><span>월급과 시급을 서로 환산하고 최저임금과 비교합니다.</span></a></li>
+        <li><a class="related-link cat-labor" href="/weekly-holiday-pay"><span class="related-cat">노동·급여</span><strong>주휴수당 계산기</strong><span>주 15시간 기준으로 주휴수당 지급 여부와 금액을 판독합니다.</span></a></li>
+        <li><a class="related-link cat-labor" href="/annual-leave-pay"><span class="related-cat">노동·급여</span><strong>연차수당 계산기</strong><span>연차 발생일수와 미사용 연차수당을 계산합니다.</span></a></li>
+      </ul>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container container-wide">
+      <p class="footer-brand">정산노트<span aria-hidden="true">.</span></p>
+      <p>정산노트의 계산 결과는 단순 모의 계산이며, 법적 효력을 갖는 증빙자료가 아닙니다.</p>
+      <p>입력한 값은 브라우저 안에서만 계산되며 서버나 분석 도구로 전송되지 않습니다.</p>
+      <p><a href="/">정산노트 홈</a></p>
+    </div>
+  </footer>
+</body>
+</html>
