@@ -87,7 +87,9 @@ async function page(spec) {
   const cat = CATEGORIES[spec.cat];
   const faqLd = JSON.stringify({ '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: spec.faq.map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })) }, null, 2).replace(/\n/g, '\n  ');
   const sources = ex.sources.map((s) => `<li><a href="${esc(s.url)}" target="_blank" rel="noopener noreferrer">${esc(s.title)}<span class="sr-only"> — 새 창에서 열림</span></a></li>`).join('\n        ');
-  const related = spec.related.map((slug) => {
+  const missing = spec.related.filter((slug) => !bySlug[slug]);
+  if (missing.length) console.warn(`경고: ${spec.slug} 관련 계산기 미구현 링크 제외 — ${missing.join(', ')}`);
+  const related = spec.related.filter((slug) => bySlug[slug]).map((slug) => {
     const c = bySlug[slug];
     return `<li><a class="related-link cat-${c.cat}" href="/${slug}"><span class="related-cat">${esc(CATEGORIES[c.cat])}</span><strong>${esc(c.name)}</strong><span>${esc(c.desc)}</span></a></li>`;
   }).join('\n        ');

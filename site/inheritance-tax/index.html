@@ -1,0 +1,278 @@
+<!doctype html>
+<html lang="ko" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'none'; form-action 'none'; base-uri 'none'">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <title>상속세 계산기 2026 — 일괄공제·배우자공제·금융재산공제 모의계산 | 정산노트</title>
+  <meta name="description" content="상속재산, 채무, 장례비, 상속인 구성, 배우자 상속분, 금융재산을 넣어 일괄공제 5억·배우자공제(5억~30억)·금융재산공제를 반영한 상속세를 모의계산합니다. 반영하지 않는 공제와 한계를 함께 표시합니다.">
+  <!-- seo:start -->
+  <meta name="robots" content="noindex, nofollow">
+  <!-- seo:end -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="정산노트">
+  <meta property="og:title" content="상속세 계산기 2026 — 일괄공제·배우자공제·금융재산공제 모의계산 | 정산노트">
+  <meta property="og:description" content="상속인 구성과 주요 상속공제를 반영한 예상 상속세를 확인하세요. 단순 모의계산입니다.">
+  <meta property="og:locale" content="ko_KR">
+  <meta name="theme-color" content="#2563e2">
+  <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/assets/css/style.css">
+  <script type="module" src="/assets/js/nav.js"></script>
+  <script type="module" src="/assets/js/calc-page.js"></script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "10억 원 이하면 상속세가 없나요?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "배우자와 자녀가 있으면 일괄공제 5억 원과 배우자공제 최소 5억 원으로 보통 10억 원까지 과세표준이 0이 됩니다. 자녀만 있으면 5억 원(+금융재산공제)까지입니다."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "배우자공제를 더 받으려면?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "배우자가 실제로 법정상속분 안에서 더 많이 상속받고, 신고기한 다음 날부터 9개월 안에 재산 분할(등기 등)을 마쳐야 합니다."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "상속세 개정안이 반영됐나요?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "2026년 정부 개정안은 국회 심사 중이라 반영하지 않았습니다. 현행 법 기준으로 계산합니다."
+        }
+      }
+    ]
+  }
+  </script>
+</head>
+<body class="calc-page">
+<!-- 이 파일은 scripts/gen-calculators.js 로 생성됩니다. 직접 고치지 말고 scripts/calculators.js 를 수정하세요. -->
+  <a class="skip-link" href="#main">본문 바로가기</a>
+  <header class="site-header">
+    <div class="container container-wide header-inner">
+      <a class="brand" href="/"><span class="brand-mark" aria-hidden="true"></span>정산노트</a>
+      <nav class="main-nav" aria-label="주요 메뉴"><ul><li><a href="/#calculators">계산기 모음</a></li><li><a href="#basis-fold" data-open-fold>이용 가이드</a></li><li><a href="#faq-fold" data-open-fold>자주 묻는 질문</a></li></ul></nav>
+    </div>
+  </header>
+
+  <main id="main" class="container">
+    <nav class="breadcrumb" aria-label="현재 위치">
+      <ol>
+        <li><a href="/" id="home-link">← 계산기 목록(홈)</a></li>
+        <li aria-current="page">상속세 계산기</li>
+      </ol>
+    </nav>
+
+    <section class="hero calc-hero" aria-labelledby="page-title">
+      <p class="calc-badges"><span class="cat-badge cat-tax">세금·보험</span><span class="basis-badge">적용 기준: 2026년 상속세 및 증여세법 기준 (개정안 미반영)</span></p>
+      <h1 id="page-title">상속세 계산기</h1>
+      <p class="lead">상속인 구성과 주요 상속공제를 반영한 예상 상속세를 확인하세요. 단순 모의계산입니다.</p>
+    </section>
+
+    <noscript>
+      <p class="notice notice-warn">이 계산기는 브라우저의 JavaScript로 동작합니다. JavaScript를 켠 뒤 다시 열어 주세요.</p>
+    </noscript>
+
+    <form id="calc-form" class="panel" data-calc="inheritance-tax" novalidate autocomplete="off" aria-labelledby="form-title">
+      <h2 id="form-title" class="panel-title"><span class="step">1</span> 입력</h2>
+      <div class="field">
+        <label for="year"><span class="label-text">상속개시 연도</span></label>
+        <select id="year" name="year" data-years aria-describedby="year-error year-hint"></select>
+        <p class="error" id="year-error" hidden></p>
+        <p class="hint" id="year-hint">연도를 바꾸면 그해 기준(요율·세율)으로 계산합니다. 공식 확정 전인 항목은 계산하지 않고 사유를 알려 드립니다.</p>
+      </div>
+
+      <div class="field">
+        <label for="estate"><span class="label-text">상속재산가액 (시가)</span> <span class="req">필수</span> <span class="unit">(원)</span></label>
+        <input id="estate" name="estate" type="text" inputmode="numeric" autocomplete="off" spellcheck="false" placeholder="예: 1500000000" data-amount aria-describedby="estate-error estate-preview estate-hint">
+        <p class="error" id="estate-error" hidden></p>
+        <p class="preview" id="estate-preview"></p>
+        <p class="hint" id="estate-hint">부동산·예금·주식 등 상속재산의 평가액 합계입니다.</p>
+      </div>
+
+      <div class="field">
+        <label for="gifts"><span class="label-text">합산 사전증여재산</span> <span class="opt">선택</span> <span class="unit">(원)</span></label>
+        <input id="gifts" name="gifts" type="text" inputmode="numeric" autocomplete="off" spellcheck="false" value="0" data-amount aria-describedby="gifts-error gifts-preview gifts-hint">
+        <p class="error" id="gifts-error" hidden></p>
+        <p class="preview" id="gifts-preview"></p>
+        <p class="hint" id="gifts-hint">상속인에게 10년, 상속인 외에게 5년 안에 증여한 재산입니다.</p>
+      </div>
+
+      <div class="field">
+        <label for="debts"><span class="label-text">채무·공과금</span> <span class="opt">선택</span> <span class="unit">(원)</span></label>
+        <input id="debts" name="debts" type="text" inputmode="numeric" autocomplete="off" spellcheck="false" value="0" data-amount aria-describedby="debts-error debts-preview">
+        <p class="error" id="debts-error" hidden></p>
+        <p class="preview" id="debts-preview"></p>
+      </div>
+
+      <div class="field">
+        <label for="funeral"><span class="label-text">장례비용</span> <span class="opt">선택</span> <span class="unit">(원)</span></label>
+        <input id="funeral" name="funeral" type="text" inputmode="numeric" autocomplete="off" spellcheck="false" value="5000000" data-amount aria-describedby="funeral-error funeral-preview funeral-hint">
+        <p class="error" id="funeral-error" hidden></p>
+        <p class="preview" id="funeral-preview"></p>
+        <p class="hint" id="funeral-hint">500만 원 미만이면 500만 원, 1,000만 원 초과면 1,000만 원으로 봅니다.</p>
+      </div>
+
+      <div class="field">
+        <label for="financial"><span class="label-text">순금융재산 (금융재산 − 금융채무)</span> <span class="opt">선택</span> <span class="unit">(원)</span></label>
+        <input id="financial" name="financial" type="text" inputmode="numeric" autocomplete="off" spellcheck="false" value="0" data-amount aria-describedby="financial-error financial-preview">
+        <p class="error" id="financial-error" hidden></p>
+        <p class="preview" id="financial-preview"></p>
+      </div>
+
+      <fieldset class="field">
+        <legend>배우자가 있나요?</legend>
+        <div class="choices">
+          <label class="choice"><input type="radio" name="spouse" value="yes" checked> <span>예</span></label>
+          <label class="choice"><input type="radio" name="spouse" value="no"> <span>아니요</span></label>
+        </div>
+        <p class="error" id="spouse-error" hidden></p>
+      </fieldset>
+
+      <div class="field">
+        <label for="spouseShare"><span class="label-text">배우자가 실제 상속받는 금액</span> <span class="opt">선택</span> <span class="unit">(원)</span></label>
+        <input id="spouseShare" name="spouseShare" type="text" inputmode="numeric" autocomplete="off" spellcheck="false" value="0" data-amount aria-describedby="spouseShare-error spouseShare-preview spouseShare-hint">
+        <p class="error" id="spouseShare-error" hidden></p>
+        <p class="preview" id="spouseShare-preview"></p>
+        <p class="hint" id="spouseShare-hint">0이면 배우자공제 최소 5억 원을 적용합니다.</p>
+      </div>
+
+      <div class="field">
+        <label for="children"><span class="label-text">자녀 수</span> <span class="opt">선택</span> <span class="unit">(명)</span></label>
+        <input id="children" name="children" type="text" inputmode="numeric" autocomplete="off" spellcheck="false" value="2" aria-describedby="children-error">
+        <p class="error" id="children-error" hidden></p>
+      </div>
+
+      <div class="field">
+        <label for="parents"><span class="label-text">직계존속 수 (자녀가 없을 때만)</span> <span class="opt">선택</span> <span class="unit">(명)</span></label>
+        <input id="parents" name="parents" type="text" inputmode="numeric" autocomplete="off" spellcheck="false" value="0" aria-describedby="parents-error">
+        <p class="error" id="parents-error" hidden></p>
+      </div>
+
+      <fieldset class="field">
+        <legend>신고기한(6개월) 안에 신고하나요?</legend>
+        <div class="choices">
+          <label class="choice"><input type="radio" name="filing" value="yes" checked> <span>예 (3% 공제)</span></label>
+          <label class="choice"><input type="radio" name="filing" value="no"> <span>아니요</span></label>
+        </div>
+        <p class="error" id="filing-error" hidden></p>
+      </fieldset>
+
+      <div class="actions actions-sticky">
+        <button type="submit" class="btn btn-primary" id="submit">계산하기</button>
+        <button type="button" class="btn btn-reset" id="reset-all">초기화</button>
+      </div>
+    </form>
+
+    <div id="result-status" class="sr-only" role="status" aria-live="polite" aria-atomic="true"></div>
+
+    <section id="result" class="panel result" hidden aria-labelledby="result-title">
+      <h2 id="result-title" class="panel-title" tabindex="-1"><span class="step">2</span> 계산 결과</h2>
+      <div id="result-unavailable" class="notice notice-warn" hidden>
+        <p><strong>계산할 수 없습니다.</strong> <span id="unavailable-reason"></span></p>
+        <p>공식 기준이 확인되지 않은 값은 임의로 쓰지 않습니다. 다른 기준 연도를 선택해 주세요.</p>
+      </div>
+      <div id="result-body">
+        <p class="result-meta" id="result-meta"></p>
+        <div class="headline result-stats" id="result-stats"></div>
+        <h3 class="table-title">항목별 상세 내역</h3>
+        <div id="result-table"></div>
+        <dl class="kv-list" id="result-rows"></dl>
+        <div data-block>
+          <h3 class="table-title">계산 공식</h3>
+          <ul class="formula-list" id="result-formulas"></ul>
+        </div>
+        <div data-block class="caution">
+          <h3 class="table-title">주의사항</h3>
+          <ul id="result-warnings"></ul>
+        </div>
+        <p class="disclaimer result-disclaimer">본 계산 결과는 단순 모의 계산이며, 법적 확정 금액이나 효력을 갖는 증빙자료가 아닙니다.</p>
+      </div>
+    </section>
+
+    <!-- 공통 아코디언: 계산 방법 · 실제 예제 · 공식출처 (기본 접힘) -->
+    <details class="content basis-fold info-fold" id="basis-fold">
+      <summary class="fold-summary"><h2 id="info-title">계산 방법 · 실제 예제 · 공식출처</h2><span class="fold-icon" aria-hidden="true"></span></summary>
+      <div class="fold-body">
+      <section class="howto" aria-labelledby="howto-title">
+      <h3 id="howto-title">상속세 계산 방법</h3>
+      <ol>
+        <li>과세가액 = 상속재산 + 사전증여재산 − 채무 − 장례비용(500만~1,000만 원)입니다.</li>
+        <li>상속공제 = 일괄공제 5억(배우자 단독상속은 기초공제 2억) + 배우자공제(실제 상속분, 최소 5억·법정상속분 한도·최대 30억) + 금융재산공제(최대 2억)이며, 과세가액에서 사전증여를 뺀 금액이 한도입니다.</li>
+        <li>과세표준에 세율(10~50%)을 곱하고 신고세액공제 3%를 뺍니다.</li>
+      </ol>
+      <h4>실제 계산 예제</h4>
+      <div class="example">
+        <p class="example-case"><strong>예시</strong> 상속재산 20억 원, 채무 1억 원, 장례비 800만 원, 금융재산 3억 원, 배우자와 자녀 2명</p>
+        <dl class="kv-list example-result">
+          <div class="kv"><dt>상속세 과세가액</dt><dd>1,892,000,000원</dd></div>
+          <div class="kv"><dt>상속공제 합계</dt><dd>1,060,000,000원</dd></div>
+          <div class="kv"><dt>예상 납부세액</dt><dd>183,912,000원</dd></div>
+        </dl>
+        <ol class="example-steps">
+          <li>과세가액: 2,000,000,000원 + 사전증여 0원 − 채무 100,000,000원 − 장례비 8,000,000원 = 1,892,000,000원</li>
+          <li>인적공제: 일괄공제 5억 = 500,000,000원</li>
+          <li>배우자 상속공제: 500,000,000원 (법정상속분 42.9%, 최소 5억·최대 30억)</li>
+          <li>금융재산 상속공제: 60,000,000원</li>
+          <li>공제 적용 한도: 한도 1,892,000,000원 이내</li>
+          <li>과세표준: 832,000,000원</li>
+          <li>산출세액 (10~50%): 189,600,000원</li>
+          <li>신고세액공제 3%: − 5,688,000원</li>
+        </ol>
+      </div>
+      </section>
+      <section class="basis" aria-labelledby="basis-title">
+      <h3 id="basis-title">적용 기준 및 공식 출처</h3>
+      <p>적용 기준: 2026년 상속세 및 증여세법 기준 (개정안 미반영). 연도별 요율·세율은 기준 데이터로 따로 관리하며, 공식 확정 전인 연도는 계산하지 않습니다.</p>
+      <ul class="sources">
+        <li><a href="https://www.law.go.kr/법령/%EC%83%81%EC%86%8D%EC%84%B8%EB%B0%8F%EC%A6%9D%EC%97%AC%EC%84%B8%EB%B2%95/%EC%A0%9C26%EC%A1%B0" target="_blank" rel="noopener noreferrer">상속세 및 증여세법 제26조·제56조 (세율 10~50%)<span class="sr-only"> — 새 창에서 열림</span></a></li>
+        <li><a href="https://www.law.go.kr/법령/%EC%83%81%EC%86%8D%EC%84%B8%EB%B0%8F%EC%A6%9D%EC%97%AC%EC%84%B8%EB%B2%95/%EC%A0%9C21%EC%A1%B0" target="_blank" rel="noopener noreferrer">상속세 및 증여세법 제18조(기초공제 2억)·제21조(일괄공제 5억)<span class="sr-only"> — 새 창에서 열림</span></a></li>
+        <li><a href="https://www.law.go.kr/법령/%EC%83%81%EC%86%8D%EC%84%B8%EB%B0%8F%EC%A6%9D%EC%97%AC%EC%84%B8%EB%B2%95/%EC%A0%9C19%EC%A1%B0" target="_blank" rel="noopener noreferrer">상속세 및 증여세법 제19조 (배우자 상속공제 — 최소 5억, 법정상속분 한도, 최대 30억)<span class="sr-only"> — 새 창에서 열림</span></a></li>
+        <li><a href="https://www.law.go.kr/법령/%EC%83%81%EC%86%8D%EC%84%B8%EB%B0%8F%EC%A6%9D%EC%97%AC%EC%84%B8%EB%B2%95/%EC%A0%9C22%EC%A1%B0" target="_blank" rel="noopener noreferrer">상속세 및 증여세법 제22조 (금융재산 상속공제 — 20%, 최대 2억)<span class="sr-only"> — 새 창에서 열림</span></a></li>
+        <li><a href="https://www.law.go.kr/법령/%EC%83%81%EC%86%8D%EC%84%B8%EB%B0%8F%EC%A6%9D%EC%97%AC%EC%84%B8%EB%B2%95%EC%8B%9C%ED%96%89%EB%A0%B9/%EC%A0%9C9%EC%A1%B0" target="_blank" rel="noopener noreferrer">상속세 및 증여세법 시행령 제9조 (장례비용 500만~1,000만 원)<span class="sr-only"> — 새 창에서 열림</span></a></li>
+        <li><a href="https://www.law.go.kr/법령/%EC%83%81%EC%86%8D%EC%84%B8%EB%B0%8F%EC%A6%9D%EC%97%AC%EC%84%B8%EB%B2%95/%EC%A0%9C69%EC%A1%B0" target="_blank" rel="noopener noreferrer">상속세 및 증여세법 제69조 (신고세액공제 3%)<span class="sr-only"> — 새 창에서 열림</span></a></li>
+        <li><a href="https://likms.assembly.go.kr/bill/" target="_blank" rel="noopener noreferrer">국회 의안정보 — 2026년 상속세 개정안(유산취득세 등)은 2026.11. 현재 국회 심사 중으로 미반영<span class="sr-only"> — 새 창에서 열림</span></a></li>
+      </ul>
+      <p class="checked-date">공식 자료 확인일: <time datetime="2026-11-21">2026년 11월 21일</time></p>
+      </section>
+    </div>
+    </details>
+
+    <details class="content faq faq-fold" id="faq-fold">
+      <summary class="fold-summary"><h2 id="faq-title">자주 묻는 질문</h2></summary>
+      <div class="fold-body">
+      <h3>10억 원 이하면 상속세가 없나요?</h3>
+      <p>배우자와 자녀가 있으면 일괄공제 5억 원과 배우자공제 최소 5억 원으로 보통 10억 원까지 과세표준이 0이 됩니다. 자녀만 있으면 5억 원(+금융재산공제)까지입니다.</p>
+      <h3>배우자공제를 더 받으려면?</h3>
+      <p>배우자가 실제로 법정상속분 안에서 더 많이 상속받고, 신고기한 다음 날부터 9개월 안에 재산 분할(등기 등)을 마쳐야 합니다.</p>
+      <h3>상속세 개정안이 반영됐나요?</h3>
+      <p>2026년 정부 개정안은 국회 심사 중이라 반영하지 않았습니다. 현행 법 기준으로 계산합니다.</p>
+    </div>
+    </details>
+
+    <section class="content related" aria-labelledby="related-title">
+      <h2 id="related-title">관련 계산기</h2>
+      <ul class="related-list">
+        <li><a class="related-link cat-tax" href="/gift-tax"><span class="related-cat">세금·보험</span><strong>증여세 계산기</strong><span>증여재산 공제를 반영한 예상 증여세를 확인합니다.</span></a></li>
+      </ul>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container container-wide">
+      <p class="footer-brand">정산노트<span aria-hidden="true">.</span></p>
+      <p>정산노트의 계산 결과는 단순 모의 계산이며, 법적 효력을 갖는 증빙자료가 아닙니다.</p>
+      <p>입력한 값은 브라우저 안에서만 계산되며 서버나 분석 도구로 전송되지 않습니다.</p>
+      <p><a href="/">정산노트 홈</a></p>
+    </div>
+  </footer>
+</body>
+</html>

@@ -62,7 +62,7 @@ const check = (slug, w, item, ok, actual = '') => {
         check(spec.slug, w, '접이식 영역 기본 닫힘', info.folds.length === 2 && info.folds.every((o) => !o), JSON.stringify(info.folds));
 
         // 빈 입력
-        const firstText = spec.fields.find((f) => f.required);
+        const firstText = spec.fields.find((f) => f.required) ?? spec.fields.find((f) => f.type === 'amount');
         await p.fill(`[name="${firstText.name}"]`, '');
         await p.click('#submit');
         const empty = await p.evaluate((n) => ({ err: document.getElementById(`${n}-error`).textContent, hidden: document.getElementById(`${n}-error`).hidden, focus: document.activeElement?.name, result: document.getElementById('result').hidden }), firstText.name);
@@ -120,7 +120,7 @@ const check = (slug, w, item, ok, actual = '') => {
         p.once('dialog', (d) => d.accept());
         await p.click('#reset-all');
         const after = await p.evaluate((n) => ({ v: document.querySelector(`[name="${n}"]`).value, result: document.getElementById('result').hidden }), firstText.name);
-        check(spec.slug, w, '초기화 → 입력 비움·결과 숨김', after.v === '' && after.result, JSON.stringify(after));
+        check(spec.slug, w, '초기화 → 입력 기본값 복원·결과 숨김', after.v === (firstText.value ?? '') && after.result, JSON.stringify(after));
         check(spec.slug, w, '스크립트 오류 없음', errors.length === 0, errors.join(' | '));
         await p.close();
       }

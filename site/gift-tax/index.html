@@ -1,0 +1,264 @@
+<!doctype html>
+<html lang="ko" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'none'; form-action 'none'; base-uri 'none'">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <title>증여세 계산기 2026 — 증여재산공제·10년 합산·혼인출산공제 | 정산노트</title>
+  <meta name="description" content="증여재산가액과 증여자 관계로 증여재산공제(배우자 6억, 성년 자녀 5천만 원 등), 10년 내 합산 증여, 혼인·출산 공제 1억 원, 세대생략 할증, 신고세액공제 3%를 반영한 증여세를 모의계산합니다.">
+  <!-- seo:start -->
+  <meta name="robots" content="noindex, nofollow">
+  <!-- seo:end -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="정산노트">
+  <meta property="og:title" content="증여세 계산기 2026 — 증여재산공제·10년 합산·혼인출산공제 | 정산노트">
+  <meta property="og:description" content="관계별 공제와 10년 합산을 반영한 예상 증여세를 확인하세요. 단순 모의계산입니다.">
+  <meta property="og:locale" content="ko_KR">
+  <meta name="theme-color" content="#2563e2">
+  <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/assets/css/style.css">
+  <script type="module" src="/assets/js/nav.js"></script>
+  <script type="module" src="/assets/js/calc-page.js"></script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "부모님 각각 5천만 원씩 받으면 1억 원 공제인가요?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "아닙니다. 직계존속 공제 5천만 원은 부모·조부모 전체를 합쳐 10년간 5천만 원입니다(미성년자는 2천만 원)."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "결혼할 때 받으면 얼마까지 세금이 없나요?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "성년 자녀는 기본 공제 5천만 원에 혼인·출산 공제 1억 원을 더해 10년간 최대 1억5천만 원까지 증여세가 없습니다."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "부동산 증여도 계산되나요?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "시가로 평가한 금액을 넣으면 증여세는 계산됩니다. 다만 취득세, 부담부증여의 양도세, 평가 방법은 반영하지 않습니다."
+        }
+      }
+    ]
+  }
+  </script>
+</head>
+<body class="calc-page">
+<!-- 이 파일은 scripts/gen-calculators.js 로 생성됩니다. 직접 고치지 말고 scripts/calculators.js 를 수정하세요. -->
+  <a class="skip-link" href="#main">본문 바로가기</a>
+  <header class="site-header">
+    <div class="container container-wide header-inner">
+      <a class="brand" href="/"><span class="brand-mark" aria-hidden="true"></span>정산노트</a>
+      <nav class="main-nav" aria-label="주요 메뉴"><ul><li><a href="/#calculators">계산기 모음</a></li><li><a href="#basis-fold" data-open-fold>이용 가이드</a></li><li><a href="#faq-fold" data-open-fold>자주 묻는 질문</a></li></ul></nav>
+    </div>
+  </header>
+
+  <main id="main" class="container">
+    <nav class="breadcrumb" aria-label="현재 위치">
+      <ol>
+        <li><a href="/" id="home-link">← 계산기 목록(홈)</a></li>
+        <li aria-current="page">증여세 계산기</li>
+      </ol>
+    </nav>
+
+    <section class="hero calc-hero" aria-labelledby="page-title">
+      <p class="calc-badges"><span class="cat-badge cat-tax">세금·보험</span><span class="basis-badge">적용 기준: 2026년 상속세 및 증여세법 기준</span></p>
+      <h1 id="page-title">증여세 계산기</h1>
+      <p class="lead">관계별 공제와 10년 합산을 반영한 예상 증여세를 확인하세요. 단순 모의계산입니다.</p>
+    </section>
+
+    <noscript>
+      <p class="notice notice-warn">이 계산기는 브라우저의 JavaScript로 동작합니다. JavaScript를 켠 뒤 다시 열어 주세요.</p>
+    </noscript>
+
+    <form id="calc-form" class="panel" data-calc="gift-tax" novalidate autocomplete="off" aria-labelledby="form-title">
+      <h2 id="form-title" class="panel-title"><span class="step">1</span> 입력</h2>
+      <div class="field">
+        <label for="year"><span class="label-text">증여 연도</span></label>
+        <select id="year" name="year" data-years aria-describedby="year-error year-hint"></select>
+        <p class="error" id="year-error" hidden></p>
+        <p class="hint" id="year-hint">연도를 바꾸면 그해 기준(요율·세율)으로 계산합니다. 공식 확정 전인 항목은 계산하지 않고 사유를 알려 드립니다.</p>
+      </div>
+
+      <div class="field">
+        <label for="value"><span class="label-text">이번 증여재산가액</span> <span class="req">필수</span> <span class="unit">(원)</span></label>
+        <input id="value" name="value" type="text" inputmode="numeric" autocomplete="off" spellcheck="false" placeholder="예: 100000000" data-amount aria-describedby="value-error value-preview value-hint">
+        <p class="error" id="value-error" hidden></p>
+        <p class="preview" id="value-preview"></p>
+        <p class="hint" id="value-hint">시가(시세) 기준 금액입니다.</p>
+      </div>
+
+      <div class="field">
+        <label for="relation"><span class="label-text">증여자와의 관계 (받는 사람 기준)</span></label>
+        <select id="relation" name="relation" aria-describedby="relation-error"><option value="ascendantAdult" selected>부모·조부모 → 성년 자녀</option><option value="ascendantMinor">부모·조부모 → 미성년 자녀</option><option value="spouse">배우자</option><option value="descendant">자녀 → 부모</option><option value="relative">기타 친족</option><option value="other">그 밖의 사람</option></select>
+        <p class="error" id="relation-error" hidden></p>
+      </div>
+
+      <div class="field">
+        <label for="prior"><span class="label-text">10년 내 같은 증여자에게 받은 증여재산</span> <span class="opt">선택</span> <span class="unit">(원)</span></label>
+        <input id="prior" name="prior" type="text" inputmode="numeric" autocomplete="off" spellcheck="false" value="0" data-amount aria-describedby="prior-error prior-preview prior-hint">
+        <p class="error" id="prior-error" hidden></p>
+        <p class="preview" id="prior-preview"></p>
+        <p class="hint" id="prior-hint">부모 중 한 분에게 받으면 다른 부모에게 받은 것도 합산합니다.</p>
+      </div>
+
+      <div class="field">
+        <label for="priorDeduction"><span class="label-text">10년 내 같은 관계에서 이미 받은 증여재산공제</span> <span class="opt">선택</span> <span class="unit">(원)</span></label>
+        <input id="priorDeduction" name="priorDeduction" type="text" inputmode="numeric" autocomplete="off" spellcheck="false" value="0" data-amount aria-describedby="priorDeduction-error priorDeduction-preview">
+        <p class="error" id="priorDeduction-error" hidden></p>
+        <p class="preview" id="priorDeduction-preview"></p>
+      </div>
+
+      <div class="field">
+        <label for="priorTax"><span class="label-text">합산 증여에 대해 이미 낸 증여세</span> <span class="opt">선택</span> <span class="unit">(원)</span></label>
+        <input id="priorTax" name="priorTax" type="text" inputmode="numeric" autocomplete="off" spellcheck="false" value="0" data-amount aria-describedby="priorTax-error priorTax-preview">
+        <p class="error" id="priorTax-error" hidden></p>
+        <p class="preview" id="priorTax-preview"></p>
+      </div>
+
+      <div class="field">
+        <label for="marriage"><span class="label-text">혼인·출산 증여재산공제 (최대 1억)</span> <span class="opt">선택</span> <span class="unit">(원)</span></label>
+        <input id="marriage" name="marriage" type="text" inputmode="numeric" autocomplete="off" spellcheck="false" value="0" data-amount aria-describedby="marriage-error marriage-preview marriage-hint">
+        <p class="error" id="marriage-error" hidden></p>
+        <p class="preview" id="marriage-preview"></p>
+        <p class="hint" id="marriage-hint">혼인신고 전후 2년 또는 출생 후 2년 안에 직계존속에게 받은 증여에만 적용됩니다.</p>
+      </div>
+
+      <fieldset class="field">
+        <legend>세대를 건너뛴 증여인가요? (조부모 → 손자녀)</legend>
+        <div class="choices">
+          <label class="choice"><input type="radio" name="skip" value="no" checked> <span>아니요</span></label>
+          <label class="choice"><input type="radio" name="skip" value="yes"> <span>예</span></label>
+        </div>
+        <p class="error" id="skip-error" hidden></p>
+      </fieldset>
+
+      <fieldset class="field">
+        <legend>신고기한(3개월) 안에 신고하나요?</legend>
+        <div class="choices">
+          <label class="choice"><input type="radio" name="filing" value="yes" checked> <span>예 (3% 공제)</span></label>
+          <label class="choice"><input type="radio" name="filing" value="no"> <span>아니요</span></label>
+        </div>
+        <p class="error" id="filing-error" hidden></p>
+      </fieldset>
+
+      <div class="actions actions-sticky">
+        <button type="submit" class="btn btn-primary" id="submit">계산하기</button>
+        <button type="button" class="btn btn-reset" id="reset-all">초기화</button>
+      </div>
+    </form>
+
+    <div id="result-status" class="sr-only" role="status" aria-live="polite" aria-atomic="true"></div>
+
+    <section id="result" class="panel result" hidden aria-labelledby="result-title">
+      <h2 id="result-title" class="panel-title" tabindex="-1"><span class="step">2</span> 계산 결과</h2>
+      <div id="result-unavailable" class="notice notice-warn" hidden>
+        <p><strong>계산할 수 없습니다.</strong> <span id="unavailable-reason"></span></p>
+        <p>공식 기준이 확인되지 않은 값은 임의로 쓰지 않습니다. 다른 기준 연도를 선택해 주세요.</p>
+      </div>
+      <div id="result-body">
+        <p class="result-meta" id="result-meta"></p>
+        <div class="headline result-stats" id="result-stats"></div>
+        <h3 class="table-title">항목별 상세 내역</h3>
+        <div id="result-table"></div>
+        <dl class="kv-list" id="result-rows"></dl>
+        <div data-block>
+          <h3 class="table-title">계산 공식</h3>
+          <ul class="formula-list" id="result-formulas"></ul>
+        </div>
+        <div data-block class="caution">
+          <h3 class="table-title">주의사항</h3>
+          <ul id="result-warnings"></ul>
+        </div>
+        <p class="disclaimer result-disclaimer">본 계산 결과는 단순 모의 계산이며, 법적 확정 금액이나 효력을 갖는 증빙자료가 아닙니다.</p>
+      </div>
+    </section>
+
+    <!-- 공통 아코디언: 계산 방법 · 실제 예제 · 공식출처 (기본 접힘) -->
+    <details class="content basis-fold info-fold" id="basis-fold">
+      <summary class="fold-summary"><h2 id="info-title">계산 방법 · 실제 예제 · 공식출처</h2><span class="fold-icon" aria-hidden="true"></span></summary>
+      <div class="fold-body">
+      <section class="howto" aria-labelledby="howto-title">
+      <h3 id="howto-title">증여세 계산 방법</h3>
+      <ol>
+        <li>이번 증여에 10년 안에 같은 사람에게 받은 증여를 합산하고, 관계별 증여재산공제(배우자 6억, 성년 자녀 5천만, 미성년 2천만, 기타 친족 1천만)와 혼인·출산 공제를 뺍니다.</li>
+        <li>과세표준에 세율(1억 이하 10% ~ 30억 초과 50%)을 곱하고, 조부모→손자녀면 30%(미성년 20억 초과 40%)를 할증합니다.</li>
+        <li>합산 증여의 기납부세액과 신고세액공제 3%를 빼면 납부할 세액입니다.</li>
+      </ol>
+      <h4>실제 계산 예제</h4>
+      <div class="example">
+        <p class="example-case"><strong>예시</strong> 부모가 성년 자녀에게 1억5천만 원 증여 (10년 내 증여 없음, 기한 내 신고)</p>
+        <dl class="kv-list example-result">
+          <div class="kv"><dt>과세표준</dt><dd>100,000,000원</dd></div>
+          <div class="kv"><dt>산출세액</dt><dd>10,000,000원</dd></div>
+          <div class="kv"><dt>예상 납부세액</dt><dd>9,700,000원</dd></div>
+        </dl>
+        <ol class="example-steps">
+          <li>증여세 과세가액: 150,000,000원 + 합산 0원 = 150,000,000원</li>
+          <li>증여재산공제 (직계존속 → 성년 자녀·손자녀, 10년 한도 50,000,000원): − 50,000,000원</li>
+          <li>혼인·출산 증여재산공제: − 0원</li>
+          <li>과세표준: 100,000,000원</li>
+          <li>산출세액 (10~50%): 10,000,000원</li>
+          <li>세대생략 할증: 해당 없음</li>
+          <li>납부세액공제 (합산 증여 기납부): − 0원</li>
+          <li>신고세액공제 3%: − 300,000원</li>
+        </ol>
+      </div>
+      </section>
+      <section class="basis" aria-labelledby="basis-title">
+      <h3 id="basis-title">적용 기준 및 공식 출처</h3>
+      <p>적용 기준: 2026년 상속세 및 증여세법 기준. 연도별 요율·세율은 기준 데이터로 따로 관리하며, 공식 확정 전인 연도는 계산하지 않습니다.</p>
+      <ul class="sources">
+        <li><a href="https://www.law.go.kr/법령/%EC%83%81%EC%86%8D%EC%84%B8%EB%B0%8F%EC%A6%9D%EC%97%AC%EC%84%B8%EB%B2%95/%EC%A0%9C26%EC%A1%B0" target="_blank" rel="noopener noreferrer">상속세 및 증여세법 제26조·제56조 (세율 10~50%)<span class="sr-only"> — 새 창에서 열림</span></a></li>
+        <li><a href="https://www.law.go.kr/법령/%EC%83%81%EC%86%8D%EC%84%B8%EB%B0%8F%EC%A6%9D%EC%97%AC%EC%84%B8%EB%B2%95/%EC%A0%9C53%EC%A1%B0" target="_blank" rel="noopener noreferrer">상속세 및 증여세법 제53조 (증여재산공제 — 배우자 6억, 직계존속 5천만(미성년 2천만), 직계비속 5천만, 기타친족 1천만, 10년 합산)<span class="sr-only"> — 새 창에서 열림</span></a></li>
+        <li><a href="https://www.law.go.kr/법령/%EC%83%81%EC%86%8D%EC%84%B8%EB%B0%8F%EC%A6%9D%EC%97%AC%EC%84%B8%EB%B2%95/%EC%A0%9C53%EC%A1%B0%EC%9D%982" target="_blank" rel="noopener noreferrer">상속세 및 증여세법 제53조의2 (혼인·출산 증여재산공제 1억 원)<span class="sr-only"> — 새 창에서 열림</span></a></li>
+        <li><a href="https://www.law.go.kr/법령/%EC%83%81%EC%86%8D%EC%84%B8%EB%B0%8F%EC%A6%9D%EC%97%AC%EC%84%B8%EB%B2%95/%EC%A0%9C57%EC%A1%B0" target="_blank" rel="noopener noreferrer">상속세 및 증여세법 제57조 (세대를 건너뛴 증여 30% 할증, 미성년자 20억 초과 40%)<span class="sr-only"> — 새 창에서 열림</span></a></li>
+        <li><a href="https://www.law.go.kr/법령/%EC%83%81%EC%86%8D%EC%84%B8%EB%B0%8F%EC%A6%9D%EC%97%AC%EC%84%B8%EB%B2%95/%EC%A0%9C47%EC%A1%B0" target="_blank" rel="noopener noreferrer">상속세 및 증여세법 제47조 제2항 (10년 이내 동일인 증여 합산)·제58조(납부세액공제)<span class="sr-only"> — 새 창에서 열림</span></a></li>
+        <li><a href="https://www.law.go.kr/법령/%EC%83%81%EC%86%8D%EC%84%B8%EB%B0%8F%EC%A6%9D%EC%97%AC%EC%84%B8%EB%B2%95/%EC%A0%9C69%EC%A1%B0" target="_blank" rel="noopener noreferrer">상속세 및 증여세법 제69조 (신고세액공제 3%)<span class="sr-only"> — 새 창에서 열림</span></a></li>
+        <li><a href="https://www.law.go.kr/법령/%EC%83%81%EC%86%8D%EC%84%B8%EB%B0%8F%EC%A6%9D%EC%97%AC%EC%84%B8%EB%B2%95/%EC%A0%9C55%EC%A1%B0" target="_blank" rel="noopener noreferrer">상속세 및 증여세법 제25조 제2항·제55조 제2항 (과세표준 50만 원 미만 부과 안 함)<span class="sr-only"> — 새 창에서 열림</span></a></li>
+      </ul>
+      <p class="checked-date">공식 자료 확인일: <time datetime="2026-11-21">2026년 11월 21일</time></p>
+      </section>
+    </div>
+    </details>
+
+    <details class="content faq faq-fold" id="faq-fold">
+      <summary class="fold-summary"><h2 id="faq-title">자주 묻는 질문</h2></summary>
+      <div class="fold-body">
+      <h3>부모님 각각 5천만 원씩 받으면 1억 원 공제인가요?</h3>
+      <p>아닙니다. 직계존속 공제 5천만 원은 부모·조부모 전체를 합쳐 10년간 5천만 원입니다(미성년자는 2천만 원).</p>
+      <h3>결혼할 때 받으면 얼마까지 세금이 없나요?</h3>
+      <p>성년 자녀는 기본 공제 5천만 원에 혼인·출산 공제 1억 원을 더해 10년간 최대 1억5천만 원까지 증여세가 없습니다.</p>
+      <h3>부동산 증여도 계산되나요?</h3>
+      <p>시가로 평가한 금액을 넣으면 증여세는 계산됩니다. 다만 취득세, 부담부증여의 양도세, 평가 방법은 반영하지 않습니다.</p>
+    </div>
+    </details>
+
+    <section class="content related" aria-labelledby="related-title">
+      <h2 id="related-title">관련 계산기</h2>
+      <ul class="related-list">
+        <li><a class="related-link cat-tax" href="/inheritance-tax"><span class="related-cat">세금·보험</span><strong>상속세 계산기</strong><span>상속공제를 반영한 예상 상속세를 확인합니다.</span></a></li>
+      </ul>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container container-wide">
+      <p class="footer-brand">정산노트<span aria-hidden="true">.</span></p>
+      <p>정산노트의 계산 결과는 단순 모의 계산이며, 법적 효력을 갖는 증빙자료가 아닙니다.</p>
+      <p>입력한 값은 브라우저 안에서만 계산되며 서버나 분석 도구로 전송되지 않습니다.</p>
+      <p><a href="/">정산노트 홈</a></p>
+    </div>
+  </footer>
+</body>
+</html>

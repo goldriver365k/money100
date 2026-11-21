@@ -1,0 +1,222 @@
+<!doctype html>
+<html lang="ko" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'none'; form-action 'none'; base-uri 'none'">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <title>국민연금 보험료 계산기 2026 — 9.5%·기준소득월액 상한 659만 원 | 정산노트</title>
+  <meta name="description" content="2026년 국민연금 보험료율 9.5%와 기준소득월액 상·하한(1~6월 637만/40만 원, 7월부터 659만/41만 원)으로 사업장·지역·임의가입자의 월 보험료를 계산합니다.">
+  <!-- seo:start -->
+  <meta name="robots" content="noindex, nofollow">
+  <!-- seo:end -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="정산노트">
+  <meta property="og:title" content="국민연금 보험료 계산기 2026 — 9.5%·기준소득월액 상한 659만 원 | 정산노트">
+  <meta property="og:description" content="가입자 유형별 월 국민연금 보험료와 본인·사업주 부담을 확인하세요.">
+  <meta property="og:locale" content="ko_KR">
+  <meta name="theme-color" content="#2563e2">
+  <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/assets/css/style.css">
+  <script type="module" src="/assets/js/nav.js"></script>
+  <script type="module" src="/assets/js/calc-page.js"></script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "월급이 1,000만 원이면 보험료는?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "기준소득월액 상한(2026년 7월부터 659만 원)이 적용되어 그 이상 소득에는 보험료가 붙지 않습니다."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "지역가입자는 왜 두 배인가요?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "사업주 부담이 없어 9.5% 전액을 본인이 냅니다. 소득이 적으면 보험료 지원 제도를 확인하세요."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "2027년 보험료율은?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "법률상 10%로 오르지만, 2027년 7월 이후 기준소득월액 상·하한은 아직 고시되지 않았습니다."
+        }
+      }
+    ]
+  }
+  </script>
+</head>
+<body class="calc-page">
+<!-- 이 파일은 scripts/gen-calculators.js 로 생성됩니다. 직접 고치지 말고 scripts/calculators.js 를 수정하세요. -->
+  <a class="skip-link" href="#main">본문 바로가기</a>
+  <header class="site-header">
+    <div class="container container-wide header-inner">
+      <a class="brand" href="/"><span class="brand-mark" aria-hidden="true"></span>정산노트</a>
+      <nav class="main-nav" aria-label="주요 메뉴"><ul><li><a href="/#calculators">계산기 모음</a></li><li><a href="#basis-fold" data-open-fold>이용 가이드</a></li><li><a href="#faq-fold" data-open-fold>자주 묻는 질문</a></li></ul></nav>
+    </div>
+  </header>
+
+  <main id="main" class="container">
+    <nav class="breadcrumb" aria-label="현재 위치">
+      <ol>
+        <li><a href="/" id="home-link">← 계산기 목록(홈)</a></li>
+        <li aria-current="page">국민연금 계산기</li>
+      </ol>
+    </nav>
+
+    <section class="hero calc-hero" aria-labelledby="page-title">
+      <p class="calc-badges"><span class="cat-badge cat-tax">세금·보험</span><span class="basis-badge">적용 기준: 2026년 보험료율 9.5% 기준</span></p>
+      <h1 id="page-title">국민연금 계산기</h1>
+      <p class="lead">가입자 유형별 월 국민연금 보험료와 본인·사업주 부담을 확인하세요.</p>
+    </section>
+
+    <noscript>
+      <p class="notice notice-warn">이 계산기는 브라우저의 JavaScript로 동작합니다. JavaScript를 켠 뒤 다시 열어 주세요.</p>
+    </noscript>
+
+    <form id="calc-form" class="panel" data-calc="national-pension" novalidate autocomplete="off" aria-labelledby="form-title">
+      <h2 id="form-title" class="panel-title"><span class="step">1</span> 입력</h2>
+      <div class="field">
+        <label for="year"><span class="label-text">적용 기준 연도</span></label>
+        <select id="year" name="year" data-years aria-describedby="year-error year-hint"></select>
+        <p class="error" id="year-error" hidden></p>
+        <p class="hint" id="year-hint">연도를 바꾸면 그해 기준(요율·세율)으로 계산합니다. 공식 확정 전인 항목은 계산하지 않고 사유를 알려 드립니다.</p>
+      </div>
+
+      <div class="field">
+        <label for="month"><span class="label-text">기준 월</span></label>
+        <select id="month" name="month" data-months aria-describedby="month-error month-hint"></select>
+        <p class="error" id="month-error" hidden></p>
+        <p class="hint" id="month-hint">기준소득월액 상·하한은 매년 7월에 바뀝니다.</p>
+      </div>
+
+      <fieldset class="field">
+        <legend>가입자 유형</legend>
+        <div class="choices">
+          <label class="choice"><input type="radio" name="type" value="workplace" checked> <span>사업장가입자</span></label>
+          <label class="choice"><input type="radio" name="type" value="regional"> <span>지역가입자</span></label>
+          <label class="choice"><input type="radio" name="type" value="voluntary"> <span>임의(계속)가입자</span></label>
+        </div>
+        <p class="error" id="type-error" hidden></p>
+      </fieldset>
+
+      <div class="field">
+        <label for="income"><span class="label-text">월 소득 (신고 소득월액)</span> <span class="req">필수</span> <span class="unit">(원)</span></label>
+        <input id="income" name="income" type="text" inputmode="numeric" autocomplete="off" spellcheck="false" placeholder="예: 3000000" data-amount aria-describedby="income-error income-preview income-hint">
+        <p class="error" id="income-error" hidden></p>
+        <p class="preview" id="income-preview"></p>
+        <p class="hint" id="income-hint">사업장가입자는 비과세를 뺀 월 보수입니다.</p>
+      </div>
+
+      <div class="actions actions-sticky">
+        <button type="submit" class="btn btn-primary" id="submit">계산하기</button>
+        <button type="button" class="btn btn-reset" id="reset-all">초기화</button>
+      </div>
+    </form>
+
+    <div id="result-status" class="sr-only" role="status" aria-live="polite" aria-atomic="true"></div>
+
+    <section id="result" class="panel result" hidden aria-labelledby="result-title">
+      <h2 id="result-title" class="panel-title" tabindex="-1"><span class="step">2</span> 계산 결과</h2>
+      <div id="result-unavailable" class="notice notice-warn" hidden>
+        <p><strong>계산할 수 없습니다.</strong> <span id="unavailable-reason"></span></p>
+        <p>공식 기준이 확인되지 않은 값은 임의로 쓰지 않습니다. 다른 기준 연도를 선택해 주세요.</p>
+      </div>
+      <div id="result-body">
+        <p class="result-meta" id="result-meta"></p>
+        <div class="headline result-stats" id="result-stats"></div>
+        <h3 class="table-title">항목별 상세 내역</h3>
+        <div id="result-table"></div>
+        <dl class="kv-list" id="result-rows"></dl>
+        <div data-block>
+          <h3 class="table-title">계산 공식</h3>
+          <ul class="formula-list" id="result-formulas"></ul>
+        </div>
+        <div data-block class="caution">
+          <h3 class="table-title">주의사항</h3>
+          <ul id="result-warnings"></ul>
+        </div>
+        <p class="disclaimer result-disclaimer">본 계산 결과는 단순 모의 계산이며, 법적 확정 금액이나 효력을 갖는 증빙자료가 아닙니다.</p>
+      </div>
+    </section>
+
+    <!-- 공통 아코디언: 계산 방법 · 실제 예제 · 공식출처 (기본 접힘) -->
+    <details class="content basis-fold info-fold" id="basis-fold">
+      <summary class="fold-summary"><h2 id="info-title">계산 방법 · 실제 예제 · 공식출처</h2><span class="fold-icon" aria-hidden="true"></span></summary>
+      <div class="fold-body">
+      <section class="howto" aria-labelledby="howto-title">
+      <h3 id="howto-title">국민연금 계산 방법</h3>
+      <ol>
+        <li>기준소득월액은 월 소득에서 천원 미만을 버린 금액이며, 그 달의 상·하한 안으로 맞춥니다.</li>
+        <li>보험료 = 기준소득월액 × 9.5%. 사업장가입자는 근로자와 사업주가 4.75%씩, 지역·임의가입자는 전액 본인이 냅니다.</li>
+        <li>보험료율은 2033년 13%가 될 때까지 매년 0.5%p씩 오릅니다.</li>
+      </ol>
+      <h4>실제 계산 예제</h4>
+      <div class="example">
+        <p class="example-case"><strong>예시</strong> 사업장가입자 월 소득 350만 원 (2026년 8월)</p>
+        <dl class="kv-list example-result">
+          <div class="kv"><dt>본인 부담</dt><dd>166,250원</dd></div>
+          <div class="kv"><dt>사업주 부담</dt><dd>166,250원</dd></div>
+          <div class="kv"><dt>월 보험료 합계</dt><dd>332,500원</dd></div>
+        </dl>
+        <ol class="example-steps">
+          <li>기준소득월액: 3,500,000원 → 상·하한(410,000원~6,590,000원) 적용 3,500,000원</li>
+          <li>보험료율: 9.5% (근로자·사업주 각 4.75%)</li>
+          <li>본인 부담: 3,500,000원 × 4.75% = 166,250원</li>
+          <li>연간 본인 부담 (같은 소득 가정): 1,995,000원</li>
+        </ol>
+      </div>
+      </section>
+      <section class="basis" aria-labelledby="basis-title">
+      <h3 id="basis-title">적용 기준 및 공식 출처</h3>
+      <p>적용 기준: 2026년 보험료율 9.5% 기준. 연도별 요율·세율은 기준 데이터로 따로 관리하며, 공식 확정 전인 연도는 계산하지 않습니다.</p>
+      <ul class="sources">
+        <li><a href="https://www.law.go.kr/법령/%EA%B5%AD%EB%AF%BC%EC%97%B0%EA%B8%88%EB%B2%95/%EC%A0%9C88%EC%A1%B0" target="_blank" rel="noopener noreferrer">국민연금법 제88조 (연금보험료의 부과·징수) — 2026년 9.5%, 2027년 10%부터 매년 0.5%p 인상 (2025년 개정)<span class="sr-only"> — 새 창에서 열림</span></a></li>
+        <li><a href="https://www.nps.or.kr/" target="_blank" rel="noopener noreferrer">국민연금공단 — 기준소득월액 상한 659만 원·하한 41만 원 (2026.7.~2027.6., 보건복지부 국민연금심의위원회)<span class="sr-only"> — 새 창에서 열림</span></a></li>
+        <li><a href="https://www.law.go.kr/법령/%EA%B5%AD%EB%AF%BC%EC%97%B0%EA%B8%88%EB%B2%95/%EC%A0%9C88%EC%A1%B0" target="_blank" rel="noopener noreferrer">국민연금법 제88조 제3항 (지역·임의가입자는 연금보험료 전액 본인 부담)<span class="sr-only"> — 새 창에서 열림</span></a></li>
+        <li><a href="https://www.law.go.kr/법령/%EA%B5%AD%EA%B3%A0%EA%B8%88%EA%B4%80%EB%A6%AC%EB%B2%95/%EC%A0%9C47%EC%A1%B0" target="_blank" rel="noopener noreferrer">국고금 관리법 제47조 (국고금의 끝수 계산) — 10원 미만 끝수 버림<span class="sr-only"> — 새 창에서 열림</span></a></li>
+      </ul>
+      <p class="checked-date">공식 자료 확인일: <time datetime="2026-11-21">2026년 11월 21일</time></p>
+      </section>
+    </div>
+    </details>
+
+    <details class="content faq faq-fold" id="faq-fold">
+      <summary class="fold-summary"><h2 id="faq-title">자주 묻는 질문</h2></summary>
+      <div class="fold-body">
+      <h3>월급이 1,000만 원이면 보험료는?</h3>
+      <p>기준소득월액 상한(2026년 7월부터 659만 원)이 적용되어 그 이상 소득에는 보험료가 붙지 않습니다.</p>
+      <h3>지역가입자는 왜 두 배인가요?</h3>
+      <p>사업주 부담이 없어 9.5% 전액을 본인이 냅니다. 소득이 적으면 보험료 지원 제도를 확인하세요.</p>
+      <h3>2027년 보험료율은?</h3>
+      <p>법률상 10%로 오르지만, 2027년 7월 이후 기준소득월액 상·하한은 아직 고시되지 않았습니다.</p>
+    </div>
+    </details>
+
+    <section class="content related" aria-labelledby="related-title">
+      <h2 id="related-title">관련 계산기</h2>
+      <ul class="related-list">
+        <li><a class="related-link cat-tax" href="/social-insurance"><span class="related-cat">세금·보험</span><strong>4대보험 계산기</strong><span>국민연금·건강·장기요양·고용보험의 근로자·사업주 부담을 계산합니다.</span></a></li>
+        <li><a class="related-link cat-tax" href="/health-insurance"><span class="related-cat">세금·보험</span><strong>건강보험료 계산기</strong><span>직장·지역가입자 건강보험료를 확인합니다.</span></a></li>
+        <li><a class="related-link cat-labor" href="/annual-salary-net"><span class="related-cat">노동·급여</span><strong>연봉 실수령액 계산기</strong><span>연봉에서 4대보험과 소득세를 뺀 월·연 실수령액을 확인합니다.</span></a></li>
+      </ul>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container container-wide">
+      <p class="footer-brand">정산노트<span aria-hidden="true">.</span></p>
+      <p>정산노트의 계산 결과는 단순 모의 계산이며, 법적 효력을 갖는 증빙자료가 아닙니다.</p>
+      <p>입력한 값은 브라우저 안에서만 계산되며 서버나 분석 도구로 전송되지 않습니다.</p>
+      <p><a href="/">정산노트 홈</a></p>
+    </div>
+  </footer>
+</body>
+</html>

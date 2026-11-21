@@ -18,4 +18,12 @@ export const PAGES = [
   { path: '/annual-leave-pay', file: 'annual-leave-pay/index.html', priority: '0.8', public: true },
   { path: '/overtime-pay', file: 'overtime-pay/index.html', priority: '0.8', public: true },
   { path: '/parental-leave-pay', file: 'parental-leave-pay/index.html', priority: '0.8', public: true },
+  { path: '/comprehensive-income-tax', file: 'comprehensive-income-tax/index.html', priority: '0.8', public: true },
+  { path: '/year-end-tax', file: 'year-end-tax/index.html', priority: '0.8', public: true },
+  { path: '/freelancer-tax', file: 'freelancer-tax/index.html', priority: '0.8', public: true },
+  { path: '/income-tax', file: 'income-tax/index.html', priority: '0.8', public: true },
+  { path: '/health-insurance', file: 'health-insurance/index.html', priority: '0.8', public: true },
+  { path: '/national-pension', file: 'national-pension/index.html', priority: '0.8', public: true },
+  { path: '/gift-tax', file: 'gift-tax/index.html', priority: '0.8', public: true },
+  { path: '/inheritance-tax', file: 'inheritance-tax/index.html', priority: '0.8', public: true },
 ];
