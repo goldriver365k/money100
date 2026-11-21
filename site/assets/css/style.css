@@ -543,3 +543,9 @@ h3.card-title { margin: 0; font-size: 1.15rem; line-height: 1.4; }
 .card-soon-note { font-size: 0.85rem; color: var(--muted); margin-top: 4px; }
 .no-results { padding: 24px; text-align: center; color: var(--muted); border: 1px dashed var(--border); border-radius: var(--radius); }
 .catalog + .basis-fold { margin-top: 32px; }
+/* 홈 디자인 검토 반영 */
+.search-field input::placeholder { color: var(--muted); opacity: 1; }                    /* 다크 모드 대비 */
+.card-cat, .status, .card-tag { font-size: 0.8125rem; }                                   /* 13px */
+.card-featured { display: flex; flex-direction: column; gap: 6px; }
+.card-featured .card-cta { margin-top: auto; padding-top: 8px; }
+.hero .lead { max-width: 44em; }

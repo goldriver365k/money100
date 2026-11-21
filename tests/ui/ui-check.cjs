@@ -159,6 +159,11 @@ const foldOpen = (p) => p.evaluate(() => document.querySelector('details.basis-f
       // 검색·분야별 보기
       await p.fill('#calc-search', '주휴');
       const s1 = await p.$$eval('.calc-item:not([hidden]) .card-title', (e) => e.map((x) => x.textContent));
+      await p.fill('#calc-search', '퇴사 월급');
+      const m1 = await p.$$eval('.calc-item:not([hidden]) .card-title', (e) => e.map((x) => x.textContent));
+      await p.fill('#calc-search', '알바 주휴');
+      const m2 = await p.$$eval('.calc-item:not([hidden]) .card-title', (e) => e.map((x) => x.textContent));
+      check('home', w, '여러 낱말 검색(‘퇴사 월급’·‘알바 주휴’ → 각 1개)', m1.length === 1 && m1[0].includes('월급') && m2.length === 1 && m2[0].includes('주휴'), `퇴사 월급 ${m1.length}개 · 알바 주휴 ${m2.length}개`);
       await p.fill('#calc-search', '없는계산기명');
       const s2 = { n: await p.locator('.calc-item:not([hidden])').count(), empty: await p.locator('#no-results').isVisible() };
       await p.fill('#calc-search', '');

@@ -15,12 +15,15 @@ let category = 'all';
 const norm = (s) => s.toLowerCase().replace(/\s+/g, '');
 
 function apply() {
-  const q = norm(search.value);
+  // 낱말별 AND 검색: '퇴사 월급', '알바 주휴'처럼 순서·띄어쓰기가 달라도 찾는다
+  const terms = search.value.toLowerCase().split(/\s+/).filter(Boolean);
+  const q = terms.join('');
   let shown = 0;
   let live = 0;
   for (const item of items) {
     const okCat = category === 'all' || item.dataset.category === category;
-    const okText = !q || norm(item.dataset.keywords).includes(q);
+    const hay = norm(item.dataset.keywords);
+    const okText = !terms.length || hay.includes(q) || terms.every((t) => hay.includes(t));
     const visible = okCat && okText;
     item.hidden = !visible;
     if (visible) {
