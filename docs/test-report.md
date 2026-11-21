@@ -1,6 +1,6 @@
 # 정산노트 1차 검수 결과
 
-실행: 2026-11-20T23:48:59.244Z · Chromium(Playwright) · 시간대 Pacific/Kiritimati(UTC+14)로 날짜 밀림 여부도 함께 확인
+실행: 2026-11-21T00:21:14.991Z · Chromium(Playwright) · 시간대 Pacific/Kiritimati(UTC+14)로 날짜 밀림 여부도 함께 확인
 
 ## 필수 검증 사례 5건
 
