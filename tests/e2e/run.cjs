@@ -381,6 +381,7 @@ const CASES = [
       order.below && order.texts[0] === NOTICE1 && order.texts[1] === NOTICE2);
     const faq = await page.$$eval('.faq h3', (hs) => hs.map((h) => h.textContent));
     T('FAQ 3건', '계산기 하단 “자주 묻는 질문”', '퇴사일 / 토요일·공휴일 / 실제 지급액 질문 3건', faq.join(' / '), faq.length === 3);
+    await page.locator('#basis-fold > summary').click(); // 접이식 ‘적용 기준 및 공식 출처’ 펼침
     const body = await page.locator('main').innerText();
     T('공식 자료 확인일 · “법정 의무 산식” 미사용', '“적용 기준과 공식 출처” 확인', '“공식 자료 확인일: 2026년 11월 21일” 표시, “법정” 표현 없음',
       `확인일 ${body.includes('공식 자료 확인일: 2026년 11월 21일') ? '표시' : '없음'} · 법정 표현 ${/법정/.test(body) ? '있음' : '없음'}`,
@@ -907,6 +908,163 @@ const CASES = [
         await p.screenshot({ path: path.join(SHOTS, 'home-desktop.png'), fullPage: true });
       }
       await ctx.close();
+    }
+
+    /* ================= 적용 기준 및 공식 출처 접기 ================= */
+    section('적용 기준 및 공식 출처 — 접이식 영역 (두 계산기)');
+    {
+      const FOLDS = [
+        {
+          name: '월급 일할계산기', url: '/salary-proration', fold: '#basis-fold',
+          calc: async (pg, salary = '3100000') => { await fillCase(pg, { ...CASES[0], salary, reload: false }); },
+          submit: '#submit', resultCheck: async (pg) => (await pg.locator('#row-calendar [data-col="formula"]').innerText()).includes('×'),
+          edit: async (pg) => pg.fill('#salary', '6200000'),
+          linkHost: 'www.law.go.kr',
+        },
+        {
+          name: '주휴수당 계산기', url: '/weekly-holiday-pay', fold: '#basis',
+          calc: null, submit: '#submit', resultCheck: async (pg) => (await pg.locator('#whp-rows tr').first().innerText()).includes('근거:'),
+          edit: async (pg) => { await pg.click('#tab-1'); await pg.fill('#h-2026-07-06', '7'); },
+          linkHost: null,
+        },
+      ];
+      const foldState = (pg, sel) => pg.evaluate((s) => {
+        const d = document.querySelector(s);
+        const sum = d.querySelector(':scope > summary');
+        const arrow = getComputedStyle(sum, '::before').transform;
+        const date = d.querySelector('.checked-date');
+        const vis = (el) => el.checkVisibility({ contentVisibilityAuto: true, visibilityProperty: true });
+        return { open: d.open, title: sum.innerText.trim(), arrow, dateVisible: !!date && vis(date), links: [...d.querySelectorAll('.sources a')].filter(vis).length };
+      }, sel);
+
+      for (const f of FOLDS) {
+        // 첫 접속·새로고침 기본 접힘
+        await page.goto(f.url);
+        const s0 = await foldState(page, f.fold);
+        await page.locator(`${f.fold} > summary`).click();
+        const s1 = await foldState(page, f.fold);
+        await page.reload();
+        const s2 = await foldState(page, f.fold);
+        T(`${f.name}: 제목·기본 접힘·새로고침 후 접힘`, `${f.url} 첫 접속 → 펼침 → 새로고침`, '제목 “적용 기준 및 공식 출처”, 첫 접속 접힘, 새로고침 후 다시 접힘, 접힌 상태에서 확인일·링크 숨김',
+          `제목 “${s0.title}” · 첫 접속 ${s0.open ? '열림' : '접힘'}(링크 ${s0.links}개 보임) · 펼친 뒤 ${s1.open ? '열림' : '접힘'} · 새로고침 후 ${s2.open ? '열림' : '접힘'}`,
+          s0.title === '적용 기준 및 공식 출처' && !s0.open && s0.links === 0 && !s0.dateVisible && s1.open && !s2.open);
+
+        // 제목줄 클릭으로 열고 닫기 + 화살표 방향
+        const sumBox = await page.locator(`${f.fold} > summary`).boundingBox();
+        await page.mouse.click(sumBox.x + sumBox.width - 10, sumBox.y + sumBox.height / 2); // 제목 글자 밖(제목줄 오른쪽 끝)
+        await page.waitForTimeout(300); // 화살표 회전 애니메이션(0.15초) 완료 대기
+        const c1 = await foldState(page, f.fold);
+        await page.mouse.click(sumBox.x + sumBox.width - 10, sumBox.y + sumBox.height / 2);
+        await page.waitForTimeout(300);
+        const c2 = await foldState(page, f.fold);
+        const rotated90 = (m) => { const v = (m.match(/matrix\(([^)]+)\)/) || [])[1]?.split(',').map(Number); return !!v && Math.abs(v[0]) < 0.01 && Math.abs(v[1] - 1) < 0.01; };
+        T(`${f.name}: 제목줄 전체 클릭·화살표 방향`, '제목줄 오른쪽 끝(글자 밖)을 클릭 → 다시 클릭', '열림 ↔ 접힘, 열림일 때 화살표가 오른쪽(▶)에서 아래(▼)로 90° 회전',
+          `1회 ${c1.open ? '열림' : '접힘'}(화살표 ${c1.arrow}) · 2회 ${c2.open ? '열림' : '접힘'}(화살표 ${c2.arrow})`,
+          c1.open && !c2.open && rotated90(c1.arrow) && !rotated90(c2.arrow) && c1.dateVisible && c1.links >= 2);
+
+        // 키보드 Enter·Space
+        await page.focus(`${f.fold} > summary`);
+        await page.keyboard.press('Shift+Tab');
+        await page.keyboard.press('Tab'); // 키보드로 포커스 (focus-visible)
+        const focused = await page.evaluate((s) => document.activeElement === document.querySelector(`${s} > summary`), f.fold);
+        const focusRing = await page.evaluate((s) => getComputedStyle(document.querySelector(`${s} > summary`)).outlineStyle, f.fold);
+        await page.keyboard.press('Enter');
+        const k1 = (await foldState(page, f.fold)).open;
+        await page.keyboard.press('Enter');
+        const k2 = (await foldState(page, f.fold)).open;
+        await page.keyboard.press('Space');
+        const k3 = (await foldState(page, f.fold)).open;
+        await page.keyboard.press('Space');
+        const k4 = (await foldState(page, f.fold)).open;
+        T(`${f.name}: 키보드 Enter·Space`, 'Tab으로 제목줄 포커스 → Enter → Enter → Space → Space', '열림 → 접힘 → 열림 → 접힘, 포커스 테두리 표시',
+          `${[k1, k2, k3, k4].map((x) => (x ? '열림' : '접힘')).join(' → ')} · 포커스 테두리 ${focusRing}`, focused && k1 && !k2 && k3 && !k4 && focusRing === 'solid');
+
+        // 펼친 상태에서 공식 링크 열기
+        await page.locator(`${f.fold} > summary`).click();
+        const link = page.locator(`${f.fold} .sources a`).first();
+        const href = await link.getAttribute('href');
+        const [popup] = await Promise.all([context.waitForEvent('page'), link.click()]);
+        await popup.waitForLoadState('domcontentloaded', { timeout: 20000 }).catch(() => {});
+        const popUrl = popup.url();
+        const popTitle = await popup.title().catch(() => '');
+        await popup.close();
+        T(`${f.name}: 펼친 상태에서 공식 링크 열기`, '펼친 뒤 첫 번째 공식 출처 링크 클릭', `새 창에서 ${href} 열림`, `${popUrl} “${popTitle}”`, decodeURI(popUrl) === decodeURI(href) || popUrl === href);
+
+        // 다시 계산해도 열린 상태 유지, 결과의 산식·판정 이유·면책 문구는 영역 밖
+        await page.goto(f.url);
+        if (f.name === '월급 일할계산기') {
+          await page.selectOption('#year', '2026');
+          await page.selectOption('#month', '1');
+          await page.fill('#salary', '3100000');
+          await page.fill('#start-date', '2026-01-16');
+        } else {
+          await page.fill('#hire-date', '2026-07-06');
+          await page.fill('#wage', '10320');
+          for (const [iso] of [0, 1, 2, 3].flatMap((w) => MWF(w, '5'))) {
+            const n = Math.floor((Date.parse(iso) / 86400000 - WHP_HIRE) / 7) + 1;
+            await page.click(`#tab-${n}`);
+            await page.fill(`#h-${iso}`, '5');
+            await page.check(`input[name="att-${iso}"][value="present"]`);
+          }
+        }
+        await page.locator(`${f.fold} > summary`).click();
+        await page.click(f.submit);
+        await page.waitForSelector('#result:not([hidden])');
+        const p1 = (await foldState(page, f.fold)).open;
+        await f.edit(page);
+        const hiddenNow = await page.locator('#result').isHidden();
+        await page.click(f.submit);
+        await page.waitForSelector('#result:not([hidden])');
+        const p2 = (await foldState(page, f.fold)).open;
+        const outside = await page.evaluate((s) => {
+          const fold = document.querySelector(s);
+          const res = document.getElementById('result');
+          const disc = [...document.querySelectorAll('.disclaimer')].find((d) => d.textContent.includes('법적 효력'));
+          return !fold.contains(res) && !fold.contains(disc) && disc.getBoundingClientRect().height > 0;
+        }, f.fold);
+        const resOk = await f.resultCheck(page);
+        T(`${f.name}: 다시 계산해도 열림 유지·결과는 영역 밖`, '영역 펼침 → 계산 → 입력 수정(결과 숨김) → 다시 계산', '두 번의 계산 뒤에도 열림 유지, 산식/판정 이유·면책 문구는 접이식 영역 밖에 보임',
+          `1차 계산 후 ${p1 ? '열림' : '접힘'} · 수정 시 결과 숨김=${hiddenNow} · 재계산 후 ${p2 ? '열림' : '접힘'} · 결과·면책 문구 영역 밖=${outside} · 결과 산식/근거 표시=${resOk}`,
+          p1 && hiddenNow && p2 && outside && resOk);
+        // 결과가 있는 상태에서 접어도 결과는 그대로 보임
+        await page.locator(`${f.fold} > summary`).click();
+        const stillVisible = await page.locator('#result').isVisible() && (await f.resultCheck(page));
+        T(`${f.name}: 영역을 접어도 결과는 그대로`, '결과 표시 상태에서 영역 접기', '결과표(산식·판정 이유)와 면책 문구가 계속 보임', `결과 보임=${stillVisible}`, stillVisible);
+      }
+
+      // 주휴수당: 이번 판정의 적용 규칙이 영역 안에 표시되고, 입력 수정 시 숨김
+      await page.locator('#basis > summary').click();
+      const rb = await page.locator('#basis-body').isVisible();
+      const rbText = (await page.locator('#basis-body').innerText()).split('\n')[0];
+      await page.click('#tab-1');
+      await page.fill('#h-2026-07-06', '6');
+      const rbHidden = await page.locator('#basis-body').isHidden();
+      const stillOpen = (await foldState(page, '#basis')).open;
+      T('주휴수당 계산기: 이번 판정의 적용 규칙', '판정 후 영역 펼침 → 입력 수정', '영역 안에 “이번 판정에 적용한 규칙” 표시, 수정하면 그 목록만 숨기고 영역은 열린 채 유지',
+        `표시=${rb}(“${rbText}”) · 수정 후 숨김=${rbHidden} · 영역 ${stillOpen ? '열림' : '접힘'}`, rb && rbText.includes('이번 판정에 적용한 규칙') && rbHidden && stillOpen);
+
+      // 모바일 터치
+      const mctx = await browser.newContext({ baseURL, locale: 'ko-KR', viewport: { width: 360, height: 780 }, deviceScaleFactor: 2, isMobile: true, hasTouch: true });
+      const mp = await mctx.newPage();
+      watch(mp);
+      for (const f of FOLDS) {
+        await mp.goto(f.url);
+        await mp.locator(`${f.fold} > summary`).scrollIntoViewIfNeeded();
+        await mp.locator(`${f.fold} > summary`).tap();
+        const t1 = await foldState(mp, f.fold);
+        const tag = f.name === '월급 일할계산기' ? 'salary' : 'whp';
+        await mp.waitForTimeout(300);
+        await mp.locator(f.fold).screenshot({ path: path.join(SHOTS, `fold-${tag}-360-open.png`) });
+        await mp.locator(`${f.fold} > summary`).tap();
+        const t2 = await foldState(mp, f.fold);
+        await mp.waitForTimeout(300);
+        await mp.locator(f.fold).screenshot({ path: path.join(SHOTS, `fold-${tag}-360-closed.png`) });
+        const sumH = (await mp.locator(`${f.fold} > summary`).boundingBox()).height;
+        const over = await mp.evaluate(() => document.documentElement.scrollWidth - innerWidth);
+        T(`${f.name}: 모바일 360px 터치`, '360px 터치 화면에서 제목줄 탭 → 다시 탭', '열림 → 접힘, 제목줄 높이 ≥ 44px, 가로 스크롤 없음',
+          `${t1.open ? '열림' : '접힘'}(링크 ${t1.links}개) → ${t2.open ? '열림' : '접힘'} · 제목줄 ${Math.round(sumH)}px · 넘침 ${over}px`, t1.open && t1.links >= 2 && !t2.open && sumH >= 44 && over <= 0);
+      }
+      await mctx.close();
     }
 
     /* ================= 데이터 전송 ================= */

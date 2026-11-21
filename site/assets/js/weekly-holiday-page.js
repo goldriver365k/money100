@@ -266,6 +266,7 @@ function moveWeek(delta) {
 
 function hideResult() {
   window.clearTimeout(announceTimer);
+  $('basis-body').hidden = true; // 지난 판정의 적용 규칙은 숨기되, 접이식 영역의 열림 상태는 건드리지 않는다
   if (!resultSection.hidden) {
     resultSection.hidden = true;
     resultStatus.textContent = '';
@@ -450,6 +451,7 @@ function renderResult(r) {
     needsBox.hidden = true;
     $('result-summary').textContent = '';
     $('basis-body').innerHTML = '';
+    $('basis-body').hidden = true;
     finishResult(`판정하지 않음. ${r.note}`);
     return;
   }
@@ -520,8 +522,9 @@ function renderResult(r) {
   const used = [...new Set(r.weeks.map((w) => w.rule))];
   if (r.weeks.some((w) => w.amount !== null)) used.push('AMOUNT');
   const ids = [...new Set(used.flatMap((u) => RULES[u].sources))];
+  $('basis-body').hidden = false;
   $('basis-body').innerHTML =
-    `<ul>${used.map((u) => `<li><strong>${u}</strong> ${esc(RULES[u].title)} — ${esc(sourceText(RULES[u].sources))}</li>`).join('')}</ul>` +
+    `<h3>이번 판정에 적용한 규칙</h3><ul>${used.map((u) => `<li><strong>${u}</strong> ${esc(RULES[u].title)} — ${esc(sourceText(RULES[u].sources))}</li>`).join('')}</ul>` +
     `<ul class="sources">${ids.map((id) => `<li><a href="${SOURCES[id].url}" target="_blank" rel="noopener noreferrer">${esc(SOURCES[id].label)}<span class="sr-only"> — 새 창에서 열림</span></a> — ${esc(SOURCES[id].note)}</li>`).join('')}</ul>` +
     `<p class="checked-date">공식 자료 확인일: <time datetime="${CHECKED_DATE}">2026년 11월 21일</time> · 명세: 정산노트 주휴수당 계산기 구현 명세 v0.1</p>`;
 

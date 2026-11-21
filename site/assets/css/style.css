@@ -377,3 +377,27 @@ input[aria-invalid="true"] { border-color: var(--error); box-shadow: 0 0 0 1px v
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) .badge-eligible { color: #0d1a15; }
 }
+
+/* ---------- 적용 기준 및 공식 출처 (접이식) ---------- */
+.basis-fold { margin-top: 32px; border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface); }
+.basis-fold > .fold-summary {
+  display: flex; align-items: center; gap: 10px; min-height: 52px; padding: 12px 16px;
+  cursor: pointer; list-style: none; border-radius: var(--radius);
+  -webkit-tap-highlight-color: transparent; user-select: none;
+}
+.basis-fold > .fold-summary::-webkit-details-marker { display: none; }
+.basis-fold > .fold-summary::before {
+  content: ""; flex: none; width: 0; height: 0;
+  border-style: solid; border-width: 6px 0 6px 9px; border-color: transparent transparent transparent var(--brand);
+  transition: transform .15s;
+}
+.basis-fold[open] > .fold-summary::before { transform: rotate(90deg); }
+.basis-fold > .fold-summary h2 { margin: 0; font-size: 1.1rem; }
+@media (hover: hover) {
+  .basis-fold > .fold-summary:hover { background: var(--brand-soft); }
+}
+.basis-fold[open] > .fold-summary { border-bottom: 1px solid var(--border); border-radius: var(--radius) var(--radius) 0 0; }
+.basis-fold > .fold-body { padding: 4px 16px 16px; }
+.basis-fold .basis-result { margin: 12px 0 4px; padding: 12px; border-radius: 10px; background: var(--brand-soft); font-size: 0.9rem; }
+.basis-fold .basis-result h3 { margin: 0 0 6px; font-size: 0.95rem; }
+.basis-fold .basis-result ul { padding-left: 18px; }
