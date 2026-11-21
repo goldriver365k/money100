@@ -19,3 +19,5 @@ for (const a of document.querySelectorAll('a[data-open-fold]')) {
   });
 }
 openTarget(location.hash, false);
+// 주소의 #이 바뀌어도(직접 입력·다른 페이지 링크) 해당 접이식 영역을 연다
+window.addEventListener('hashchange', () => openTarget(location.hash, true));

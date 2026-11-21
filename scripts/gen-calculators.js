@@ -86,7 +86,7 @@ async function page(spec) {
   const ex = mod.calculate(spec.example.raw);
   const cat = CATEGORIES[spec.cat];
   const faqLd = JSON.stringify({ '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: spec.faq.map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })) }, null, 2).replace(/\n/g, '\n  ');
-  const sources = ex.sources.map((s) => `<li><a href="${esc(s.url)}" target="_blank" rel="noopener noreferrer">${esc(s.title)}<span class="sr-only"> — 새 창에서 열림</span></a></li>`).join('\n        ');
+  const sources = ex.sources.map((s) => `<li><a href="${esc(s.url)}" target="_blank" rel="noopener noreferrer">${esc(s.title)}<span class="sr-only"> (새 창에서 열림)</span></a></li>`).join('\n        ');
   const missing = spec.related.filter((slug) => !bySlug[slug]);
   if (missing.length) console.warn(`경고: ${spec.slug} 관련 계산기 미구현 링크 제외 — ${missing.join(', ')}`);
   const related = spec.related.filter((slug) => bySlug[slug]).map((slug) => {
@@ -111,6 +111,11 @@ async function page(spec) {
   <meta property="og:title" content="${esc(spec.title)}">
   <meta property="og:description" content="${esc(spec.lead)}">
   <meta property="og:locale" content="ko_KR">
+  <meta property="og:image" content="/assets/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="정산노트 — 급여·세금·부동산 계산기 30종">
+  <meta name="twitter:card" content="summary_large_image">
   <meta name="theme-color" content="#2563e2">
   <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="/assets/css/style.css">

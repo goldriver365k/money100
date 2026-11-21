@@ -1,3 +1,6 @@
+/* 글꼴: Pretendard Variable (SIL OFL 1.1, assets/fonts/pretendard) — 필요한 글자 조각만 내려받는 동적 서브셋 */
+@import url("/assets/fonts/pretendard/pretendardvariable-dynamic-subset.css");
+
 :root {
   /* Canva 디자인 시안(ID DAHbhGTDh80, 홈페이지 디자인 시안)에서 추출한 색 (2026-11-21) */
   --bg: #f7f9fd;
@@ -54,7 +57,7 @@ body {
   margin: 0;
   background: var(--bg);
   color: var(--text);
-  font-family: "Pretendard", "Pretendard Variable", -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Malgun Gothic", "Noto Sans KR", "Segoe UI", sans-serif;
+  font-family: "Pretendard Variable", "Pretendard", -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Malgun Gothic", "Noto Sans KR", "Segoe UI", sans-serif;
   font-size: 16px;
   line-height: 1.6;
   word-break: keep-all;
@@ -913,3 +916,19 @@ html { scroll-padding-top: 84px; }
 /* 4) 터치 영역 44px: 로고·이동 경로 링크 */
 .brand { min-height: 44px; }
 .breadcrumb a { display: inline-flex; align-items: center; min-height: 44px; padding: 0; }
+
+/* ===== Taste skill 검토 반영 (2026-11-21) ===== */
+/* 건너뛰기 링크가 고정 헤더(z-index 20) 위에 보이도록 */
+.skip-link { z-index: 40; }
+/* 검색창 이름표를 화면에 표시 */
+.search-compact .search-label { display: block; margin: 0 0 6px; font-size: 0.9rem; font-weight: 700; color: var(--text); }
+.search-compact .search-icon { top: auto; bottom: 13px; transform: none; }
+/* 제목 크기 순서: 홈 아래쪽 소제목(h2)이 카드 제목(h3)보다 크게 */
+.home-bottom h2, .home-bottom .fold-summary h2 { font-size: 1.75rem; }
+/* 배경이 바뀌는 경계에 여백 */
+.catalog { padding-bottom: 32px; }
+.home-bottom { padding-bottom: 32px; }
+/* 바닥글 링크 터치 영역 */
+.site-footer a { display: inline-flex; align-items: center; min-height: 44px; }
+/* 홈 제목 줄 균형 (모바일에서 "30종"만 다음 줄로 떨어지지 않게) */
+.home-hero-center h1 { text-wrap: balance; word-break: keep-all; }

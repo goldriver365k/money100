@@ -68,7 +68,10 @@ for (const page of PAGES) {
   } else {
     block = '<!-- seo:start -->\n  <meta name="robots" content="noindex, nofollow">\n  <!-- seo:end -->';
   }
-  fs.writeFileSync(file, html.replace(SEO_BLOCK, block));
+  let out = html.replace(SEO_BLOCK, block);
+  // 공유 이미지(og:image)는 메신저·SNS가 읽을 수 있도록 운영 빌드에서 절대 주소로 바꾼다
+  if (production) out = out.replaceAll('content="/assets/og-image.png"', `content="${escapeAttr(siteUrl)}/assets/og-image.png"`);
+  fs.writeFileSync(file, out);
 }
 
 if (production) {

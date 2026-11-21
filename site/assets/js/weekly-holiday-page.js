@@ -66,7 +66,7 @@ function init() {
   const list = $('source-list');
   for (const [id, s] of Object.entries(SOURCES)) {
     const li = document.createElement('li');
-    li.innerHTML = `<a href="${s.url}" target="_blank" rel="noopener noreferrer">${s.label}<span class="sr-only"> — 새 창에서 열림</span></a> — ${s.note}${s.version ? ` <span class="muted">(${s.version})</span>` : ''} <span class="muted">[${id}]</span>`;
+    li.innerHTML = `<a href="${s.url}" target="_blank" rel="noopener noreferrer">${s.label}<span class="sr-only"> (새 창에서 열림)</span></a> — ${s.note}${s.version ? ` <span class="muted">(${s.version})</span>` : ''} <span class="muted">[${id}]</span>`;
     list.append(li);
   }
 
@@ -527,7 +527,7 @@ function renderResult(r) {
   $('basis-body').hidden = false;
   $('basis-body').innerHTML =
     `<h3>이번 판정에 적용한 규칙</h3><ul>${used.map((u) => `<li><strong>${u}</strong> ${esc(RULES[u].title)} — ${esc(sourceText(RULES[u].sources))}</li>`).join('')}</ul>` +
-    `<ul class="sources">${ids.map((id) => `<li><a href="${SOURCES[id].url}" target="_blank" rel="noopener noreferrer">${esc(SOURCES[id].label)}<span class="sr-only"> — 새 창에서 열림</span></a> — ${esc(SOURCES[id].note)}</li>`).join('')}</ul>` +
+    `<ul class="sources">${ids.map((id) => `<li><a href="${SOURCES[id].url}" target="_blank" rel="noopener noreferrer">${esc(SOURCES[id].label)}<span class="sr-only"> (새 창에서 열림)</span></a> — ${esc(SOURCES[id].note)}</li>`).join('')}</ul>` +
     `<p class="checked-date">공식 자료 확인일: <time datetime="${CHECKED_DATE}">2026년 11월 21일</time> · 명세: 정산노트 주휴수당 계산기 구현 명세 v0.1</p>`;
 
   finishResult(`판정 결과: ${summary}.`);
