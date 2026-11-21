@@ -7,7 +7,7 @@
  *   1. 세 페이지 직접 접속·새로고침 (360·390·1440px)
  *   2. 360·390px 가로 스크롤·입력/결과 잘림 (입력 화면, 결과 화면)
  *   3. 홈 카드 → 각 계산기 이동 → 대표 사례 입력 → 결과 표시 (360·390·1440px)
- *   4. 두 계산기 접이식 영역 기본 닫힘, 클릭·키보드(Enter·Space)로 열고 닫기
+ *   4. 두 계산기 접이식 영역(적용 기준 및 공식 출처·자주 묻는 질문) 기본 닫힘, 클릭·키보드(Enter·Space)로 열고 닫기
  *   5. 접이식 영역을 연 채 재계산해도 열림 유지
  *   6. 기존 계산 테스트 기대값 = 실제값 (월급 일할계산기 5건, 주휴수당 7건)
  * 실패 메시지는 "[페이지 @ 너비px] 항목 — 실제값" 형식이다. 결과는 docs/ui/ui-check-report.md 에 저장한다.
@@ -186,6 +186,31 @@ const foldOpen = (p) => p.evaluate(() => document.querySelector('details.basis-f
         const closedBySpace = !(await foldOpen(p));
         check(key, w, '접이식 영역 기본 닫힘·클릭·Enter·Space', closed && openByClick && closedByClick && openByEnter && closedBySpace,
           `기본 ${closed ? '닫힘' : '열림'} · 클릭 ${openByClick}/${closedByClick} · Enter ${openByEnter} · Space ${closedBySpace}`);
+
+        // 자주 묻는 질문 접이식: 기본 닫힘·새로고침 후 닫힘·제목줄 클릭·Enter·Space·열면 질문 보임
+        {
+          await p.goto(pg.path);
+          const faqState = () => p.evaluate(() => {
+            const d = document.querySelector('details.faq-fold');
+            return { open: d.open, title: d.querySelector(':scope > summary').innerText.trim(), visibleQ: [...d.querySelectorAll('h3')].filter((h) => h.checkVisibility()).length };
+          });
+          const f0 = await faqState();
+          const fs = p.locator('details.faq-fold > summary');
+          await fs.scrollIntoViewIfNeeded();
+          const fb = await fs.boundingBox();
+          await p.mouse.click(fb.x + fb.width - 8, fb.y + fb.height / 2);
+          const f1 = await faqState();
+          await p.reload();
+          const f2 = await faqState();
+          await p.locator('details.faq-fold > summary').focus();
+          await p.keyboard.press('Enter');
+          const f3 = (await faqState()).open;
+          await p.keyboard.press('Space');
+          const f4 = (await faqState()).open;
+          check(key, w, '자주 묻는 질문 접이식: 기본 닫힘·클릭·새로고침·Enter·Space',
+            f0.title === '자주 묻는 질문' && !f0.open && f0.visibleQ === 0 && f1.open && f1.visibleQ >= 3 && !f2.open && f3 && !f4,
+            `제목 “${f0.title}” · 기본 ${f0.open ? '열림' : '닫힘'}(질문 ${f0.visibleQ}개 보임) · 클릭 후 ${f1.open ? '열림' : '닫힘'}(질문 ${f1.visibleQ}개) · 새로고침 후 ${f2.open ? '열림' : '닫힘'} · Enter ${f3} · Space ${f4}`);
+        }
 
         // 열린 채 계산 → 수정 → 재계산
         if (key === 'salary') {
