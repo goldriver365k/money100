@@ -146,14 +146,18 @@
       </div>
     </section>
 
-    <section class="content howto" aria-labelledby="howto-title">
-      <h2 id="howto-title">대출이자 계산 방법</h2>
+    <!-- 공통 아코디언: 계산 방법 · 실제 예제 · 공식출처 (기본 접힘) -->
+    <details class="content basis-fold info-fold" id="basis-fold">
+      <summary class="fold-summary"><h2 id="info-title">계산 방법 · 실제 예제 · 공식출처</h2><span class="fold-icon" aria-hidden="true"></span></summary>
+      <div class="fold-body">
+      <section class="howto" aria-labelledby="howto-title">
+      <h3 id="howto-title">대출이자 계산 방법</h3>
       <ol>
         <li>월 이자율은 연 이자율을 12로 나눈 값이고, 매달 이자는 남은 원금 × 월 이자율입니다.</li>
         <li>원리금균등은 매달 같은 금액(원금+이자)을, 원금균등은 매달 같은 원금과 줄어드는 이자를, 만기일시는 매달 이자만 내고 마지막에 원금을 갚습니다.</li>
         <li>총이자는 원금균등 &lt; 원리금균등 &lt; 만기일시 순으로 커집니다.</li>
       </ol>
-      <h3>실제 계산 예제</h3>
+      <h4>실제 계산 예제</h4>
       <div class="example">
         <p class="example-case"><strong>예시</strong> 1억 원을 연 4.5%로 30년(360개월) 원리금균등 상환</p>
         <dl class="kv-list example-result">
@@ -167,16 +171,15 @@
           <li>마지막 달 (360회차): 원금 505,032원 + 이자 1,894원 = 506,926원</li>
         </ol>
       </div>
-    </section>
-
-    <details class="content basis-fold" id="basis-fold">
-      <summary class="fold-summary"><h2 id="basis-title">적용 기준 및 공식 출처</h2></summary>
-      <div class="fold-body">
+      </section>
+      <section class="basis" aria-labelledby="basis-title">
+      <h3 id="basis-title">적용 기준 및 공식 출처</h3>
       <p>적용 기준: 상환 방식 산식 (연도와 무관). 연도별 요율·세율은 기준 데이터로 따로 관리하며, 공식 확정 전인 연도는 계산하지 않습니다.</p>
       <ul class="sources">
         <li><a href="https://finlife.fss.or.kr/" target="_blank" rel="noopener noreferrer">금융감독원 — 금융상품 한눈에 (대출 상환방식 안내)<span class="sr-only"> — 새 창에서 열림</span></a></li>
       </ul>
       <p class="checked-date">공식 자료 확인일: <time datetime="2026-11-21">2026년 11월 21일</time></p>
+      </section>
     </div>
     </details>
 

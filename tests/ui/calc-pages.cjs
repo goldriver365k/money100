@@ -124,6 +124,42 @@ const check = (slug, w, item, ok, actual = '') => {
         check(spec.slug, w, '스크립트 오류 없음', errors.length === 0, errors.join(' | '));
         await p.close();
       }
+      // 공통 아코디언 (이용 가능한 모든 계산기)
+      for (const slug of liveSlugs) {
+        const p = await ctx.newPage();
+        await p.goto(slug);
+        const fold = p.locator('details.info-fold');
+        const sum = fold.locator('> summary');
+        const state = () => p.evaluate(() => {
+          const d = document.querySelector('details.info-fold');
+          const icon = d.querySelector('.fold-icon');
+          const m = new DOMMatrix(getComputedStyle(icon).transform);
+          const angle = Math.round(Math.atan2(m.b, m.a) * 180 / Math.PI);
+          const bodyVisible = d.querySelector('.fold-body').checkVisibility();
+          return { open: d.open, angle, bodyVisible, title: d.querySelector('summary h2').textContent.trim(), iconHidden: icon.getAttribute('aria-hidden') };
+        });
+        await p.waitForTimeout(250);
+        const s0 = await state();
+        const outside = await p.evaluate(() => { const d = document.querySelector('details.info-fold'); const f = document.querySelector('form'); const r = document.getElementById('result'); return !d.contains(f) && !d.contains(r) && f.checkVisibility(); });
+        const count = await fold.count();
+        check(slug, w, '아코디언: 1개·기본 접힘·제목 ‘계산 방법 · 실제 예제 · 공식출처’·아래 화살표·입력/결과는 밖에 항상 표시',
+          count === 1 && !s0.open && !s0.bodyVisible && s0.title === '계산 방법 · 실제 예제 · 공식출처' && s0.angle === 45 && s0.iconHidden === 'true' && outside, JSON.stringify({ count, ...s0, outside }));
+        if (mobile) await sum.tap(); else await sum.click();
+        await p.waitForTimeout(250);
+        const s1 = await state();
+        const content = await p.evaluate(() => { const d = document.querySelector('details.info-fold'); return { links: d.querySelectorAll('.sources a').length, checked: !!d.querySelector('.checked-date'), text: d.querySelector('.fold-body').innerText.length }; });
+        if (mobile) await sum.tap(); else await sum.click();
+        await p.waitForTimeout(250);
+        const s2 = await state();
+        check(slug, w, `아코디언 ${mobile ? '터치' : '클릭'}: 펼침(위 화살표·내용 표시·출처 링크 유지) → 다시 누르면 접힘`,
+          s1.open && s1.bodyVisible && s1.angle === -135 && content.links >= 1 && content.checked && content.text > 200 && !s2.open && s2.angle === 45, JSON.stringify({ s1, content, s2 }));
+        await sum.focus();
+        await p.keyboard.press('Enter'); const k1 = (await state()).open;
+        await p.keyboard.press('Space'); const k2 = (await state()).open;
+        const role = await p.evaluate(() => { const s = document.querySelector('details.info-fold > summary'); return { tag: s.tagName, focusable: s.tabIndex >= 0 }; });
+        check(slug, w, '아코디언 키보드: Enter 펼침·Space 접힘, summary 포커스 가능', k1 && !k2 && role.tag === 'SUMMARY' && role.focusable, JSON.stringify({ k1, k2, role }));
+        await p.close();
+      }
       await ctx.close();
     }
   } catch (err) {

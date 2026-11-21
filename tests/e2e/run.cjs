@@ -931,7 +931,7 @@ const CASES = [
       const foldState = (pg, sel) => pg.evaluate((s) => {
         const d = document.querySelector(s);
         const sum = d.querySelector(':scope > summary');
-        const arrow = getComputedStyle(sum, '::before').transform;
+        const icon = sum.querySelector('.fold-icon'); const m = icon ? new DOMMatrix(getComputedStyle(icon).transform) : null; const arrow = m ? Math.round(Math.atan2(m.b, m.a) * 180 / Math.PI) : null;
         const date = d.querySelector('.checked-date');
         const vis = (el) => el.checkVisibility({ contentVisibilityAuto: true, visibilityProperty: true });
         return { open: d.open, title: sum.innerText.trim(), arrow, dateVisible: !!date && vis(date), links: [...d.querySelectorAll('.sources a')].filter(vis).length };
@@ -945,9 +945,9 @@ const CASES = [
         const s1 = await foldState(page, f.fold);
         await page.reload();
         const s2 = await foldState(page, f.fold);
-        T(`${f.name}: 제목·기본 접힘·새로고침 후 접힘`, `${f.url} 첫 접속 → 펼침 → 새로고침`, '제목 “적용 기준 및 공식 출처”, 첫 접속 접힘, 새로고침 후 다시 접힘, 접힌 상태에서 확인일·링크 숨김',
+        T(`${f.name}: 제목·기본 접힘·새로고침 후 접힘`, `${f.url} 첫 접속 → 펼침 → 새로고침`, '제목 “계산 방법 · 실제 예제 · 공식출처”, 첫 접속 접힘, 새로고침 후 다시 접힘, 접힌 상태에서 확인일·링크 숨김',
           `제목 “${s0.title}” · 첫 접속 ${s0.open ? '열림' : '접힘'}(링크 ${s0.links}개 보임) · 펼친 뒤 ${s1.open ? '열림' : '접힘'} · 새로고침 후 ${s2.open ? '열림' : '접힘'}`,
-          s0.title === '적용 기준 및 공식 출처' && !s0.open && s0.links === 0 && !s0.dateVisible && s1.open && !s2.open);
+          s0.title === '계산 방법 · 실제 예제 · 공식출처' && !s0.open && s0.links === 0 && !s0.dateVisible && s1.open && !s2.open);
 
         // 제목줄 클릭으로 열고 닫기 + 화살표 방향
         const sumBox = await page.locator(`${f.fold} > summary`).boundingBox();
@@ -957,10 +957,10 @@ const CASES = [
         await page.mouse.click(sumBox.x + sumBox.width - 10, sumBox.y + sumBox.height / 2);
         await page.waitForTimeout(300);
         const c2 = await foldState(page, f.fold);
-        const rotated90 = (m) => { const v = (m.match(/matrix\(([^)]+)\)/) || [])[1]?.split(',').map(Number); return !!v && Math.abs(v[0]) < 0.01 && Math.abs(v[1] - 1) < 0.01; };
-        T(`${f.name}: 제목줄 전체 클릭·화살표 방향`, '제목줄 오른쪽 끝(글자 밖)을 클릭 → 다시 클릭', '열림 ↔ 접힘, 열림일 때 화살표가 오른쪽(▶)에서 아래(▼)로 90° 회전',
+        const pointsUp = (a) => a === -135; const pointsDown = (a) => a === 45;
+        T(`${f.name}: 제목줄 전체 클릭·화살표 방향`, '제목줄 오른쪽 끝(글자 밖)을 클릭 → 다시 클릭', '열림 ↔ 접힘, 제목 오른쪽 화살표: 접힘 아래(45°) → 펼침 위(−135°)',
           `1회 ${c1.open ? '열림' : '접힘'}(화살표 ${c1.arrow}) · 2회 ${c2.open ? '열림' : '접힘'}(화살표 ${c2.arrow})`,
-          c1.open && !c2.open && rotated90(c1.arrow) && !rotated90(c2.arrow) && c1.dateVisible && c1.links >= 2);
+          c1.open && !c2.open && pointsUp(c1.arrow) && pointsDown(c2.arrow) && c1.dateVisible && c1.links >= 2);
 
         // 키보드 Enter·Space
         await page.focus(`${f.fold} > summary`);

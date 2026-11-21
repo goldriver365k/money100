@@ -873,3 +873,21 @@ a.calc-card:hover .card-btn { background: #fff; color: var(--tone); }
 .related-link.cat-labor .related-cat { color: var(--cat-labor); background: var(--cat-labor-bg); }
 .related-link.cat-tax .related-cat { color: var(--cat-tax); background: var(--cat-tax-bg); }
 .related-link.cat-realty .related-cat { color: var(--cat-realty); background: var(--cat-realty-bg); }
+
+/* ===== 공통 아코디언: 계산 방법 · 실제 예제 · 공식출처 (모든 계산기) =====
+   <details class="basis-fold info-fold"> + <summary class="fold-summary"><h2>…</h2><span class="fold-icon"></span></summary>
+   네이티브 details/summary 라 키보드(Enter·Space)·터치·화면 낭독기(펼침/접힘 상태)를 기본 지원한다. */
+.info-fold > .fold-summary { justify-content: space-between; min-height: 56px; }
+.info-fold > .fold-summary::before { content: none; display: none; }
+.info-fold > .fold-summary h2 { flex: 1 1 auto; }
+.info-fold .fold-icon {
+  flex: none; width: 11px; height: 11px; margin: 0 6px 4px 12px;
+  border-right: 2.5px solid var(--brand); border-bottom: 2.5px solid var(--brand);
+  transform: rotate(45deg); transition: transform .2s ease;
+}
+.info-fold[open] > .fold-summary .fold-icon { transform: rotate(-135deg); margin-bottom: -4px; }
+.info-fold > .fold-summary:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+@media (prefers-reduced-motion: reduce) { .info-fold .fold-icon { transition: none; } }
+.info-fold .fold-body > section + section { margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--border); }
+.info-fold .fold-body h3 { margin: 16px 0 8px; font-size: 1.05rem; }
+.info-fold .fold-body h4 { margin: 14px 0 8px; font-size: 0.98rem; }

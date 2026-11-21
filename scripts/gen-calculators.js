@@ -176,25 +176,28 @@ ${spec.fields.map(field).join('\n\n')}
       </div>
     </section>
 
-    <section class="content howto" aria-labelledby="howto-title">
-      <h2 id="howto-title">${esc(spec.h1.replace(/ 계산기$/, ''))} 계산 방법</h2>
+    <!-- 공통 아코디언: 계산 방법 · 실제 예제 · 공식출처 (기본 접힘) -->
+    <details class="content basis-fold info-fold" id="basis-fold">
+      <summary class="fold-summary"><h2 id="info-title">계산 방법 · 실제 예제 · 공식출처</h2><span class="fold-icon" aria-hidden="true"></span></summary>
+      <div class="fold-body">
+      <section class="howto" aria-labelledby="howto-title">
+      <h3 id="howto-title">${esc(spec.h1.replace(/ 계산기$/, ''))} 계산 방법</h3>
       <ol>
         ${spec.howto.map((h) => `<li>${esc(h)}</li>`).join('\n        ')}
       </ol>
-      <h3>실제 계산 예제</h3>
+      <h4>실제 계산 예제</h4>
       <div class="example">
         ${exampleBlock(ex, spec)}
       </div>
-    </section>
-
-    <details class="content basis-fold" id="basis-fold">
-      <summary class="fold-summary"><h2 id="basis-title">적용 기준 및 공식 출처</h2></summary>
-      <div class="fold-body">
+      </section>
+      <section class="basis" aria-labelledby="basis-title">
+      <h3 id="basis-title">적용 기준 및 공식 출처</h3>
       <p>적용 기준: ${esc(spec.basisYear)}. 연도별 요율·세율은 기준 데이터로 따로 관리하며, 공식 확정 전인 연도는 계산하지 않습니다.</p>
       <ul class="sources">
         ${sources}
       </ul>
       <p class="checked-date">공식 자료 확인일: <time datetime="${CHECKED_DATE}">${checkedKo}</time></p>
+      </section>
     </div>
     </details>
 

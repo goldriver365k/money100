@@ -170,14 +170,18 @@
       </div>
     </section>
 
-    <section class="content howto" aria-labelledby="howto-title">
-      <h2 id="howto-title">퇴직금 계산 방법</h2>
+    <!-- 공통 아코디언: 계산 방법 · 실제 예제 · 공식출처 (기본 접힘) -->
+    <details class="content basis-fold info-fold" id="basis-fold">
+      <summary class="fold-summary"><h2 id="info-title">계산 방법 · 실제 예제 · 공식출처</h2><span class="fold-icon" aria-hidden="true"></span></summary>
+      <div class="fold-body">
+      <section class="howto" aria-labelledby="howto-title">
+      <h3 id="howto-title">퇴직금 계산 방법</h3>
       <ol>
         <li>퇴직일(마지막 근무일 다음 날) 전 3개월의 임금총액에 최근 1년 상여금과 연차수당의 3/12을 더해, 그 기간의 달력일수로 나누면 1일 평균임금입니다.</li>
         <li>1일 평균임금이 1일 통상임금보다 적으면 통상임금을 씁니다.</li>
         <li>퇴직금 = 1일 평균임금 × 30일 × 재직일수 ÷ 365. 계속근로 1년 미만이거나 4주 평균 주 15시간 미만이면 지급 대상이 아닙니다.</li>
       </ol>
-      <h3>실제 계산 예제</h3>
+      <h4>실제 계산 예제</h4>
       <div class="example">
         <p class="example-case"><strong>예시</strong> 2023년 3월 2일 입사, 2026년 2월 28일 마지막 근무, 3개월 임금 900만 원, 연간 상여금 300만 원</p>
         <dl class="kv-list example-result">
@@ -196,11 +200,9 @@
           <li>퇴직금: 108,333.33원 × 30일 × 1,095 ÷ 365 = 9,750,000원</li>
         </ol>
       </div>
-    </section>
-
-    <details class="content basis-fold" id="basis-fold">
-      <summary class="fold-summary"><h2 id="basis-title">적용 기준 및 공식 출처</h2></summary>
-      <div class="fold-body">
+      </section>
+      <section class="basis" aria-labelledby="basis-title">
+      <h3 id="basis-title">적용 기준 및 공식 출처</h3>
       <p>적용 기준: 근로자퇴직급여 보장법 산식 (연도와 무관). 연도별 요율·세율은 기준 데이터로 따로 관리하며, 공식 확정 전인 연도는 계산하지 않습니다.</p>
       <ul class="sources">
         <li><a href="https://www.law.go.kr/법령/%EA%B7%BC%EB%A1%9C%EC%9E%90%ED%87%B4%EC%A7%81%EA%B8%89%EC%97%AC%EB%B3%B4%EC%9E%A5%EB%B2%95/%EC%A0%9C8%EC%A1%B0" target="_blank" rel="noopener noreferrer">근로자퇴직급여 보장법 제8조 (퇴직금제도의 설정) — 계속근로기간 1년에 30일분 이상의 평균임금<span class="sr-only"> — 새 창에서 열림</span></a></li>
@@ -210,6 +212,7 @@
         <li><a href="https://www.moel.go.kr/" target="_blank" rel="noopener noreferrer">고용노동부 — 퇴직금 계산 안내 (평균임금 × 30일 × 재직일수 ÷ 365)<span class="sr-only"> — 새 창에서 열림</span></a></li>
       </ul>
       <p class="checked-date">공식 자료 확인일: <time datetime="2026-11-21">2026년 11월 21일</time></p>
+      </section>
     </div>
     </details>
 
