@@ -1243,3 +1243,50 @@ a.calc-card:hover .card-btn { background: var(--c); border-color: var(--c); colo
 }
 .no-results[hidden] { display: none; }
 .search-suggest { top: calc(100% + 6px); }
+
+/* ===== Impeccable 계산기 페이지 검토 반영 (2026-11-22) ===== */
+/* 결과 맨 위: 핵심 답을 크게 */
+.result-hero { margin: 4px 0 16px; padding: 20px 20px 16px; border-radius: 16px; background: var(--brand-soft); border: 1.5px solid #c9d8fb; }
+.calc-page.cat-labor .result-hero, .result-hero { --hero-c: var(--brand); }
+.hero-label { margin: 0; font-size: 1rem; font-weight: 800; color: var(--text); }
+.hero-value { margin: 4px 0 6px; font-size: clamp(2rem, 8vw, 2.6rem); font-weight: 900; letter-spacing: -0.03em; line-height: 1.15; color: var(--brand-strong, #1c4fc4); font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+.hero-basis { margin: 0; font-size: .85rem; color: var(--muted); }
+.hero-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+.hero-actions .btn { min-height: 44px; background: #fff; font-weight: 700; }
+.copy-status { margin: 8px 0 0; font-size: .85rem; color: var(--muted); overflow-wrap: anywhere; }
+.copy-status:empty { display: none; }
+.result-stats .stat-main { background: #fff; border-color: var(--border); }
+.result-stats .stat .stat-value, .result-stats .stat-main .stat-value { font-size: 1.15rem; }
+/* 입력이 바뀐 뒤의 예전 결과 */
+.stale-bar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px; margin: 0 0 14px; padding: 12px 14px; border-radius: 12px; background: #fff6e0; border: 1.5px solid #e9c46a; }
+.stale-bar[hidden] { display: none; }
+.stale-bar p { margin: 0; font-weight: 700; color: #5b4300; }
+.result.is-stale #result-body { opacity: .45; filter: grayscale(.6); transition: opacity .2s; }
+@media (prefers-reduced-motion: reduce) { .result.is-stale #result-body { transition: none; } }
+/* 빠른 금액 버튼 */
+.quick { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0 2px; }
+.quick-btn { min-height: 44px; padding: 0 14px; border: 1.5px solid var(--border); border-radius: 999px; background: #fff; color: var(--text); font: inherit; font-size: .9rem; font-weight: 700; cursor: pointer; }
+.quick-btn:hover { border-color: var(--brand); color: var(--brand); background: var(--brand-soft); }
+.quick-btn:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+/* 자동 계산 도우미: 열려 있는 동안 아래 고정 버튼 숨김, 넣기 버튼을 도우미 안 아래에 고정 */
+form.helper-open .actions-sticky { display: none; }
+.pay-helper .pay-helper-actions { position: sticky; bottom: 0; z-index: 4; margin: 12px -14px -14px; padding: 10px 14px; background: inherit; border-top: 1px solid var(--border); border-radius: 0 0 12px 12px; }
+.helper-more { margin-top: 8px; border: 1px dashed var(--border); border-radius: 10px; }
+.helper-more > summary { display: flex; align-items: center; min-height: 44px; padding: 0 12px; cursor: pointer; font-weight: 700; color: var(--brand); }
+.helper-more[open] > summary { border-bottom: 1px dashed var(--border); }
+.helper-more > .helper-field { padding: 0 12px; }
+/* 안내 상자: 둥근 상자 왼쪽 두꺼운 띠 대신 옅은 바탕 */
+.notice { border-left: 1px solid var(--border); background: var(--brand-soft); }
+.notice-warn { border-color: #f3c3bd; background: var(--error-soft); }
+/* 관련 계산기: 제목과 같은 선에 정렬, 띠 배경 제거 */
+.calc-page .content.related, .content.related { background: transparent; border: 0; padding: 0; box-shadow: none; }
+.content .related-list { padding: 0; }
+/* 접기 메뉴 화살표 통일 (자주 묻는 질문도 오른쪽 꺾쇠) */
+.faq-fold > .fold-summary { justify-content: space-between; min-height: 56px; }
+.faq-fold > .fold-summary::before { content: none; display: none; }
+.faq-fold > .fold-summary::after { content: ""; flex: none; width: 11px; height: 11px; margin: 0 6px 4px 12px; border-right: 2.5px solid var(--brand); border-bottom: 2.5px solid var(--brand); transform: rotate(45deg); transition: transform .2s ease; }
+.faq-fold[open] > .fold-summary::after { transform: rotate(-135deg); margin-bottom: -4px; }
+@media (prefers-reduced-motion: reduce) { .faq-fold > .fold-summary::after { transition: none; } }
+/* 출처 링크·현재 위치 '홈' 터치 영역 */
+.sources a { display: inline-flex; align-items: center; min-height: 44px; }
+.breadcrumb #home-link { padding: 0 8px; margin: 0 -8px; }

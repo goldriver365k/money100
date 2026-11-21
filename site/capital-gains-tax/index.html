@@ -198,7 +198,21 @@
         <p><strong>계산할 수 없습니다.</strong> <span id="unavailable-reason"></span></p>
         <p>공식 기준이 확인되지 않은 값은 임의로 쓰지 않습니다. 다른 기준 연도를 선택해 주세요.</p>
       </div>
+      <div class="stale-bar" id="stale-bar" hidden>
+        <p>입력이 바뀌었습니다. 아래 결과는 바뀌기 전 입력으로 계산한 것입니다.</p>
+        <button type="button" class="btn btn-primary" id="stale-recalc">다시 계산</button>
+      </div>
       <div id="result-body">
+        <div class="result-hero" id="result-hero">
+          <p class="hero-label" id="hero-label"></p>
+          <p class="hero-value" id="hero-value"></p>
+          <p class="hero-basis" id="hero-basis"></p>
+          <div class="hero-actions">
+            <button type="button" class="btn btn-ghost" id="copy-summary">요약 복사</button>
+            <button type="button" class="btn btn-ghost" id="edit-input">입력 바꿔 다시 계산</button>
+          </div>
+          <p class="copy-status" id="copy-status" aria-live="polite"></p>
+        </div>
         <p class="result-meta" id="result-meta"></p>
         <div class="headline result-stats" id="result-stats"></div>
         <h3 class="table-title">항목별 상세 내역</h3>

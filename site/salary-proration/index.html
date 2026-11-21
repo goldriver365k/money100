@@ -116,6 +116,7 @@
     <!-- shell:end -->
 
     <section class="hero" aria-labelledby="page-title">
+      <p class="calc-badges"><span class="cat-badge cat-labor">노동·급여</span><span class="basis-badge">적용 기준: 2026년 달력·근로기준법</span></p>
       <h1 id="page-title">월급 일할계산기</h1>
       <p class="lead">중도 입사·퇴사한 달의 세전 예상 급여를 두 가지 방식으로 비교하세요.</p>
     </section>
@@ -155,6 +156,8 @@
             <p class="error" id="mpAnnual-error" hidden></p>
             <p class="preview" id="mpAnnual-preview"></p>
           </div>
+          <details class="helper-more">
+            <summary>상여금·비과세 수당이 있어요</summary>
           <div class="field helper-field">
             <label for="mpIncludedBonus">연봉에 포함된 상여금 (연간) <span class="unit">(원)</span></label>
             <input id="mpIncludedBonus" name="mpIncludedBonus" type="text" inputmode="numeric" autocomplete="off" spellcheck="false" data-amount aria-describedby="mpIncludedBonus-error mpIncludedBonus-preview mpIncludedBonus-hint">
@@ -197,6 +200,7 @@
               <label class="choice"><input type="radio" name="mpNonTaxableIn" value="separate"> <span>아니요 (연봉과 별도로 받음)</span></label>
             </div>
           </fieldset>
+          </details>
           </div>
           <div data-mp-group="parts" hidden>
           <div class="field helper-field">

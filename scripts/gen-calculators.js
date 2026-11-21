@@ -16,6 +16,29 @@ const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replac
 const checkedKo = (() => { const [y, m, d] = CHECKED_DATE.split('-').map(Number); return `${y}년 ${m}월 ${d}일`; })();
 const bySlug = Object.fromEntries(CATALOG.filter((c) => c.slug).map((c) => [c.slug, c]));
 
+/** 빠른 금액 버튼: 금액 의미가 입력 방식과 상관없이 같은 칸에만 (계산기·칸별) */
+const QUICK = {
+  'annual-salary-net': { salary: [30000000, 40000000, 50000000, 60000000, 80000000, 100000000] },
+  'monthly-salary-net': { pay: [2500000, 3000000, 3500000, 4000000, 5000000] },
+  'social-insurance': { pay: [2500000, 3000000, 4000000, 5000000] },
+  'national-pension': { income: [2500000, 3000000, 4000000, 5000000] },
+  'year-end-tax': { totalPay: [30000000, 40000000, 50000000, 70000000] },
+  'parental-leave-pay': { wage: [2500000, 3000000, 4000000] },
+  'loan-interest': { principal: [100000000, 200000000, 300000000, 500000000] },
+  vat: { amount: [1000000, 5000000, 10000000] },
+  'freelancer-tax': { amount: [1000000, 3000000, 5000000] },
+  'gift-tax': { value: [50000000, 100000000, 300000000] },
+  'acquisition-tax': { price: [300000000, 600000000, 900000000, 1200000000] },
+  'property-tax': { price: [300000000, 600000000, 900000000] },
+  'brokerage-fee': { price: [100000000, 300000000, 500000000] },
+  'dsr-limit': { income: [40000000, 60000000, 80000000, 100000000] },
+};
+const shortWon = (n) => (n >= 100000000 ? `${n % 100000000 ? (n / 100000000).toLocaleString('ko-KR') : n / 100000000}억` : `${(n / 10000).toLocaleString('ko-KR')}만`);
+function quickHtml(id, values) {
+  if (!values) return '';
+  return `\n        <div class="quick" role="group" aria-label="빠른 입력">${values.map((v) => `<button type="button" class="quick-btn" data-quick-for="${id}" data-value="${v}">${shortWon(v)}</button>`).join('')}</div>`;
+}
+
 function field(f) {
   const id = f.name;
   const req = f.required ? ' <span class="req">필수</span>' : (f.type === 'year' || f.type === 'month' || f.type === 'radio' || f.type === 'select') ? '' : ' <span class="opt">선택</span>';
@@ -43,7 +66,7 @@ function field(f) {
     control = `<input id="${id}" name="${id}" type="text" inputmode="${mode}" autocomplete="off" spellcheck="false"${f.value ? ` value="${esc(f.value)}"` : ''}${f.placeholder ? ` placeholder="${esc(f.placeholder)}"` : ''}${f.type === 'amount' ? ' data-amount' : ''} aria-describedby="${desc}">`;
   }
   const modeAttrs = f.modeLabels ? ` data-mode-label ${Object.entries(f.modeLabels).map(([k, v]) => `data-label-${k.replace(/[A-Z]/g, (c) => `-${c.toLowerCase()}`)}="${esc(v)}"`).join(' ')}` : '';
-  const preview = f.type === 'amount' ? `\n        <p class="preview" id="${id}-preview"></p>` : '';
+  const preview = (f.type === 'amount' ? `\n        <p class="preview" id="${id}-preview"></p>` : '') + quickHtml(id, f.quick);
   if (f.helper && !['ordinaryHourly', 'monthlyPay'].includes(f.helper)) {
     return `      <div class="field">
         <label for="${id}"${modeAttrs}><span class="label-text">${esc(f.label)}</span>${req}${unit}</label>
@@ -177,7 +200,10 @@ function monthlyPayHelper(target, nonTaxableField = '', fillMode = 'gross') {
     : '\n          <p class="hint">계산된 세전 월급(비과세 수당 포함)을 넣습니다.</p>';
   return `        <div class="pay-helper" id="${target}-helper" data-helper="monthlyPay" data-target="${target}" data-nontaxable="${nonTaxableField}" data-fill="${fillMode}" hidden>
           <p class="pay-helper-title">세전 월급 자동 계산</p>${fillNote}${radio('mpMode', '계산 방식', [['annual', '연봉 ÷ 12', true], ['parts', '기본급 + 수당']])}
-          <div data-mp-group="annual">${amt('mpAnnual', '연봉 (세전, 연간 총액)')}${amt('mpIncludedBonus', '연봉에 포함된 상여금 (연간)', '계약 연봉 안에 들어 있는 상여금입니다. 없으면 비워 두세요.')}${radio('mpIncludedBonusPaid', '연봉에 포함된 상여금은 어떻게 받나요?', [['monthly', '매달 나눠 받음 (월급에 포함)', true], ['separate', '상여 달에 따로 받음 (월급에서 제외)']])}${amt('mpExtraBonus', '연봉과 별도로 받는 상여금 (연간)', '성과급 등 연봉 외로 받는 금액입니다.')}${radio('mpExtraBonusInAverage', '별도 상여금을 월 평균에 넣을까요?', [['no', '아니요 (월급에서 제외)', true], ['yes', '예 (÷ 12 해서 포함)']])}${amt('mpNonTaxableA', '비과세 수당 (월)', '식대 등. 아래 비과세 금액 칸에도 자동으로 들어가 한 번만 차감됩니다.')}${radio('mpNonTaxableIn', '비과세 수당이 연봉에 포함되어 있나요?', [['included', '예 (연봉 안에 포함)', true], ['separate', '아니요 (연봉과 별도로 받음)']])}
+          <div data-mp-group="annual">${amt('mpAnnual', '연봉 (세전, 연간 총액)')}
+          <details class="helper-more">
+            <summary>상여금·비과세 수당이 있어요</summary>${amt('mpIncludedBonus', '연봉에 포함된 상여금 (연간)', '계약 연봉 안에 들어 있는 상여금입니다. 없으면 비워 두세요.')}${radio('mpIncludedBonusPaid', '연봉에 포함된 상여금은 어떻게 받나요?', [['monthly', '매달 나눠 받음 (월급에 포함)', true], ['separate', '상여 달에 따로 받음 (월급에서 제외)']])}${amt('mpExtraBonus', '연봉과 별도로 받는 상여금 (연간)', '성과급 등 연봉 외로 받는 금액입니다.')}${radio('mpExtraBonusInAverage', '별도 상여금을 월 평균에 넣을까요?', [['no', '아니요 (월급에서 제외)', true], ['yes', '예 (÷ 12 해서 포함)']])}${amt('mpNonTaxableA', '비과세 수당 (월)', '식대 등. 아래 비과세 금액 칸에도 자동으로 들어가 한 번만 차감됩니다.')}${radio('mpNonTaxableIn', '비과세 수당이 연봉에 포함되어 있나요?', [['included', '예 (연봉 안에 포함)', true], ['separate', '아니요 (연봉과 별도로 받음)']])}
+          </details>
           </div>
           <div data-mp-group="parts" hidden>${amt('mpBase', '기본급 (월)')}${amt('mpAllowance', '과세 수당 합계 (월)', '직책·자격·연장근로 수당 등 세금이 붙는 수당입니다.')}${amt('mpNonTaxableP', '비과세 수당 (월)', '식대 등. 아래 비과세 금액 칸에도 자동으로 들어가 한 번만 차감됩니다.')}
           </div>
@@ -369,7 +395,7 @@ ${header(spec.cat)}
 
     <form id="calc-form" class="panel" data-calc="${spec.module}" novalidate autocomplete="off" aria-labelledby="form-title">
       <h2 id="form-title" class="panel-title"><span class="step">1</span> 입력</h2>
-${spec.fields.map(field).join('\n\n')}
+${[...spec.fields.filter((f) => f.type !== 'year'), ...spec.fields.filter((f) => f.type === 'year')].map((f) => field({ ...f, quick: QUICK[spec.slug]?.[f.name] })).join('\n\n')}
 
       <div class="actions actions-sticky">
         <button type="submit" class="btn btn-primary" id="submit">계산하기</button>
@@ -385,7 +411,21 @@ ${spec.fields.map(field).join('\n\n')}
         <p><strong>계산할 수 없습니다.</strong> <span id="unavailable-reason"></span></p>
         <p>공식 기준이 확인되지 않은 값은 임의로 쓰지 않습니다. 다른 기준 연도를 선택해 주세요.</p>
       </div>
+      <div class="stale-bar" id="stale-bar" hidden>
+        <p>입력이 바뀌었습니다. 아래 결과는 바뀌기 전 입력으로 계산한 것입니다.</p>
+        <button type="button" class="btn btn-primary" id="stale-recalc">다시 계산</button>
+      </div>
       <div id="result-body">
+        <div class="result-hero" id="result-hero">
+          <p class="hero-label" id="hero-label"></p>
+          <p class="hero-value" id="hero-value"></p>
+          <p class="hero-basis" id="hero-basis"></p>
+          <div class="hero-actions">
+            <button type="button" class="btn btn-ghost" id="copy-summary">요약 복사</button>
+            <button type="button" class="btn btn-ghost" id="edit-input">입력 바꿔 다시 계산</button>
+          </div>
+          <p class="copy-status" id="copy-status" aria-live="polite"></p>
+        </div>
         <p class="result-meta" id="result-meta"></p>
         <div class="headline result-stats" id="result-stats"></div>
         <h3 class="table-title">항목별 상세 내역</h3>
@@ -501,6 +541,11 @@ for (const [file, slug, title] of [['salary-proration/index.html', 'salary-prora
     const relRe = /\n    <section class="content related"[\s\S]*?<\/section>\n/;
     const rel = html.match(relRe)?.[0];
     if (rel) { html = html.replace(relRe, '\n'); html = html.replace(/\n    <details class="content basis-fold/, `${rel}\n    <details class="content basis-fold`); }
+  }
+  // 분야·기준 표시 (생성 계산기와 같게)
+  if (!html.includes('class="calc-badges"')) {
+    const basis = slug === 'salary-proration' ? '2026년 달력·근로기준법' : '2026년 근로기준법 기준';
+    html = html.replace(/(<section class="hero[^"]*" aria-labelledby="page-title">\s*)/, `$1<p class="calc-badges"><span class="cat-badge cat-${cat}">${CATEGORIES[cat]}</span><span class="basis-badge">적용 기준: ${basis}</span></p>\n      `);
   }
   fs.writeFileSync(fp, html);
 }

@@ -157,7 +157,7 @@ const check = (slug, w, item, ok, actual = '') => {
         const err = await p.evaluate(() => ({ e: document.getElementById('mpAnnual-error').textContent, open: !document.getElementById('pay-helper').hidden, pay: document.getElementById('pay').value }));
         check(S, w, '자동 계산: 빈 연봉으로 넣기 → 오류 표시·패널 유지·입력란 변경 없음', err.e.length > 0 && err.open && err.pay === '', JSON.stringify(err));
         // 연봉 ÷ 12
-        await p.fill('#mpAnnual', '50000000'); await p.fill('#mpNonTaxableA', '200000');
+        await p.fill('#mpAnnual', '50000000'); await p.click('#pay-helper .helper-more > summary'); await p.fill('#mpNonTaxableA', '200000');
         const prev = await p.textContent('#pay-helper-result');
         await p.click('#pay-helper-apply');
         const a = await p.evaluate(() => ({ pay: document.getElementById('pay').value, nt: document.getElementById('nonTaxable').value, closed: document.getElementById('pay-helper').hidden, focus: document.activeElement?.id, preview: document.getElementById('pay-preview').textContent }));
@@ -215,6 +215,34 @@ const check = (slug, w, item, ok, actual = '') => {
         await p.close();
       }
       // 자동 계산 도우미 9종 (데이터 기반)
+      // 결과 화면 개편: 핵심 답 크게·적용 기준·요약 복사, 입력이 바뀌면 예전 결과 흐리게, 빠른 금액 버튼, 연도 선택은 아래로
+      {
+        const S = 'vat';
+        const p = await ctx.newPage(); const errs = [];
+        p.on('pageerror', (e) => errs.push(String(e)));
+        await gotoRetry(p, `/${S}`);
+        await p.waitForSelector('form[data-ready="true"]');
+        const order = await p.evaluate(() => { const f = [...document.querySelectorAll('#calc-form .field')]; const at = (id) => f.findIndex((x) => x.querySelector(`#${id}`)); return { amount: at('amount'), year: at('year') }; });
+        const quick = p.locator('.quick-btn[data-quick-for="amount"][data-value="1000000"]');
+        const qh = Math.round((await quick.boundingBox()).height);
+        if (mobile) await quick.tap(); else await quick.click();
+        const filled = await p.inputValue('#amount');
+        await p.click('#submit'); await p.waitForSelector('#result:not([hidden]) #result-body:not([hidden])');
+        const vatMod = await import(pathToFileURL(path.join(ROOT, 'site/assets/js/calc/vat.js')).href);
+        const want = vatMod.calculate({ year: '2026', mode: 'fromSupply', amount: '1000000' }).headline;
+        const hero = await p.evaluate(() => ({ label: document.getElementById('hero-label').textContent, value: document.getElementById('hero-value').textContent, basis: document.getElementById('hero-basis').textContent, size: parseFloat(getComputedStyle(document.getElementById('hero-value')).fontSize), body: parseFloat(getComputedStyle(document.body).fontSize) }));
+        await p.click('#copy-summary'); await p.waitForTimeout(150);
+        const copied = await p.textContent('#copy-status');
+        await p.fill('#amount', '2000000');
+        const st = await p.evaluate(() => ({ bar: !document.getElementById('stale-bar').hidden, cls: document.getElementById('result').classList.contains('is-stale') }));
+        await p.click('#stale-recalc'); await p.waitForTimeout(200);
+        const after = await p.evaluate(() => ({ bar: !document.getElementById('stale-bar').hidden, value: document.getElementById('hero-value').textContent }));
+        check(S, w, '결과 개편: 연도 선택은 금액 아래·빠른 금액(44px)·핵심 답(합계) 크게·적용 기준·요약 복사·입력 변경 시 흐림→다시 계산',
+          order.year > order.amount && qh >= 44 && filled === '1,000,000' && hero.label === want.label && hero.value === want.value && hero.size >= hero.body * 2 && /2026년/.test(hero.basis) && /확인일/.test(hero.basis)
+          && (/복사했습니다/.test(copied) || copied.includes(want.value)) && st.bar && st.cls && !after.bar && after.value === '2,200,000원' && errs.length === 0,
+          JSON.stringify({ order, qh, filled, hero, copied: copied.slice(0, 60), st, after, errs }));
+        await p.close();
+      }
       const HELPER_CASES = [
         { slug: 'severance-pay', t: 'wages3m', fill: { 'wages3m__monthly': '3000000' }, want: { wages3m: '9000000' }, label: '퇴직금 3개월 임금 (월급 × 3)' },
         { slug: 'severance-pay', t: 'wages3m', radio: 'wages3m__mode=each', fill: { 'wages3m__m1': '3100000', 'wages3m__m2': '2900000', 'wages3m__m3': '3000000' }, want: { wages3m: '9000000' }, label: '퇴직금 3개월 임금 (각각 입력)' },

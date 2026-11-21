@@ -10,14 +10,14 @@
  * 상시 5명 미만 사업장은 가산수당이 적용되지 않는다(근로기준법 시행령 별표 1). 주 40시간 초과 연장은 반영하지 않는다.
  */
 import { sourceList } from '../rules/index.js';
-import { parseAmount, parseDecimal, parseCount, collect, floorWon, won, num, result, fail } from './common.js';
+import { josa, parseAmount, parseDecimal, parseCount, collect, floorWon, won, num, result, fail } from './common.js';
 
 const SOURCES = ['overtimeAct', 'partTimeOT', 'leaveScope'];
 
 export function parseTime(raw, label) {
   const m = /^(\d{1,2}):(\d{2})$/.exec(String(raw ?? '').trim());
-  if (!String(raw ?? '').trim()) return { ok: false, error: `${label}을(를) 입력해 주세요.` };
-  if (!m || Number(m[1]) > 23 || Number(m[2]) > 59) return { ok: false, error: `${label}은(는) 00:00~23:59 형식으로 입력해 주세요.` };
+  if (!String(raw ?? '').trim()) return { ok: false, error: `${josa(label, '을', '를')} 입력해 주세요.` };
+  if (!m || Number(m[1]) > 23 || Number(m[2]) > 59) return { ok: false, error: `${josa(label, '은', '는')} 00:00~23:59 형식으로 입력해 주세요.` };
   return { ok: true, value: Number(m[1]) * 60 + Number(m[2]) };
 }
 

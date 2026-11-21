@@ -107,14 +107,31 @@ function renderTable(t) {
   } else wrap.append(scroller);
 }
 
+/** 결과 맨 위: 핵심 답(headline)을 크게, 그 아래 적용 기준 */
+function basisText() {
+  const year = form.elements.year?.value;
+  const badge = document.querySelector('.basis-badge')?.textContent.replace(/^적용 기준:\s*/, '') ?? '';
+  const basis = year ? badge.replace(/^\d{4}년/, `${year}년`) : badge;
+  const checked = document.querySelector('.checked-date time')?.textContent;
+  return `적용 기준: ${basis}${checked ? ` · 공식 자료 확인일 ${checked}` : ''}`;
+}
+let lastSummary = '';
+
 function render(r) {
   resultSection.hidden = false;
+  setStale(false);
+  $('hero-label').textContent = r.headline.label;
+  $('hero-value').textContent = r.headline.value;
+  $('hero-basis').textContent = basisText();
+  $('copy-status').textContent = '';
+  const title = document.getElementById('page-title').textContent;
+  lastSummary = `[생활계산서 ${title}] ${r.headline.label}: ${r.headline.value} (${basisText().replace(/^적용 기준: /, '')} · 입력: ${r.meta}) ${location.origin}${location.pathname}`;
   $('result-unavailable').hidden = true;
   $('result-body').hidden = false;
   $('result-meta').textContent = r.meta;
   const stats = $('result-stats'); stats.replaceChildren();
   r.stats.forEach((s, i) => {
-    const d = el('div', { class: `stat${i === 0 ? ' stat-main' : ''}` });
+    const d = el('div', { class: 'stat' });
     d.append(el('span', { class: 'stat-label' }, s.label), el('span', { class: 'stat-value' }, s.value));
     stats.append(d);
   });
@@ -135,7 +152,32 @@ function renderUnavailable(r) {
   status.textContent = `계산할 수 없습니다. ${r.unavailable}`;
 }
 
-function hideResult() { resultSection.hidden = true; }
+function hideResult() { resultSection.hidden = true; setStale(false); }
+
+/** 계산한 뒤 입력이 바뀌면: 결과를 흐리게 하고 '다시 계산' 안내 (지금 입력과 다른 결과를 그대로 믿지 않도록) */
+let stale = false;
+function setStale(on) {
+  stale = on;
+  resultSection.classList.toggle('is-stale', on);
+  $('stale-bar').hidden = !on;
+}
+function markStale(e) {
+  if (resultSection.hidden || stale || $('result-body').hidden) return;
+  if (e.target.closest('.pay-helper')) return; // 자동 계산 도우미 안의 입력은 '넣기' 전까지 결과와 무관
+  setStale(true);
+  status.textContent = '입력이 바뀌었습니다. 다시 계산하면 결과가 바뀝니다.';
+}
+
+async function copySummary() {
+  const out = $('copy-status');
+  try {
+    await navigator.clipboard.writeText(lastSummary);
+    out.textContent = '요약을 복사했습니다.';
+  } catch {
+    // 클립보드 권한이 없는 브라우저: 직접 선택해 복사할 수 있게 보여 준다
+    out.textContent = lastSummary;
+  }
+}
 
 function hasInput() {
   return [...form.elements].some((e) => (e.type === 'text' || e.type === 'date') && e.value !== (e.defaultValue ?? ''));
@@ -149,6 +191,24 @@ async function init() {
   applyMode();
   form.querySelectorAll('input[data-amount]').forEach((i) => { updatePreview(i); i.addEventListener('input', () => updatePreview(i)); });
   form.addEventListener('change', (e) => { if (e.target.name === 'mode') applyMode(); });
+  form.addEventListener('input', markStale);
+  form.addEventListener('change', markStale);
+  // 빠른 금액 버튼: 값을 넣고 직접 입력한 것처럼 input 이벤트를 보낸다
+  form.querySelectorAll('.quick-btn').forEach((b) => b.addEventListener('click', () => {
+    const input = form.elements[b.dataset.quickFor];
+    input.value = Number(b.dataset.value).toLocaleString('ko-KR');
+    input.dispatchEvent(new Event('input', { bubbles: true }));
+    const err = $(`${input.id}-error`); if (err) { err.hidden = true; err.textContent = ''; }
+    input.removeAttribute('aria-invalid');
+    input.focus();
+  }));
+  $('stale-recalc').addEventListener('click', () => form.requestSubmit());
+  $('copy-summary').addEventListener('click', copySummary);
+  $('edit-input').addEventListener('click', () => {
+    const first = form.querySelector('.field:not([hidden]) input[type="text"]:not([disabled]), .field:not([hidden]) input[type="date"]');
+    form.scrollIntoView({ block: 'start' });
+    first?.focus({ preventScroll: true });
+  });
   form.addEventListener('submit', (e) => {
     e.preventDefault();
     clearErrors();

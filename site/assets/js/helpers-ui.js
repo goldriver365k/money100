@@ -139,7 +139,7 @@ export async function setupHelpers(form, status) {
         if (showErrors) {
           for (const [k, msg] of Object.entries(res.errors)) {
             const node = $(`${def.errId(k)}-error`);
-            if (node) { node.textContent = def.errText ? def.errText(k, msg) : msg; node.hidden = false; }
+            if (node) { node.textContent = def.errText ? def.errText(k, msg) : msg; node.hidden = false; const fold = node.closest('details'); if (fold) fold.open = true; }
           }
         }
         return null;
@@ -151,6 +151,8 @@ export async function setupHelpers(form, status) {
     };
     const open = (on) => {
       panel.hidden = !on; toggle.setAttribute('aria-expanded', String(on));
+      // 도우미가 열려 있는 동안 아래 고정 '계산하기'를 숨긴다 (도우미의 '넣기'를 먼저 누르도록)
+      form.classList.toggle('helper-open', !!form.querySelector('[data-helper]:not([hidden])'));
       if (on) { render(false); panel.querySelector('input[type="text"]:not([disabled])')?.closest('[data-mp-group]:not([hidden]), .pay-helper')?.querySelector('input[type="text"]')?.focus(); }
     };
     const doApply = (add) => {

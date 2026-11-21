@@ -137,13 +137,6 @@
 
     <form id="calc-form" class="panel" data-calc="health-insurance" novalidate autocomplete="off" aria-labelledby="form-title">
       <h2 id="form-title" class="panel-title"><span class="step">1</span> 입력</h2>
-      <div class="field">
-        <label for="year"><span class="label-text">적용 기준 연도</span></label>
-        <select id="year" name="year" data-years aria-describedby="year-error year-hint"></select>
-        <p class="error" id="year-error" hidden></p>
-        <p class="hint" id="year-hint">연도를 바꾸면 그해 기준(요율·세율)으로 계산합니다. 공식 확정 전인 항목은 계산하지 않고 사유를 알려 드립니다.</p>
-      </div>
-
       <fieldset class="field">
         <legend>가입자 유형</legend>
         <div class="choices">
@@ -179,6 +172,8 @@
             <p class="error" id="mpAnnual-error" hidden></p>
             <p class="preview" id="mpAnnual-preview"></p>
           </div>
+          <details class="helper-more">
+            <summary>상여금·비과세 수당이 있어요</summary>
           <div class="field helper-field">
             <label for="mpIncludedBonus">연봉에 포함된 상여금 (연간) <span class="unit">(원)</span></label>
             <input id="mpIncludedBonus" name="mpIncludedBonus" type="text" inputmode="numeric" autocomplete="off" spellcheck="false" data-amount aria-describedby="mpIncludedBonus-error mpIncludedBonus-preview mpIncludedBonus-hint">
@@ -221,6 +216,7 @@
               <label class="choice"><input type="radio" name="mpNonTaxableIn" value="separate"> <span>아니요 (연봉과 별도로 받음)</span></label>
             </div>
           </fieldset>
+          </details>
           </div>
           <div data-mp-group="parts" hidden>
           <div class="field helper-field">
@@ -269,6 +265,13 @@
         <p class="error" id="incomeKind-error" hidden></p>
       </fieldset>
 
+      <div class="field">
+        <label for="year"><span class="label-text">적용 기준 연도</span></label>
+        <select id="year" name="year" data-years aria-describedby="year-error year-hint"></select>
+        <p class="error" id="year-error" hidden></p>
+        <p class="hint" id="year-hint">연도를 바꾸면 그해 기준(요율·세율)으로 계산합니다. 공식 확정 전인 항목은 계산하지 않고 사유를 알려 드립니다.</p>
+      </div>
+
       <div class="actions actions-sticky">
         <button type="submit" class="btn btn-primary" id="submit">계산하기</button>
         <button type="button" class="btn btn-reset" id="reset-all">초기화</button>
@@ -283,7 +286,21 @@
         <p><strong>계산할 수 없습니다.</strong> <span id="unavailable-reason"></span></p>
         <p>공식 기준이 확인되지 않은 값은 임의로 쓰지 않습니다. 다른 기준 연도를 선택해 주세요.</p>
       </div>
+      <div class="stale-bar" id="stale-bar" hidden>
+        <p>입력이 바뀌었습니다. 아래 결과는 바뀌기 전 입력으로 계산한 것입니다.</p>
+        <button type="button" class="btn btn-primary" id="stale-recalc">다시 계산</button>
+      </div>
       <div id="result-body">
+        <div class="result-hero" id="result-hero">
+          <p class="hero-label" id="hero-label"></p>
+          <p class="hero-value" id="hero-value"></p>
+          <p class="hero-basis" id="hero-basis"></p>
+          <div class="hero-actions">
+            <button type="button" class="btn btn-ghost" id="copy-summary">요약 복사</button>
+            <button type="button" class="btn btn-ghost" id="edit-input">입력 바꿔 다시 계산</button>
+          </div>
+          <p class="copy-status" id="copy-status" aria-live="polite"></p>
+        </div>
         <p class="result-meta" id="result-meta"></p>
         <div class="headline result-stats" id="result-stats"></div>
         <h3 class="table-title">항목별 상세 내역</h3>

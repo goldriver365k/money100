@@ -6,6 +6,21 @@
 
 export const MAX_AMOUNT = 999_999_999_999; // 1조 원 미만
 
+/**
+ * 받침에 맞는 조사: josa('연봉(세전)', '을', '를') → '연봉(세전)을'. 괄호 안 설명은 건너뛰고 앞 낱말의 끝 글자로 판단.
+ * 한글·숫자가 아닌 글자로 끝나면 '을(를)'처럼 둘 다 적는다.
+ */
+export function josa(label, withFinal, withoutFinal) {
+  const base = String(label).replace(/\s*\([^)]*\)\s*$/, '').trim();
+  const ch = base.slice(-1);
+  const code = ch.charCodeAt(0) - 0xac00;
+  let final;
+  if (code >= 0 && code <= 11171) final = code % 28 !== 0;
+  else if (/\d/.test(ch)) final = '013678'.includes(ch);
+  else return `${label}${withFinal}(${withoutFinal})`;
+  return `${label}${final ? withFinal : withoutFinal}`;
+}
+
 const clean = (raw) => String(raw ?? '').trim().replace(/[,\s]/g, '').replace(/원$/, '');
 
 /**
@@ -17,7 +32,7 @@ export function parseAmount(raw, opts = {}) {
   const text = clean(raw);
   if (text === '') {
     if (!required) return { ok: true, value: 0 };
-    return { ok: false, error: `${label}을(를) 입력해 주세요.` };
+    return { ok: false, error: `${josa(label, '을', '를')} 입력해 주세요.` };
   }
   if (/^-/.test(text) && /\d/.test(text)) return { ok: false, error: `${label}은(는) 0보다 작을 수 없습니다.` };
   if (/^\+?\d*\.\d*$/.test(text) && /\d/.test(text)) return { ok: false, error: `${label}은(는) 원 단위 정수로 입력해 주세요. (소수 불가)` };
@@ -36,7 +51,7 @@ export function parseDecimal(raw, opts = {}) {
   const text = clean(raw).replace(/%$/, '');
   if (text === '') {
     if (!required) return { ok: true, value: null };
-    return { ok: false, error: `${label}을(를) 입력해 주세요.` };
+    return { ok: false, error: `${josa(label, '을', '를')} 입력해 주세요.` };
   }
   if (/^-/.test(text) && /\d/.test(text)) return { ok: false, error: `${label}은(는) 0보다 작을 수 없습니다.` };
   if (!/^\+?(\d+(\.\d*)?|\.\d+)$/.test(text)) return { ok: false, error: `${label}에는 숫자만 입력해 주세요.` };
@@ -54,7 +69,7 @@ export function parseCount(raw, opts = {}) {
   const text = clean(raw);
   if (text === '') {
     if (!required) return { ok: true, value: null };
-    return { ok: false, error: `${label}을(를) 입력해 주세요.` };
+    return { ok: false, error: `${josa(label, '을', '를')} 입력해 주세요.` };
   }
   if (/^-/.test(text) && /\d/.test(text)) return { ok: false, error: `${label}은(는) 0보다 작을 수 없습니다.` };
   if (/\./.test(text)) return { ok: false, error: `${label}은(는) 정수로 입력해 주세요.` };
@@ -72,13 +87,13 @@ export function daysInMonth(year, month) {
 export function parseDate(raw, opts = {}) {
   const { label = '날짜', required = true } = opts;
   const text = String(raw ?? '').trim();
-  if (text === '') return required ? { ok: false, error: `${label}을(를) 입력해 주세요.` } : { ok: true, value: null };
-  if (text === 'invalid') return { ok: false, error: `${label}이(가) 올바른 날짜가 아닙니다.` };
+  if (text === '') return required ? { ok: false, error: `${josa(label, '을', '를')} 입력해 주세요.` } : { ok: true, value: null };
+  if (text === 'invalid') return { ok: false, error: `${josa(label, '이', '가')} 올바른 날짜가 아닙니다.` };
   const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(text);
-  if (!m) return { ok: false, error: `${label}이(가) 올바른 날짜가 아닙니다. (예: 2026-03-02)` };
+  if (!m) return { ok: false, error: `${josa(label, '이', '가')} 올바른 날짜가 아닙니다. (예: 2026-03-02)` };
   const y = Number(m[1]); const mo = Number(m[2]); const d = Number(m[3]);
   if (y < 1950 || y > 2100) return { ok: false, error: `${label}은(는) 1950년부터 2100년 사이로 입력해 주세요.` };
-  if (mo < 1 || mo > 12 || d < 1 || d > daysInMonth(y, mo)) return { ok: false, error: `${label}이(가) 존재하지 않는 날짜입니다.` };
+  if (mo < 1 || mo > 12 || d < 1 || d > daysInMonth(y, mo)) return { ok: false, error: `${josa(label, '이', '가')} 존재하지 않는 날짜입니다.` };
   return { ok: true, value: { y, m: mo, d, t: Date.UTC(y, mo - 1, d) } };
 }
 
