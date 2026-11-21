@@ -23,7 +23,7 @@ const ROOT = path.resolve(__dirname, '..', '..');
 const WIDTHS = [360, 390, 768, 1440];
 const MOBILE = [360, 390];
 const PAGES = [
-  { key: 'home', path: '/', title: '급여 계산기 모음 | 정산노트', h1: '복잡한 계산, 쉽고 정확하게' },
+  { key: 'home', path: '/', title: '급여 계산기 모음 | 정산노트', h1: '필요한 계산을 한곳에서' },
   { key: 'salary', path: '/salary-proration', title: '월급 일할계산기 — 중도 입사·퇴사 급여 계산 | 정산노트', h1: '월급 일할계산기' },
   { key: 'whp', path: '/weekly-holiday-pay', title: '주휴수당 계산기 — 주 15시간·변동 근무 판독 | 정산노트', h1: '주휴수당 계산기' },
 ];
@@ -154,9 +154,34 @@ const foldOpen = (p) => p.evaluate(() => document.querySelector('details.basis-f
       check('home', w, '계산기 10종: 이용 가능 2개만 링크, 준비 중 8개는 링크 없음·‘준비 중’ 표시', allCards === 10 && cardCount === 2 && soonLinks === 0 && soonLabels === 8,
         `카드 ${allCards} · 링크 ${cardCount} · 준비 중 링크 ${soonLinks} · 준비 중 표시 ${soonLabels}`);
       const cols = await p.evaluate(() => getComputedStyle(document.getElementById('calc-grid')).gridTemplateColumns.split(' ').length);
-      const expectCols = w >= 1024 ? 3 : w >= 640 ? 2 : 1;
+      const expectCols = w >= 720 ? 2 : 1; // 확정 시안: PC 2열·모바일 1열
       const first = await p.evaluate(() => { const f = document.querySelector('.calc-item'); return { featured: f.classList.contains('is-featured'), title: f.querySelector('.card-title').textContent }; });
       check('home', w, `카드 ${expectCols}열·대표 계산기(1번) 맨 앞`, cols === expectCols && first.featured && first.title.startsWith('중도 입·퇴사자 월급'), `${cols}열 · 첫 카드 ${first.title}(${first.featured ? '대표' : '일반'})`);
+      // 확정 시안: 카드 색 순서·흰 글자·흰 테두리 버튼·미구현 '이용 가능' 금지·입력 미리보기 삭제
+      const design = await p.evaluate(() => {
+        const items = [...document.querySelectorAll('.calc-item')];
+        const rgb = (h) => { const n = parseInt(h.slice(1), 16); return `rgb(${n >> 16}, ${(n >> 8) & 255}, ${n & 255})`; };
+        const want = { 1: '#102FA8', 6: '#102FA8', 9: '#102FA8', 2: '#075CF5', 5: '#075CF5', 10: '#075CF5', 3: '#3036B7', 8: '#3036B7', 4: '#5635ED', 7: '#5635ED' };
+        const colorOk = items.every((it, i) => getComputedStyle(it.querySelector('.calc-card')).backgroundColor === rgb(want[i + 1]));
+        const whiteText = items.every((it) => ['.card-title', '.card-desc'].every((s) => getComputedStyle(it.querySelector(s)).color === 'rgb(255, 255, 255)'));
+        const whiteBtn = items.every((it) => { const b = getComputedStyle(it.querySelector('.card-btn')); return b.borderTopColor === 'rgb(255, 255, 255)' && b.borderTopWidth !== '0px'; });
+        const soonLive = items.filter((it) => it.dataset.status === 'soon' && it.textContent.includes('이용 가능')).length;
+        const liveCount = [...document.querySelectorAll('.status-live')].length;
+        const sameSize = new Set(items.map((it) => it.querySelector('.calc-card').className.replace(/tone-c\d|card-soon/g, '').trim())).size === 1;
+        const heights = items.map((it) => Math.round(it.getBoundingClientRect().height));
+        const sameHeight = Math.max(...heights) - Math.min(...heights) <= 1;
+        const catWant = { labor: ['노동·급여', 'rgb(21, 84, 214)', 'rgb(227, 238, 255)'], tax: ['세금·보험', 'rgb(103, 40, 205)', 'rgb(240, 232, 255)'], realty: ['주거·부동산', 'rgb(0, 122, 75)', 'rgb(225, 249, 239)'] };
+        const catOrder = ['labor', 'labor', 'labor', 'labor', 'labor', 'tax', 'tax', 'tax', 'realty', 'realty'];
+        const catOk = items.every((it, i) => { const k = catOrder[i]; const b = it.querySelector('.card-cat'); const cs = getComputedStyle(b);
+          return it.dataset.category === k && b.textContent === catWant[k][0] && cs.color === catWant[k][1] && cs.backgroundColor === catWant[k][2]; });
+        const names = ['중도 입·퇴사자 월급 일할계산기', '주 15시간 전후 주휴수당 판독기', '육아휴직·단축근무 복직자 퇴직금 계산기', '야간·연장근무 수당 계산기', '소규모 사업장 연차수당 계산기', '건설일용직·아르바이트 4대보험 계산기', '프리랜서 3.3% 세액 계산기', '조기재취업수당·잔여 실업급여 계산기', '소액임차인 최우선변제금 계산기', '1세대 1주택 양도세 계산기'];
+        const namesOk = items.every((it, i) => it.querySelector('.card-title').textContent === names[i]);
+        const chipOk = ['labor', 'tax', 'realty'].every((k) => getComputedStyle(document.querySelector(`.chip[data-filter="${k}"]`)).color === catWant[k][1]);
+        return { colorOk, sameHeight, catOk, namesOk, chipOk, whiteText, whiteBtn, soonLive, liveCount, sameSize, preview: !!document.querySelector('.hero-preview, .preview-card'), dupes: !!document.querySelector('.eyebrow, .hero-stat, .section-desc') };
+      });
+      check('home', w, '확정 시안: 카드 색 순서(1·6·9/2·5·10/3·8/4·7)·흰 제목·설명·흰 테두리 버튼·동일 카드·미구현 이용 가능 0·미리보기·중복 문구 삭제',
+        design.colorOk && design.sameHeight && design.catOk && design.namesOk && design.chipOk && design.whiteText && design.whiteBtn && design.sameSize && design.soonLive === 0 && design.liveCount === 2 && !design.preview && !design.dupes,
+        JSON.stringify(design));
       // 검색·분야별 보기
       await p.fill('#calc-search', '주휴');
       const s1 = await p.$$eval('.calc-item:not([hidden]) .card-title', (e) => e.map((x) => x.textContent));
@@ -170,6 +195,15 @@ const foldOpen = (p) => p.evaluate(() => document.querySelector('details.basis-f
       await p.fill('#calc-search', '');
       await p.click('.chip[data-filter="realty"]');
       const s3 = await p.$$eval('.calc-item:not([hidden]) .card-title', (e) => e.map((x) => x.textContent));
+      const sel = await p.evaluate(() => { const c = document.querySelector('.chip[data-filter="realty"]'); const cs = getComputedStyle(c); return { pressed: c.getAttribute('aria-pressed'), bg: cs.backgroundColor, border: cs.borderTopColor, bw: cs.borderTopWidth }; });
+      const url0 = p.url();
+      await p.click('.chip[data-filter="labor"]');
+      const nLabor = await p.locator('.calc-item:not([hidden])').count();
+      await p.click('.chip[data-filter="tax"]');
+      const nTax = await p.locator('.calc-item:not([hidden])').count();
+      check('home', w, '분야 버튼: 선택 시 배경·테두리 강조, 노동·급여 5·세금·보험 3·주거·부동산 2, 새로고침 없음',
+        sel.pressed === 'true' && sel.bg === 'rgb(225, 249, 239)' && sel.border === 'rgb(0, 122, 75)' && sel.bw === '2px' && nLabor === 5 && nTax === 3 && p.url() === url0,
+        `선택 ${JSON.stringify(sel)} · 노동 ${nLabor} · 세금 ${nTax}`);
       await p.click('.chip[data-filter="all"]');
       const s4 = await p.locator('.calc-item:not([hidden])').count();
       check('home', w, '검색(주휴→1개, 없는 말→안내)·분야별 보기(부동산→2개)·전체 복귀',
