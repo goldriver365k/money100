@@ -1290,3 +1290,30 @@ form.helper-open .actions-sticky { display: none; }
 /* 출처 링크·현재 위치 '홈' 터치 영역 */
 .sources a { display: inline-flex; align-items: center; min-height: 44px; }
 .breadcrumb #home-link { padding: 0 8px; margin: 0 -8px; }
+
+/* ===== Impeccable 홈 재검토 반영 (2026-11-22) ===== */
+/* 전체 계산기 카드: 버튼 대신 카드 전체가 링크, 오른쪽 꺾쇠 */
+.card-go { display: grid; place-items: center; width: 36px; height: 36px; border-radius: 999px; color: var(--muted); transition: background-color .15s, color .15s, transform .15s; }
+a.calc-card:hover .card-go, a.calc-card:focus-visible .card-go { background: var(--c); color: #fff; transform: translateX(2px); }
+@media (max-width: 599px) { .card-go { display: none; } }
+@media (prefers-reduced-motion: reduce) { .card-go { transition: none; } a.calc-card:hover .card-go { transform: none; } }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) a.calc-card:hover .card-go { color: #0e1430; } }
+/* 모바일 분야별 더 보기 */
+.more-item { list-style: none; }
+.more-btn { width: 100%; min-height: 48px; border: 1.5px dashed var(--c-line); border-radius: 12px; background: var(--c-bg); color: var(--c); font: inherit; font-weight: 800; cursor: pointer; }
+.more-btn:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+/* 검색어 표시 (위 검색과 아래 목록 연결) */
+.active-query { display: flex; align-items: center; gap: 8px; margin: 10px 0 0; font-size: .9rem; color: var(--muted); }
+.active-query[hidden] { display: none; }
+.query-tag { display: inline-flex; align-items: center; gap: 6px; min-height: 40px; padding: 0 14px; border: 1.5px solid var(--brand); border-radius: 999px; background: var(--brand-soft); color: var(--brand); font: inherit; font-weight: 800; cursor: pointer; }
+.query-tag:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+/* 결과 없을 때 분야 링크 */
+.suggest-none { line-height: 1.6; }
+.suggest-cat-link { display: inline-flex; align-items: center; min-height: 44px; margin: 0 4px; padding: 0 12px; border-radius: 999px; background: var(--c-bg); color: var(--c); font-weight: 800; text-decoration: none; }
+/* 아래쪽: 한 줄로 (이용 가이드가 혼자 비어 보이지 않게) */
+@media (min-width: 1024px) { .home-bottom { grid-template-columns: 1fr; max-width: 860px; margin-left: auto; margin-right: auto; } }
+.org-sources { margin-top: 8px; }
+.basis-fold .fold-body li a { display: inline-flex; align-items: center; min-height: 44px; }
+/* 상단 메뉴 '홈' 최소 폭, 비전송 안내 줄바꿈 균형 */
+.site-header .nav-list > li > a { min-width: 44px; justify-content: center; }
+.search-privacy { text-wrap: balance; text-align: center; }

@@ -500,7 +500,7 @@ function catalogHtml() {
     return live
       ? `          <li class="calc-item cat-${c.cat}" data-category="${c.cat}" data-status="live" data-keywords="${kw}">
             <a class="card calc-card" href="/${c.slug}">${body}
-              <span class="card-btn">계산하기</span>
+              <span class="card-go" aria-hidden="true"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></span>
             </a>
           </li>`
       : `          <li class="calc-item cat-${c.cat}" data-category="${c.cat}" data-status="soon" data-keywords="${kw}">

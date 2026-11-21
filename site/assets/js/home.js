@@ -11,8 +11,15 @@ const emptyText = document.getElementById('no-results-text');
 const emptyAll = document.getElementById('no-results-all');
 const chips = [...document.querySelectorAll('.chip[data-filter]')];
 const items = [...grid.querySelectorAll('.calc-item')];
+const searchStatus = document.getElementById('search-status');
+const activeQuery = document.getElementById('active-query');
+const queryText = document.getElementById('query-text');
+const heroSearch = search.closest('.hero-search');
 const LABEL = { all: '전체', labor: '노동·급여', tax: '세금·보험', realty: '주거·부동산' };
 const MAX_SUGGEST = 6;
+const MOBILE_SHOW = 4; // 모바일 '전체' 보기에서 분야별로 먼저 보여 줄 개수
+const mobile = window.matchMedia('(max-width: 599px)');
+const expanded = new Set();
 
 let category = 'all';
 
@@ -32,7 +39,15 @@ function renderSuggest(ts, found) {
   if (!found.length) {
     const li = document.createElement('li');
     li.className = 'suggest-none';
-    li.textContent = `‘${search.value.trim()}’에 맞는 계산기가 없습니다. 다른 낱말로 찾아 보세요.`;
+    li.append(`‘${search.value.trim()}’에 맞는 계산기가 없습니다. 분야에서 골라 보세요: `);
+    for (const key of ['labor', 'tax', 'realty']) {
+      const a = document.createElement('a');
+      a.href = `#${key}`;
+      a.className = `suggest-cat-link cat-${key}`;
+      a.textContent = LABEL[key];
+      a.addEventListener('click', () => { search.value = ''; });
+      li.append(a);
+    }
     suggest.append(li);
   }
   for (const item of found.slice(0, MAX_SUGGEST)) {
@@ -60,10 +75,37 @@ function renderSuggest(ts, found) {
     const link = document.createElement('a');
     link.href = '#calculators';
     link.textContent = `검색 결과 ${found.length}개 모두 보기`;
+    link.addEventListener('click', closeSuggest);
     li.append(link);
     suggest.append(li);
   }
   suggest.hidden = false;
+}
+function closeSuggest() { suggest.hidden = true; }
+
+/** 모바일 '전체' 보기: 분야마다 4개만 먼저, 나머지는 '더 보기' */
+function applyCollapse(active) {
+  grid.querySelectorAll('.more-item').forEach((n) => n.remove());
+  if (!active) return;
+  for (const key of ['labor', 'tax', 'realty']) {
+    if (expanded.has(key)) continue;
+    const list = items.filter((it) => it.dataset.category === key && !it.hidden);
+    if (list.length <= MOBILE_SHOW) continue;
+    list.slice(MOBILE_SHOW).forEach((it) => { it.hidden = true; });
+    const li = document.createElement('li');
+    li.className = `more-item cat-${key}`;
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'more-btn';
+    btn.textContent = `${LABEL[key]} ${list.length - MOBILE_SHOW}개 더 보기`;
+    btn.addEventListener('click', () => {
+      expanded.add(key);
+      apply();
+      list[MOBILE_SHOW]?.querySelector('a')?.focus();
+    });
+    li.append(btn);
+    list[MOBILE_SHOW - 1].after(li);
+  }
 }
 
 function apply() {
@@ -75,7 +117,12 @@ function apply() {
     item.hidden = !visible;
     if (visible) shown += 1;
   }
-  renderSuggest(ts, found);
+  if (document.activeElement === search || suggest.contains(document.activeElement)) renderSuggest(ts, found);
+  else if (!ts.length) closeSuggest();
+  applyCollapse(mobile.matches && category === 'all' && !ts.length);
+  searchStatus.textContent = ts.length ? (found.length ? `검색 결과 ${found.length}개. 아래 방향키로 고를 수 있습니다.` : '검색 결과가 없습니다.') : '';
+  activeQuery.hidden = !ts.length;
+  queryText.textContent = search.value.trim();
   const soon = items.filter((i) => i.dataset.status !== 'live').length;
   if (!ts.length && category === 'all') {
     count.textContent = `계산기 ${items.length}개${soon ? ` · 준비 중 ${soon}개` : ''}`;
@@ -100,7 +147,13 @@ function setCategory(key) {
   apply();
 }
 
-for (const chip of chips) chip.addEventListener('click', () => setCategory(chip.dataset.filter));
+for (const chip of chips) chip.addEventListener('click', () => { closeSuggest(); setCategory(chip.dataset.filter); });
+document.getElementById('query-clear').addEventListener('click', () => { search.value = ''; apply(); closeSuggest(); chips.find((c) => c.getAttribute('aria-pressed') === 'true')?.focus(); });
+// 바깥을 누르거나 포커스가 검색 영역을 벗어나면 바로가기 목록을 닫는다
+document.addEventListener('pointerdown', (e) => { if (!heroSearch.contains(e.target)) closeSuggest(); });
+heroSearch.addEventListener('focusout', (e) => { if (!heroSearch.contains(e.relatedTarget)) closeSuggest(); });
+search.addEventListener('focus', () => { if (terms().length) renderSuggest(terms(), items.filter((it) => matches(it, terms()))); });
+mobile.addEventListener('change', apply);
 emptyAll.addEventListener('click', () => { setCategory('all'); chips.find((c) => c.dataset.filter === 'all')?.focus(); });
 search.addEventListener('input', apply);
 search.addEventListener('keydown', (e) => {
@@ -109,7 +162,7 @@ search.addEventListener('keydown', (e) => {
   if (e.key === 'Enter') {
     const links = [...suggest.querySelectorAll('.suggest-item a')];
     if (links.length === 1) { location.href = links[0].href; return; }
-    if (links.length) document.getElementById('calculators').scrollIntoView({ block: 'start' });
+    if (links.length) { closeSuggest(); document.getElementById('calculators').scrollIntoView({ block: 'start' }); }
   }
   if (e.key === 'ArrowDown' && !suggest.hidden) { e.preventDefault(); suggest.querySelector('a')?.focus(); }
 });
@@ -118,7 +171,7 @@ suggest.addEventListener('keydown', (e) => {
   const i = links.indexOf(document.activeElement);
   if (e.key === 'ArrowDown') { e.preventDefault(); links[Math.min(i + 1, links.length - 1)]?.focus(); }
   if (e.key === 'ArrowUp') { e.preventDefault(); (i <= 0 ? search : links[i - 1]).focus(); }
-  if (e.key === 'Escape') search.focus();
+  if (e.key === 'Escape') { closeSuggest(); search.focus(); }
 });
 // 브라우저가 검색어를 되살린 경우(뒤로가기)에도 목록을 맞춘다
 window.addEventListener('pageshow', apply);

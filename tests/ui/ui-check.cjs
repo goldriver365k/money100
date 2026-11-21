@@ -170,7 +170,7 @@ const foldOpen = (p) => p.evaluate(() => document.querySelector('details.basis-f
         const whiteCard = items.every((it) => getComputedStyle(it.querySelector('.calc-card')).backgroundColor === 'rgb(255, 255, 255)');
         const catOk = items.every((it, i) => { const k = catOrder[i]; const b = it.querySelector('.card-cat'); const ico = getComputedStyle(it.querySelector('.card-ico'));
           return it.dataset.category === k && b.textContent === catWant[k][0] && getComputedStyle(b).color === catWant[k][1] && ico.color === catWant[k][1] && ico.backgroundColor === catWant[k][2]; });
-        const btnOk = items.every((it) => { const b = it.querySelector('.card-btn'); return b.textContent === '계산하기' && (getComputedStyle(b).display === 'none' || getComputedStyle(b).color === catWant[it.dataset.category][1]); });
+        const btnOk = items.every((it) => it.dataset.status !== 'live' || (it.querySelector('a.calc-card') && !it.querySelector('.card-btn') && it.querySelector('.card-go'))); // 카드 전체가 링크, 버튼 대신 꺾쇠
         const soonLive = items.filter((it) => it.dataset.status === 'soon' && it.textContent.includes('이용 가능')).length;
         const noise = document.querySelectorAll('.card-no, .status-live').length;
         const names = ['연봉 실수령액', '월급 실수령액', '퇴직금', '주휴수당', '시급', '실업급여', '연차수당', '야간·연장·휴일수당', '월급 일할', '육아휴직급여', '4대보험', '종합소득세', '부가세', '연말정산 환급금', '3.3% 프리랜서 세금', '소득세', '건강보험료', '국민연금', '증여세', '상속세', '대출이자', '취득세', '양도소득세', '중개수수료', '전월세 전환', 'DSR 대출한도', '재산세', '평수', '청약가점', '전세보증금 안전'].map((n) => (n === '월급 일할' ? '월급 일할계산기' : `${n} 계산기`));
@@ -179,7 +179,7 @@ const foldOpen = (p) => p.evaluate(() => document.querySelector('details.basis-f
         const chipOk = ['labor', 'tax', 'realty'].every((k) => getComputedStyle(document.querySelector(`.chip[data-filter="${k}"]`)).color === catWant[k][1]);
         return { whiteCard, catOk, btnOk, liveOk, namesOk, chipOk, soonLive, noise, preview: !!document.querySelector('.hero-preview, .preview-card'), dupes: !!document.querySelector('.eyebrow, .hero-stat, .section-desc') };
       }, LIVE);
-      check('home', w, '카드: 흰 바탕·분야 색 아이콘·분야 이름·계산하기 버튼, 번호·이용 가능 표시 없음, 미구현 이용 가능 0',
+      check('home', w, '카드: 흰 바탕·분야 색 아이콘·분야 이름·카드 전체 링크(꺾쇠), 번호·이용 가능 표시 없음, 미구현 이용 가능 0',
         design.whiteCard && design.catOk && design.btnOk && design.liveOk && design.namesOk && design.chipOk && design.soonLive === 0 && design.noise === 0 && !design.preview && !design.dupes,
         JSON.stringify(design));
       // 검색·분야별 보기
@@ -206,15 +206,28 @@ const foldOpen = (p) => p.evaluate(() => document.querySelector('details.basis-f
         `선택 ${JSON.stringify(sel)} · 노동 ${nLabor} · 세금 ${nTax}`);
       await p.click('.chip[data-filter="all"]');
       const s4 = await p.locator('.calc-item:not([hidden])').count();
+      const more = await p.locator('.more-btn').count(); // 모바일(600px 미만) '전체': 분야별 4개 + 더 보기
+      const wantAll = w < 600 ? 12 : 30;
       check('home', w, '검색(주휴→1개, 없는 말→안내)·분야별 보기(부동산→10개)·전체 복귀',
-        s1.length === 1 && s1[0].includes('주휴수당') && s2.n === 0 && s2.empty && s3.length === 10 && s4 === 30,
-        `주휴 ${s1.length}개 · 없는 말 ${s2.n}개(안내 ${s2.empty}) · 부동산 ${s3.length}개 · 전체 ${s4}개`);
+        s1.length === 1 && s1[0].includes('주휴수당') && s2.n === 0 && s2.empty && s3.length === 10 && s4 === wantAll && more === (w < 600 ? 3 : 0),
+        `주휴 ${s1.length}개 · 없는 말 ${s2.n}개(안내 ${s2.empty}) · 부동산 ${s3.length}개 · 전체 ${s4}개 · 더 보기 ${more}개`);
+      if (w < 600) {
+        await p.click('.more-item.cat-labor .more-btn');
+        const n2 = await p.locator('.calc-item[data-category="labor"]:not([hidden])').count();
+        check('home', w, '모바일 더 보기: 노동·급여 6개 더 보기 → 10개 모두 표시, 다른 분야는 접힌 채 유지', n2 === 10 && (await p.locator('.more-btn').count()) === 2, `노동 ${n2}개`);
+      }
       // 홈 접이식 ‘적용 기준 및 공식 출처’
       const homeFold = await p.evaluate(() => { const d = document.querySelector('details.basis-fold'); return d && !d.open && d.querySelector('summary').textContent.trim(); });
       check('home', w, '홈 ‘이용 가이드 · 적용 기준’ 기본 접힘', homeFold === '이용 가이드 · 적용 기준', String(homeFold));
       // 맨 위 검색 바로가기·동의어·다른 분야 안내
       await p.fill('#calc-search', '퇴사');
       const sug = await p.$$eval('#search-suggest .suggest-name', (e) => e.map((x) => x.textContent));
+      const tag = { shown: await p.isVisible('#active-query'), text: await p.textContent('#query-text') };
+      await p.mouse.click(5, 500); // 바깥 누르기
+      const closedOut = await p.isHidden('#search-suggest');
+      await p.click('#query-clear');
+      const cleared = { q: await p.inputValue('#calc-search'), tag: await p.isHidden('#active-query') };
+      check('home', w, '검색 바로가기 목록: 바깥을 누르면 닫힘, 검색어 표시 [퇴사 ×]로 지우기', tag.shown && tag.text === '퇴사' && closedOut && cleared.q === '' && cleared.tag, JSON.stringify({ tag, closedOut, cleared }));
       await p.fill('#calc-search', '전세');
       const sug2 = await p.$$eval('#search-suggest .suggest-name', (e) => e.map((x) => x.textContent));
       await p.click('.chip[data-filter="tax"]');
