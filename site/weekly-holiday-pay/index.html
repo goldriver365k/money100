@@ -46,7 +46,7 @@
     </noscript>
 
     <form id="whp-form" class="panel" novalidate autocomplete="off" aria-labelledby="form-title">
-      <h2 id="form-title" class="panel-title">① 기본 정보</h2>
+      <h2 id="form-title" class="panel-title"><span class="step">1</span> 기본 정보</h2>
 
       <div class="field">
         <label for="employment-type">근무 형태 <span class="req">필수</span></label>
@@ -56,17 +56,17 @@
           <option value="daily">일 단위 계약(일용직)</option>
           <option value="surveillance">감시·단속적 근로(고용노동부 승인)</option>
         </select>
+        <p class="error" id="employment-type-error" hidden></p>
         <p class="hint" id="employment-type-hint">이 계산기는 시급제 근로자를 기준으로 판정합니다.</p>
         <p class="notice notice-warn scope-note" id="scope-note" hidden></p>
-        <p class="error" id="employment-type-error" hidden></p>
       </div>
 
       <div class="row dates">
         <div class="field">
           <label for="hire-date">재직 시작일 <span class="req">필수</span></label>
           <input id="hire-date" name="hireDate" type="date" aria-describedby="hire-date-hint hire-date-error">
-          <p class="hint" id="hire-date-hint">이 날짜의 요일부터 7일을 1주로 셉니다.</p>
           <p class="error" id="hire-date-error" hidden></p>
+          <p class="hint" id="hire-date-hint">이 날짜의 요일부터 7일을 1주로 셉니다.</p>
         </div>
         <fieldset class="field">
           <legend>재직 상태 <span class="req">필수</span></legend>
@@ -81,23 +81,23 @@
       <div class="field" id="end-field" hidden>
         <label for="end-date">마지막 재직일 <span class="req">필수</span></label>
         <input id="end-date" name="endDate" type="date" aria-describedby="end-date-hint end-date-error">
-        <p class="hint" id="end-date-hint">회사 기록의 퇴사일이 재직 종료 다음 날을 뜻한다면, 그 전날(마지막으로 소속된 날)을 입력하세요.</p>
         <p class="error" id="end-date-error" hidden></p>
+        <p class="hint" id="end-date-hint">회사 기록의 퇴사일이 재직 종료 다음 날을 뜻한다면, 그 전날(마지막으로 소속된 날)을 입력하세요.</p>
       </div>
 
       <div class="field">
         <label for="wage">시급 <span class="opt">선택</span> <span class="unit">(원)</span></label>
         <input id="wage" name="wage" type="text" inputmode="numeric" autocomplete="off" placeholder="예: 10320" aria-describedby="wage-hint wage-error">
-        <p class="hint" id="wage-hint">입력하면 지급 대상 주의 세전 예상액을 함께 보여 줍니다.</p>
         <p class="error" id="wage-error" hidden></p>
+        <p class="hint" id="wage-hint">입력하면 지급 대상 주의 세전 예상액을 함께 보여 줍니다.</p>
       </div>
 
-      <div class="row">
+      <div class="row row-stack">
         <div class="field">
           <label for="check-start">확인 시작일 <span class="opt">선택</span></label>
           <input id="check-start" name="checkStart" type="date" aria-describedby="check-start-hint check-start-error">
-          <p class="hint" id="check-start-hint">비워 두면 재직 시작일부터 확인합니다. 이 날짜가 속한 주부터 시작합니다.</p>
           <p class="error" id="check-start-error" hidden></p>
+          <p class="hint" id="check-start-hint">비워 두면 재직 시작일부터 확인합니다. 이 날짜가 속한 주부터 시작합니다.</p>
         </div>
         <div class="field">
           <label for="week-count">확인할 주 수</label>
@@ -116,10 +116,13 @@
         </fieldset>
       </details>
 
-      <h2 class="panel-title section-gap">② 주별 근무표</h2>
+      <h2 class="panel-title section-gap"><span class="step">2</span> 주별 근무표</h2>
       <div class="notice guide" id="time-guide">
-        <p><strong>입력하는 시간은 ‘미리 정한 근무시간(소정근로시간)’입니다.</strong> 근로계약서나 미리 정해 둔 근무표의 시간을 휴게시간을 빼고 입력하세요.</p>
-        <p>실제로 더 일하거나 일찍 끝난 시간이 아닙니다. 당일 추가 근무는 넣지 말고, 근무표를 미리 합의해 바꿨다면 바뀐 시간을 입력하세요. 실제 출근 여부는 날짜별 ‘출근 여부’로 따로 고릅니다.</p>
+        <p><strong>입력하는 시간은 ‘미리 정한 근무시간(소정근로시간)’입니다.</strong> 실제로 더 일하거나 일찍 끝난 시간이 아닙니다.</p>
+        <details class="guide-more">
+          <summary>입력 방법 자세히</summary>
+          <p>근로계약서나 미리 정해 둔 근무표의 시간을 휴게시간을 빼고 입력하세요. 당일 추가 근무는 넣지 말고, 근무표를 미리 합의해 바꿨다면 바뀐 시간을 입력하세요. 실제 출근 여부는 날짜별 ‘출근 여부’로 따로 고릅니다.</p>
+        </details>
       </div>
       <p class="week-rule" id="week-rule"></p>
       <p class="error" id="schedule-error" hidden></p>
@@ -135,7 +138,7 @@
       </div>
       <p class="hint" id="weeks-placeholder">재직 시작일을 입력하면 주별 근무표가 나타납니다.</p>
 
-      <div class="actions">
+      <div class="actions actions-sticky">
         <button type="submit" class="btn btn-primary" id="submit">판정하기</button>
       </div>
     </form>
@@ -146,6 +149,7 @@
       <h2 id="result-title" class="panel-title" tabindex="-1">주차별 지급 판정표</h2>
       <p class="result-meta" id="result-meta"></p>
       <p class="result-summary" id="result-summary"></p>
+      <p class="hint result-basis-note">각 행의 ‘근거’ 전체 조문 목록은 아래 ‘적용 기준 및 공식 출처’에서 볼 수 있습니다.</p>
       <div class="needs" id="needs" hidden>
         <h3>추가로 입력할 값</h3>
         <ul id="needs-list"></ul>
@@ -155,12 +159,12 @@
         <thead role="rowgroup">
           <tr role="row">
             <th role="columnheader" scope="col">주차</th>
+            <th role="columnheader" scope="col">판정</th>
+            <th role="columnheader" scope="col">세전 예상액</th>
+            <th role="columnheader" scope="col">판정 이유</th>
             <th role="columnheader" scope="col">판정 기간</th>
             <th role="columnheader" scope="col">평균 기간</th>
             <th role="columnheader" scope="col">적용 시간</th>
-            <th role="columnheader" scope="col">판정</th>
-            <th role="columnheader" scope="col">판정 이유</th>
-            <th role="columnheader" scope="col">세전 예상액</th>
           </tr>
         </thead>
         <tbody role="rowgroup" id="whp-rows"></tbody>

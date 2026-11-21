@@ -69,19 +69,19 @@
     </noscript>
 
     <form id="proration-form" class="panel" novalidate autocomplete="off" aria-labelledby="form-title">
-      <h2 id="form-title" class="panel-title">입력</h2>
+      <h2 id="form-title" class="panel-title"><span class="step">1</span> 급여와 정산 기간</h2>
 
       <div class="field">
-        <label for="salary">일할 대상 세전 월급 <span class="unit">(원)</span></label>
-        <p class="hint" id="salary-hint">회사에서 일할 계산에 포함하는 세전 월정급 항목(기본급 등)의 합을 원 단위로 입력하세요.</p>
+        <label for="salary">일할 대상 세전 월급 <span class="req">필수</span> <span class="unit">(원)</span></label>
         <input id="salary" name="salary" type="text" inputmode="numeric" autocomplete="off" spellcheck="false"
-               placeholder="예: 3100000" aria-describedby="salary-hint salary-preview salary-error">
-        <p class="preview" id="salary-preview"></p>
+               placeholder="예: 3100000" aria-describedby="salary-error salary-preview salary-hint">
         <p class="error" id="salary-error" hidden></p>
+        <p class="preview" id="salary-preview"></p>
+        <p class="hint" id="salary-hint">회사에서 일할 계산에 포함하는 세전 월정급 항목(기본급 등)의 합을 원 단위로 입력하세요.</p>
       </div>
 
       <fieldset class="field">
-        <legend>정산 대상 월</legend>
+        <legend>정산 대상 월 <span class="req">필수</span></legend>
         <div class="row">
           <div class="sub-field">
             <label for="year">연도</label>
@@ -96,7 +96,7 @@
       </fieldset>
 
       <fieldset class="field">
-        <legend>정산 유형</legend>
+        <legend>정산 유형 <span class="req">필수</span></legend>
         <div class="choices">
           <label class="choice"><input type="radio" name="type" value="join" checked> <span>중도 입사</span></label>
           <label class="choice"><input type="radio" name="type" value="leave"> <span>중도 퇴사</span></label>
@@ -106,22 +106,23 @@
 
       <div class="row dates">
         <div class="field" id="start-field">
-          <label for="start-date">입사일</label>
+          <label for="start-date">입사일 <span class="req">필수</span></label>
           <input id="start-date" name="startDate" type="date" aria-describedby="start-date-hint start-date-error">
-          <p class="hint" id="start-date-hint">입사일부터 정산에 포함합니다.</p>
           <p class="error" id="start-date-error" hidden></p>
+          <p class="hint" id="start-date-hint">입사일부터 정산에 포함합니다.</p>
         </div>
         <div class="field" id="end-field" hidden>
-          <label for="end-date">마지막 재직일</label>
+          <label for="end-date">마지막 재직일 <span class="req">필수</span></label>
           <input id="end-date" name="endDate" type="date" aria-describedby="end-date-hint end-date-error">
-          <p class="hint" id="end-date-hint">정산에 포함되는 마지막 근무(재직) 날짜입니다.</p>
           <p class="error" id="end-date-error" hidden></p>
+          <p class="hint" id="end-date-hint">정산에 포함되는 마지막 근무(재직) 날짜입니다.</p>
         </div>
       </div>
 
+      <h2 class="panel-title section-gap"><span class="step">2</span> 근로 일정</h2>
       <fieldset class="field schedule" aria-describedby="schedule-hint schedule-summary schedule-error">
-        <legend>월 전체 소정근로 일정</legend>
-        <p class="hint" id="schedule-hint">재직 구간 밖의 날짜를 포함해, 그달 전체에 예정된 근무일을 선택하세요. 월~금이 기본 선택되어 있으며 공휴일·주말 근무·교대근무에 맞게 날짜를 눌러 선택하거나 해제할 수 있습니다.</p>
+        <legend>월 전체 소정근로 일정 <span class="req">필수</span></legend>
+        <p class="hint" id="schedule-hint">그달 전체(재직 구간 밖 포함)의 예정 근무일입니다. 기본은 월~금이며, 공휴일·주말·교대근무는 날짜를 눌러 바꾸세요.</p>
         <div class="schedule-tools">
           <button type="button" class="btn btn-ghost" id="reset-weekdays">월~금으로 초기화</button>
           <button type="button" class="btn btn-ghost" id="clear-workdays">전체 해제</button>
@@ -137,7 +138,7 @@
         <p class="error" id="schedule-error" hidden></p>
       </fieldset>
 
-      <div class="actions">
+      <div class="actions actions-sticky">
         <button type="submit" class="btn btn-primary" id="submit">계산하기</button>
       </div>
     </form>
@@ -147,6 +148,12 @@
     <section id="result" class="panel result" hidden aria-labelledby="result-title">
       <h2 id="result-title" class="panel-title" tabindex="-1">세전 일할 급여 비교</h2>
       <p class="result-meta" id="result-meta"></p>
+      <div class="headline" aria-label="세전 예상액">
+        <div class="stat"><span class="stat-label">달력일 기준</span><span class="stat-value" id="hl-calendar"></span></div>
+        <div class="stat"><span class="stat-label">소정근로일 기준</span><span class="stat-value" id="hl-workday"></span></div>
+      </div>
+      <p class="diff"><span class="diff-label">차액</span> <strong id="diff-value"></strong></p>
+      <h3 class="table-title">계산 내역 (적용 일수·산식)</h3>
       <table class="compare" role="table" aria-labelledby="result-title" aria-describedby="result-meta">
         <thead role="rowgroup">
           <tr role="row">
@@ -174,7 +181,6 @@
           </tr>
         </tbody>
       </table>
-      <p class="diff"><span class="diff-label">차액</span> <strong id="diff-value"></strong></p>
     </section>
 
     <section class="notice" aria-labelledby="notice-title">

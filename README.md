@@ -32,6 +32,46 @@ npm run test:e2e
 
 브라우저 검수 (Playwright/Chromium). 결과는 `docs/test-report.md`, 360px 화면 캡처는 `docs/screenshots/`에 저장된다.
 
+## 화면 점검과 UI 검수
+
+### 화면 자동 점검
+
+```bash
+npm run test:ui
+```
+
+360·390·1440px에서 다음을 한 번에 확인한다. 실패 메시지는 `[페이지 @ 너비px] 항목 — 실제값` 형식이고, 결과는 `docs/ui/ui-check-report.md`에 저장된다.
+
+- 세 페이지 직접 접속·새로고침
+- 360·390px 가로 스크롤과 입력·결과 잘림
+- 홈 카드 → 계산기 → 대표 사례 결과
+- 접이식 ‘적용 기준 및 공식 출처’ 기본 닫힘, 클릭·Enter·Space로 열고 닫기, 열린 채 재계산
+- 두 계산기의 기존 계산 기대값
+
+배포된 주소는 `UI_BASE=https://주소 npm run test:ui`로 점검한다.
+
+### 화면 캡처
+
+```bash
+npm run ui:capture -- --out docs/ui/current
+```
+
+세 페이지를 360·390·1440px에서 테스트용 가상 입력값으로 채워 전체 화면을 저장한다. 배포 주소는 `--base https://주소`로 찍는다.
+
+### UI 검수 에이전트 `ui-reviewer`
+
+- 정의: `.claude/agents/ui-reviewer.md`
+- 작업 순서: 화면 실행 → 모바일·데스크톱 캡처 → 문제 발견 → 수정 → 재검수
+- 결과: `docs/ui/review-<날짜>.md`에 페이지·화면 너비·발견한 문제·수정 제안·우선순위·상태 표로 남긴다.
+
+호출 방법(이 저장소에서 연 Claude Code 세션):
+
+- 자연어로 요청한다: “ui-reviewer 에이전트로 세 페이지 화면 검수해 줘”
+- 또는 `@ui-reviewer`로 지정하고 범위를 적는다: “@ui-reviewer 주휴수당 결과 화면만 360px에서 검수하고 수정까지 해 줘”
+- `/agents` 명령에서 목록과 설정을 확인할 수 있다.
+
+에이전트 파일은 세션을 시작할 때 읽힌다. 파일을 새로 추가하거나 고친 뒤에는 새 세션에서 호출한다.
+
 ## 빌드와 검색 노출
 
 | 명령 | 결과 |
@@ -65,5 +105,8 @@ scripts/build.js            미리보기/운영 빌드
 scripts/pages.js            페이지 목록 (canonical·사이트맵)
 tests/unit/                 node:test 단위 테스트
 tests/e2e/run.cjs           Playwright 브라우저 검수
+tests/ui/ui-check.cjs       화면 자동 점검 (npm run test:ui)
+scripts/ui-capture.cjs      화면 캡처 (npm run ui:capture)
+.claude/agents/ui-reviewer.md  UI 검수 에이전트
 docs/                       검수 결과와 화면 캡처
 ```

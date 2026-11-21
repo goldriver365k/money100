@@ -238,10 +238,19 @@ function renderResult(r) {
     amount: r.workday.available ? formatWon(r.workday.amount) : MESSAGES.noWorkdays,
   });
 
+  $('hl-calendar').textContent = formatWon(r.calendar.amount);
+  const hlWork = $('hl-workday');
+  hlWork.textContent = r.workday.available ? formatWon(r.workday.amount) : MESSAGES.noWorkdays;
+  hlWork.classList.toggle('stat-note', !r.workday.available);
+
   const diffText = describeDiff(r.diff);
   $('diff-value').textContent = diffText;
 
   resultSection.hidden = false;
+  // 결과로 이동 (모바일에서 결과가 화면 밖에 있지 않도록)
+  const title = $('result-title');
+  title.focus({ preventScroll: true });
+  title.scrollIntoView({ behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' });
 
   const workdayText = r.workday.available ? formatWon(r.workday.amount) : MESSAGES.noWorkdays;
   const announcement = `계산 결과: 달력일 기준 ${formatWon(r.calendar.amount)}, 소정근로일 기준 ${workdayText}. 차액 ${diffText}.`;

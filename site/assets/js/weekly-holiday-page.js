@@ -503,18 +503,18 @@ function renderResult(r) {
     const alt = w.altWindow ? `<br><span class="muted">비교 기간 ${shortDate(w.altWindow.start)}~${shortDate(w.altWindow.end)} 평균 ${formatAverage(w.altWindow.avgNum, w.altWindow.avgDen)}</span>` : '';
     const reason = `${esc(w.reason)}${w.capped ? ' <span class="muted">하루 8시간·1주 40시간을 넘는 시간은 반영하지 않았습니다.</span>' : ''}` +
       (w.confirm ? `<br><strong class="confirm">${CONFIRM}</strong> ${esc(w.confirm.replace(` ${CONFIRM}.`, '').replace(`${CONFIRM}: `, ''))}` : '') +
-      `<br><span class="rule-ref">근거: ${esc(RULES[w.rule].title)} — ${esc(sourceText(w.sources))}</span>`;
+      `<br><span class="rule-ref">근거: ${esc(RULES[w.rule].title)} — ${esc(SOURCES[w.sources[0]].label)}${w.sources.length > 1 ? ` 외 ${w.sources.length - 1}건` : ''}</span>`;
     const amount = w.amount !== null
-      ? `<strong>${formatNumber(w.amount)}원</strong><br><span class="muted">${esc(w.formula)}</span>`
+      ? `<span class="amount-value">${formatNumber(w.amount)}원</span> <span class="muted">${esc(w.formula)}</span>`
       : `<span class="muted">${w.status === 'eligible' ? esc(w.amountNote) : '—'}</span>`;
     tr.innerHTML = `
       <th role="rowheader" scope="row">${w.week}주차</th>
+      <td role="cell" data-label="판정" data-col="status"><div class="cell-v"><span class="badge badge-${w.status}">${STATUS_LABELS[w.status]}</span></div></td>
+      <td role="cell" data-label="세전 예상액" data-col="amount" class="amount${w.amount !== null ? ' has-amount' : ''}"><div class="cell-v">${amount}</div></td>
+      <td role="cell" data-label="판정 이유" data-col="reason" class="reason"><div class="cell-v">${reason}</div></td>
       <td role="cell" data-label="판정 기간" data-col="range"><div class="cell-v">${shortDate(w.start)}~${shortDate(w.end)}</div></td>
       <td role="cell" data-label="평균 기간" data-col="window"><div class="cell-v">${win ? esc(win.text) : '—'}${alt}</div></td>
-      <td role="cell" data-label="적용 시간" data-col="applied"><div class="cell-v">${applied}</div></td>
-      <td role="cell" data-label="판정" data-col="status"><div class="cell-v"><span class="badge badge-${w.status}">${STATUS_LABELS[w.status]}</span></div></td>
-      <td role="cell" data-label="판정 이유" data-col="reason" class="reason"><div class="cell-v">${reason}</div></td>
-      <td role="cell" data-label="세전 예상액" data-col="amount" class="amount"><div class="cell-v">${amount}</div></td>`;
+      <td role="cell" data-label="적용 시간" data-col="applied"><div class="cell-v">${applied}</div></td>`;
     tbody.append(tr);
   }
 
@@ -533,6 +533,10 @@ function renderResult(r) {
 
 function finishResult(text) {
   resultSection.hidden = false;
+  // 판정 결과로 이동 (모바일에서 결과가 화면 밖에 있지 않도록)
+  const title = $('result-title');
+  title.focus({ preventScroll: true });
+  title.scrollIntoView({ behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' });
   resultStatus.textContent = '';
   announceTimer = window.setTimeout(() => { resultStatus.textContent = text; }, 50);
 }

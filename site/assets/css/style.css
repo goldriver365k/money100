@@ -348,8 +348,6 @@ input[aria-invalid="true"] { border-color: var(--error); box-shadow: 0 0 0 1px v
 .badge-eligible { background: var(--brand); color: #fff; }
 .badge-ineligible { background: var(--bg); color: var(--text); border: 1px solid var(--border); }
 .badge-insufficient { background: var(--range-soft); color: var(--text); border: 1px solid var(--range); }
-.whp-table td.reason { font-size: 0.9rem; min-width: 200px; }
-.whp-table td.amount { white-space: normal; }
 .confirm { color: var(--error); }
 .rule-ref { font-size: 0.8rem; color: var(--muted); }
 .result-disclaimer { margin: 14px 0 0; padding: 12px; border-radius: 10px; background: var(--brand-soft); }
@@ -357,22 +355,40 @@ input[aria-invalid="true"] { border-color: var(--error); box-shadow: 0 0 0 1px v
 .basis summary { cursor: pointer; font-weight: 700; min-height: 44px; display: flex; align-items: center; }
 .basis ul { padding-left: 18px; font-size: 0.9rem; }
 .rule-list li { margin-bottom: 6px; }
-/* 판정표는 7열이라 모든 너비에서 주차별 카드로 쌓는다 */
+/* 판정표: 모든 너비에서 주차별 카드. 제목줄 = 주차 · 판정 배지 · 예상액, 그 아래 판정 이유, 마지막에 기간·시간 */
 .whp-table thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
-.whp-table, .whp-table tbody, .whp-table tr, .whp-table th, .whp-table td { display: block; width: 100%; }
-.whp-table tr { border: 1px solid var(--border); border-radius: 10px; padding: 4px 12px; margin-bottom: 10px; }
+.whp-table, .whp-table tbody { display: block; width: 100%; }
+.whp-table tr {
+  display: grid; grid-template-columns: auto auto 1fr; align-items: center; column-gap: 10px;
+  border: 1px solid var(--border); border-radius: 12px; padding: 4px 14px 8px; margin-bottom: 12px; background: var(--surface);
+}
 .whp-table tr.st-eligible { border-left: 4px solid var(--brand); }
 .whp-table tr.st-insufficient { border-left: 4px solid var(--range); }
-.whp-table tbody th { border-bottom: 1px solid var(--border); padding: 10px 0; font-size: 1rem; }
-.whp-table td { display: grid; grid-template-columns: 96px 1fr; gap: 4px 12px; padding: 8px 0; border-bottom: 1px dashed var(--border); text-align: left; }
-.whp-table td:last-child { border-bottom: 0; }
-.whp-table td::before { content: attr(data-label); color: var(--muted); font-weight: 600; }
-.whp-table td.reason { min-width: 0; }
-.whp-table .cell-v { min-width: 0; }
-.whp-table td.amount { white-space: normal; text-align: left; font-size: 1rem; }
-@media (max-width: 599px) {
-  .whp-table td { grid-template-columns: 1fr; }
+.whp-table th, .whp-table td { display: block; padding: 0; border: 0; text-align: left; }
+.whp-table tbody th { grid-column: 1; grid-row: 1; padding: 12px 0; font-size: 1.05rem; white-space: nowrap; }
+.whp-table td[data-col="status"] { grid-column: 2; grid-row: 1; }
+.whp-table td.amount.has-amount { grid-column: 3; grid-row: 1; text-align: right; }
+.whp-table td.amount.has-amount .amount-value { font-size: 1.2rem; font-weight: 800; }
+.whp-table td.amount.has-amount .muted { display: block; font-size: 0.78rem; }
+.whp-table td[data-col="reason"], .whp-table td[data-col="range"], .whp-table td[data-col="window"],
+.whp-table td[data-col="applied"], .whp-table td.amount:not(.has-amount) {
+  grid-column: 1 / -1; display: grid; grid-template-columns: 88px 1fr; gap: 2px 12px;
+  padding: 8px 0; border-top: 1px dashed var(--border); font-size: 0.92rem;
 }
+.whp-table td[data-col="reason"] { border-top: 1px solid var(--border); font-size: 0.95rem; }
+.whp-table td[data-col="reason"]::before, .whp-table td[data-col="range"]::before, .whp-table td[data-col="window"]::before,
+.whp-table td[data-col="applied"]::before, .whp-table td.amount:not(.has-amount)::before {
+  content: attr(data-label); color: var(--muted); font-weight: 600;
+}
+.whp-table td.amount:not(.has-amount) .cell-v { color: var(--muted); }
+.whp-table .cell-v { min-width: 0; }
+.whp-table td[data-col="status"]::before, .whp-table td.amount.has-amount::before { content: none !important; }
+@media (max-width: 599px) {
+  .whp-table td[data-col="reason"], .whp-table td[data-col="range"], .whp-table td[data-col="window"],
+  .whp-table td[data-col="applied"], .whp-table td.amount:not(.has-amount) { grid-template-columns: 76px 1fr; }
+  .whp-table tr { grid-template-columns: auto 1fr; }
+  .whp-table td.amount.has-amount { grid-column: 1 / -1; grid-row: 2; text-align: left; padding: 0 0 10px; display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; }
+  .whp-table td.amount.has-amount .muted { display: inline; }
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) .badge-eligible { color: #0d1a15; }
@@ -401,3 +417,83 @@ input[aria-invalid="true"] { border-color: var(--error); box-shadow: 0 0 0 1px v
 .basis-fold .basis-result { margin: 12px 0 4px; padding: 12px; border-radius: 10px; background: var(--brand-soft); font-size: 0.9rem; }
 .basis-fold .basis-result h3 { margin: 0 0 6px; font-size: 0.95rem; }
 .basis-fold .basis-result ul { padding-left: 18px; }
+
+/* ---------- 9차 디자인 정리 (UI 검수 반영) ---------- */
+/* 단계 제목: 세 페이지 공통 */
+.panel-title { display: flex; align-items: center; gap: 8px; }
+.step {
+  display: inline-flex; align-items: center; justify-content: center; flex: none;
+  width: 26px; height: 26px; border-radius: 50%; background: var(--brand); color: #fff;
+  font-size: 0.85rem; font-weight: 800;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .step { color: #0d1a15; } }
+
+/* 라벨 → 입력 → 오류 → 힌트: 오류를 입력 바로 아래에 */
+.field > input + .error, .field > select + .error, .field > input + .preview { margin-top: 6px; }
+.field > .error + .hint, .field > .preview + .hint, .field > .error + .preview { margin-top: 6px; }
+.field > input ~ .hint, .field > select ~ .hint { margin: 6px 0 0; }
+
+/* 계산 버튼: 모바일에서 폼을 보는 동안 화면 아래에 고정 */
+.actions-sticky { position: sticky; bottom: 0; z-index: 5; margin: 8px -16px -20px; padding: 10px 16px 12px; background: linear-gradient(to top, var(--surface) 80%, transparent); border-radius: 0 0 var(--radius) var(--radius); }
+@media (min-width: 600px) { .actions-sticky { position: static; background: none; margin: 8px 0 0; padding: 0; } }
+
+/* 모바일에서 2열 행을 1열로 (좁은 날짜 입력 잘림 방지) */
+@media (max-width: 559px) { .row.row-stack { grid-template-columns: 1fr; gap: 0; } }
+
+/* 데스크톱: 짧은 입력은 너무 길게 늘이지 않음 */
+@media (min-width: 600px) {
+  #salary, #wage, #employment-type, .field > input[type="date"] { max-width: 360px; }
+}
+
+/* 근무표 입력 안내: 한 줄 요약 + 자세히 */
+.guide-more summary { cursor: pointer; color: var(--brand); font-weight: 700; font-size: 0.875rem; min-height: 36px; display: flex; align-items: center; }
+.guide-more p { margin: 4px 0 0; }
+
+/* 주차 탭: 4주는 360px 안에 같은 폭으로, 그 이상은 가로 스크롤 */
+.week-tab { flex: 1 0 68px; min-width: 68px; }
+.week-tabs { scrollbar-width: thin; }
+
+/* 날짜 라벨이 두 줄로 갈라지지 않게 */
+.day-row { grid-template-columns: 78px 1fr; }
+.day-label { white-space: nowrap; }
+@media (min-width: 600px) { .day-row { grid-template-columns: 84px auto 1fr; } }
+
+/* 월급 결과: 예상액 먼저 크게, 바로 아래 차액, 그다음 계산 내역 */
+.headline { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 0 0 10px; }
+.stat { display: grid; gap: 2px; padding: 12px 14px; border: 1px solid var(--border); border-radius: 12px; background: var(--bg); }
+.stat-label { font-size: 0.85rem; color: var(--muted); font-weight: 700; }
+.stat-value { font-size: 1.35rem; font-weight: 800; font-variant-numeric: tabular-nums; letter-spacing: -0.01em; overflow-wrap: anywhere; }
+.stat-value.stat-note { font-size: 0.9rem; color: var(--error); font-weight: 700; }
+.result .diff { margin: 0 0 16px; font-size: 1rem; }
+.table-title { margin: 0 0 6px; font-size: 0.95rem; color: var(--muted); }
+@media (max-width: 359px) { .headline { grid-template-columns: 1fr; } }
+/* 모바일 계산 내역 카드: 기준 → 예상액 → 적용 일수·산식 */
+@media (max-width: 599px) {
+  .compare:not(.whp-table) tr { display: flex; flex-direction: column; }
+  .compare:not(.whp-table) th { order: 0; }
+  .compare:not(.whp-table) td.amount { order: 1; font-size: 1.15rem; }
+  .compare:not(.whp-table) td:not(.amount) { order: 2; }
+}
+
+/* 홈: 데스크톱에서 카드 2열 */
+@media (min-width: 720px) { .card-list { grid-template-columns: 1fr 1fr; } .card { height: 100%; align-content: start; } }
+.card-situation { font-size: 0.9rem; color: var(--text); margin: 2px 0 0; padding-left: 0; list-style: none; display: grid; gap: 2px; }
+.card-situation li::before { content: "✓ "; color: var(--brand); font-weight: 800; }
+/* 주휴 판정표의 예상액 산식은 줄바꿈 허용 (.compare td.amount 의 nowrap 무효화) */
+.whp-table td.amount { white-space: normal; min-width: 0; }
+.whp-table td.amount .muted { overflow-wrap: anywhere; }
+/* 예상액 숫자가 '원'에서 줄바꿈되지 않게, 좁은 화면에서는 글자 크기를 줄임 */
+.stat-value { white-space: nowrap; font-size: clamp(1.05rem, 4.6vw, 1.35rem); overflow-wrap: normal; }
+.stat-value.stat-note { white-space: normal; }
+/* 판정표 카드 다듬기: 주차 제목 아래 잔선 제거, 라벨 한 줄, 금액이 없는 비대상 주는 예상액 줄 숨김 */
+.whp-table tbody th { border-bottom: 0 !important; }
+.whp-table td::before { white-space: nowrap; text-align: left; }
+.whp-table td { justify-content: initial; }
+.whp-table tr:not(.st-eligible) td.amount:not(.has-amount) { display: none; }
+/* 재검수(2차) 반영 */
+.tab-range { white-space: nowrap; font-size: 0.72rem; }                          /* N1 */
+.guide-more summary { min-height: 44px; }                                          /* N2 */
+.stat-value { font-size: clamp(1.25rem, 5.4vw, 1.45rem); }                         /* N3 */
+@media (max-width: 599px) { .compare:not(.whp-table) td.amount { font-size: 1.05rem; } }
+#result-title { scroll-margin-top: 16px; }                                         /* N4 */
+.result-basis-note { margin: -6px 0 12px; }
