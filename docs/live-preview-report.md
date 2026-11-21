@@ -1,8 +1,8 @@
-# 정산노트 검수 결과표 — 운영 주소 https://급여계산기.site (홈 10종 목록 반영 후)
+# 정산노트 검수 결과표 — 운영 주소 https://급여계산기.site (전체 초기화 반영 후)
 
-> 실제 운영 주소에서 실행. 배포 커밋 de2b920, `PUBLIC_LAUNCH` 미설정(noindex).
+> 실제 운영 주소에서 실행. 배포 커밋 8177f31, `PUBLIC_LAUNCH` 미설정(noindex).
 
-- 실행: 2026-11-21T05:07:12.195Z · 미리보기(dist/) · `npm run test:e2e` · Chromium(Playwright) · 시간대 Pacific/Kiritimati(UTC+14)
+- 실행: 2026-11-21T05:18:23.698Z · 미리보기(dist/) · `npm run test:e2e` · Chromium(Playwright) · 시간대 Pacific/Kiritimati(UTC+14)
 - 집계: 통과 101 · 실패 0 · 미확인 3
 
 ## 월급 일할계산기 — 필수 검증 사례 5건 (회귀, 브라우저 직접 입력)
