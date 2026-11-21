@@ -12,7 +12,7 @@
 import { sourceList } from '../rules/index.js';
 import { parseAmount, parseDecimal, parseDate, collect, dateFromParts, korDate, floorWon, won, num, result, fail } from './common.js';
 
-const SOURCES = ['leaveAct', 'leaveScope', 'leaveShort', 'shortHours'];
+const SOURCES = ['leaveAct', 'leaveScope', 'leaveShort', 'shortHours', 'ordinaryWage'];
 
 /** 기준일(재직일) 현재 완성된 근속 연수와 개월 수 */
 export function tenure(start, base) {

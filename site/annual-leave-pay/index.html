@@ -110,10 +110,43 @@
 
       <div class="field">
         <label for="hourly"><span class="label-text">통상시급</span> <span class="req">필수</span> <span class="unit">(원)</span></label>
-        <input id="hourly" name="hourly" type="text" inputmode="numeric" autocomplete="off" spellcheck="false" placeholder="예: 12000" data-amount aria-describedby="hourly-error hourly-preview hourly-hint">
+        <div class="input-with-action">
+          <input id="hourly" name="hourly" type="text" inputmode="numeric" autocomplete="off" spellcheck="false" placeholder="예: 12000" data-amount aria-describedby="hourly-error hourly-preview hourly-hint">
+          <button type="button" class="btn btn-ghost helper-toggle" id="hourly-helper-toggle" aria-expanded="false" aria-controls="hourly-helper">자동 계산</button>
+        </div>
         <p class="error" id="hourly-error" hidden></p>
         <p class="preview" id="hourly-preview"></p>
-        <p class="hint" id="hourly-hint">기본급 등 통상임금을 시간당으로 나눈 금액입니다 (월 통상임금 ÷ 209시간 등).</p>
+        <p class="hint" id="hourly-hint">기본급 등 통상임금을 시간당으로 나눈 금액입니다. 모르면 &quot;자동 계산&quot;으로 월 통상임금에서 구할 수 있습니다.</p>
+        <div class="pay-helper" id="hourly-helper" data-helper="ordinaryHourly" data-target="hourly" data-hours="weeklyHours" hidden>
+          <p class="pay-helper-title">통상시급 자동 계산</p>
+          <p class="hint">월 통상임금을 월 기준시간(위에 입력한 1주 소정근로시간으로 계산)으로 나눕니다.</p>
+          <div class="field helper-field">
+            <label for="ohBase">기본급 (월) <span class="unit">(원)</span></label>
+            <input id="ohBase" name="ohBase" type="text" inputmode="numeric" autocomplete="off" spellcheck="false" data-amount aria-describedby="ohBase-error ohBase-preview">
+            <p class="error" id="ohBase-error" hidden></p>
+            <p class="preview" id="ohBase-preview"></p>
+          </div>
+          <div class="field helper-field">
+            <label for="ohFixed">매달 고정으로 받는 수당 (월) <span class="unit">(원)</span></label>
+            <input id="ohFixed" name="ohFixed" type="text" inputmode="numeric" autocomplete="off" spellcheck="false" data-amount aria-describedby="ohFixed-error ohFixed-preview ohFixed-hint">
+            <p class="error" id="ohFixed-error" hidden></p>
+            <p class="preview" id="ohFixed-preview"></p>
+            <p class="hint" id="ohFixed-hint">직책·자격·식대 등 매달 정해진 금액. 연장·야간수당과 실적 성과급은 빼세요.</p>
+          </div>
+          <div class="field helper-field">
+            <label for="ohBonus">정기 상여금 (연간) <span class="unit">(원)</span></label>
+            <input id="ohBonus" name="ohBonus" type="text" inputmode="numeric" autocomplete="off" spellcheck="false" data-amount aria-describedby="ohBonus-error ohBonus-preview ohBonus-hint">
+            <p class="error" id="ohBonus-error" hidden></p>
+            <p class="preview" id="ohBonus-preview"></p>
+            <p class="hint" id="ohBonus-hint">정해진 시기에 정해진 금액으로 주는 상여금. ÷ 12 해서 월 통상임금에 넣습니다.</p>
+          </div>
+          <p class="error" id="ohWeekly-error" hidden></p>
+          <div class="pay-helper-result" id="hourly-helper-result" aria-live="polite"></div>
+          <div class="pay-helper-actions">
+            <button type="button" class="btn btn-primary" id="hourly-helper-apply">통상시급에 넣기</button>
+            <button type="button" class="btn btn-ghost" id="hourly-helper-close">닫기</button>
+          </div>
+        </div>
       </div>
 
       <div class="field">
@@ -209,6 +242,7 @@
         <li><a href="https://www.law.go.kr/법령/%EA%B7%BC%EB%A1%9C%EA%B8%B0%EC%A4%80%EB%B2%95%EC%8B%9C%ED%96%89%EB%A0%B9/%EC%A0%9C7%EC%A1%B0" target="_blank" rel="noopener noreferrer">근로기준법 시행령 제7조 및 별표 1 (상시 4명 이하 사업장 — 연차 규정 미적용)<span class="sr-only"> (새 창에서 열림)</span></a></li>
         <li><a href="https://www.law.go.kr/법령/%EA%B7%BC%EB%A1%9C%EA%B8%B0%EC%A4%80%EB%B2%95%EC%8B%9C%ED%96%89%EB%A0%B9/%EC%A0%9C9%EC%A1%B0" target="_blank" rel="noopener noreferrer">근로기준법 시행령 제9조 및 별표 2 (단시간근로자 연차 — 통상근로자 연차일수 × 소정근로시간 비율 × 8시간)<span class="sr-only"> (새 창에서 열림)</span></a></li>
         <li><a href="https://www.law.go.kr/법령/%EA%B7%BC%EB%A1%9C%EA%B8%B0%EC%A4%80%EB%B2%95/%EC%A0%9C18%EC%A1%B0" target="_blank" rel="noopener noreferrer">근로기준법 제18조 제3항 (4주 평균 1주 15시간 미만 근로자 — 주휴 미적용)<span class="sr-only"> (새 창에서 열림)</span></a></li>
+        <li><a href="https://www.law.go.kr/법령/%EA%B7%BC%EB%A1%9C%EA%B8%B0%EC%A4%80%EB%B2%95%EC%8B%9C%ED%96%89%EB%A0%B9/%EC%A0%9C6%EC%A1%B0" target="_blank" rel="noopener noreferrer">근로기준법 시행령 제6조 (통상임금 — 시간급 = 월급 ÷ 월 통상임금 산정 기준시간), 대법원 2024. 12. 19. 선고 2020다247190 전원합의체 판결 (재직 조건 정기상여금도 통상임금)<span class="sr-only"> (새 창에서 열림)</span></a></li>
       </ul>
       <p class="checked-date">공식 자료 확인일: <time datetime="2026-11-21">2026년 11월 21일</time></p>
       </section>

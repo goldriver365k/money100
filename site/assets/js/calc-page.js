@@ -204,6 +204,50 @@ async function setupPayHelper() {
   syncMode();
 }
 
+
+/* ---------- '통상시급' 자동 계산 도우미 (연차수당) ---------- */
+async function setupHourlyHelper() {
+  const panel = form.querySelector('[data-helper="ordinaryHourly"]');
+  if (!panel) return;
+  const { computeOrdinaryHourly } = await import('./calc/ordinary-hourly-helper.js');
+  const t = panel.dataset.target;
+  const target = $(t);
+  const hoursInput = form.elements[panel.dataset.hours];
+  const toggle = $(`${t}-helper-toggle`);
+  const out = $(`${t}-helper-result`);
+  const errMap = { base: 'ohBase', fixed: 'ohFixed', bonus: 'ohBonus', weeklyHours: 'ohWeekly' };
+  const raw = () => ({ base: form.elements.ohBase.value, fixed: form.elements.ohFixed.value, bonus: form.elements.ohBonus.value, weeklyHours: hoursInput?.value ?? '' });
+  const render = (showErrors) => {
+    panel.querySelectorAll('.error').forEach((e) => { e.hidden = true; e.textContent = ''; });
+    const r = computeOrdinaryHourly(raw());
+    out.replaceChildren();
+    if (!r.ok) {
+      if (showErrors) for (const [k, msg] of Object.entries(r.errors)) { const p = $(`${errMap[k]}-error`); if (p) { p.textContent = k === 'weeklyHours' ? `위의 ${msg}` : msg; p.hidden = false; } }
+      return null;
+    }
+    const dl = el('dl', { class: 'kv-list' });
+    r.rows.forEach((x) => { const row = el('div', { class: 'kv' }); row.append(el('dt', {}, x.label), el('dd', {}, x.value)); dl.append(row); });
+    out.append(dl);
+    return r;
+  };
+  const open = (on) => { panel.hidden = !on; toggle.setAttribute('aria-expanded', String(on)); if (on) form.elements.ohBase.focus(); };
+  toggle.addEventListener('click', () => open(panel.hidden));
+  $(`${t}-helper-close`).addEventListener('click', () => { open(false); toggle.focus(); });
+  panel.addEventListener('input', () => render(false));
+  hoursInput?.addEventListener('input', () => { if (!panel.hidden) render(false); });
+  panel.addEventListener('keydown', (e) => { if (e.key === 'Enter' && e.target.tagName === 'INPUT') { e.preventDefault(); $(`${t}-helper-apply`).click(); } });
+  $(`${t}-helper-apply`).addEventListener('click', () => {
+    const r = render(true);
+    if (!r) { const bad = panel.querySelector('.error:not([hidden])'); (bad?.id === 'ohWeekly-error' ? hoursInput : bad?.closest('.field')?.querySelector('input'))?.focus(); return; }
+    target.value = String(r.hourly);
+    updatePreview(target);
+    const e1 = $(`${t}-error`); if (e1) { e1.hidden = true; e1.textContent = ''; target.removeAttribute('aria-invalid'); }
+    open(false); target.focus();
+    status.textContent = `통상시급 ${r.hourly.toLocaleString('ko-KR')}원을 입력했습니다.`;
+  });
+  form.addEventListener('reset', () => setTimeout(() => { open(false); out.replaceChildren(); }, 0));
+}
+
 async function init() {
   if (!form) return;
   const mod = await import(`./calc/${form.dataset.calc}.js`);
@@ -230,6 +274,7 @@ async function init() {
   // 뒤로 가기 복원 시 화면 상태 맞추기
   window.addEventListener('pageshow', () => { applyMode(); form.querySelectorAll('input[data-amount]').forEach(updatePreview); });
   await setupPayHelper();
+  await setupHourlyHelper();
   form.dataset.ready = 'true';
 }
 

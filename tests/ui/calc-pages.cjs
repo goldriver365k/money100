@@ -183,6 +183,37 @@ const check = (slug, w, item, ok, actual = '') => {
         check(S, w, '자동 계산: 스크립트 오류 없음', errs.length === 0, errs.join(' | '));
         await p.close();
       }
+      // '통상시급' 자동 계산 도우미 (연차수당)
+      {
+        const S = 'annual-leave-pay';
+        const p = await ctx.newPage(); const errs = [];
+        p.on('pageerror', (e) => errs.push(String(e)));
+        await gotoRetry(p, `/${S}`);
+        await p.waitForSelector('form[data-ready="true"]');
+        const tog = p.locator('#hourly-helper-toggle');
+        const h = await p.evaluate(() => Math.round(document.getElementById('hourly-helper-toggle').getBoundingClientRect().height));
+        if (mobile) await tog.tap(); else await tog.click();
+        const opened = await p.evaluate(() => !document.getElementById('hourly-helper').hidden && document.getElementById('hourly-helper-toggle').getAttribute('aria-expanded') === 'true');
+        await p.click('#hourly-helper-apply');
+        const err = await p.evaluate(() => ({ e: document.getElementById('ohBase-error').textContent, open: !document.getElementById('hourly-helper').hidden, v: document.getElementById('hourly').value }));
+        check(S, w, '통상시급 자동 계산: 펼침(44px 버튼)·빈 기본급 → 오류·패널 유지·입력란 변경 없음', h >= 44 && opened && err.e.length > 0 && err.open && err.v === '', JSON.stringify({ h, opened, ...err }));
+        await p.fill('#ohBase', '2500000'); await p.fill('#ohFixed', '200000'); await p.fill('#ohBonus', '2400000');
+        const prev = await p.textContent('#hourly-helper-result');
+        await p.click('#hourly-helper-apply');
+        const a = await p.evaluate(() => ({ v: document.getElementById('hourly').value, closed: document.getElementById('hourly-helper').hidden, focus: document.activeElement?.id }));
+        check(S, w, '통상시급: 290만 ÷ 209시간 → 13,875원 자동 입력·패널 닫힘·입력란 포커스', /209시간/.test(prev) && a.v === '13875' && a.closed && a.focus === 'hourly', JSON.stringify({ prev: prev.slice(0, 60), ...a }));
+        await p.fill('#weeklyHours', '20'); await tog.click(); await p.fill('#ohBase', '1200000'); await p.fill('#ohFixed', ''); await p.fill('#ohBonus', '');
+        await p.click('#hourly-helper-apply');
+        const b = await p.inputValue('#hourly');
+        check(S, w, '통상시급: 1주 소정근로시간(20시간) 반영 → 104시간 기준 11,538원', b === '11538', b);
+        if (mobile) {
+          await tog.click();
+          const ov = await p.evaluate(() => { const vw = document.documentElement.clientWidth; const bad = [...document.querySelectorAll('#hourly-helper input, #hourly-helper button')].filter((e) => e.checkVisibility() && e.getBoundingClientRect().right > vw + 0.5).length; const small = [...document.querySelectorAll('#hourly-helper button')].filter((e) => e.checkVisibility() && e.getBoundingClientRect().height < 44).length; return { overflow: document.documentElement.scrollWidth - vw, bad, small }; });
+          check(S, w, '통상시급 패널 모바일: 가로 넘침·잘림 없음, 버튼 44px 이상', ov.overflow <= 0 && ov.bad === 0 && ov.small === 0, JSON.stringify(ov));
+        }
+        check(S, w, '통상시급 자동 계산: 스크립트 오류 없음', errs.length === 0, errs.join(' | '));
+        await p.close();
+      }
       // 공통 아코디언 (이용 가능한 모든 계산기)
       for (const slug of liveSlugs) {
         const p = await ctx.newPage();

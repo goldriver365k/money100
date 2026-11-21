@@ -279,7 +279,7 @@ export const PAGES_SPEC = [
       { type: 'date', name: 'baseDate', label: '계산 기준일 (퇴사 시 마지막 근무일)', required: true, hint: '이날까지 재직한 것으로 보고 발생 연차를 계산합니다.' },
       { type: 'decimal', name: 'weeklyHours', label: '1주 소정근로시간', unit: '시간', value: '40' },
       { type: 'decimal', name: 'dailyHours', label: '1일 소정근로시간', unit: '시간', value: '8' },
-      { type: 'amount', name: 'hourly', label: '통상시급', required: true, placeholder: '예: 12000', hint: '기본급 등 통상임금을 시간당으로 나눈 금액입니다 (월 통상임금 ÷ 209시간 등).' },
+      { type: 'amount', name: 'hourly', label: '통상시급', required: true, placeholder: '예: 12000', helper: 'ordinaryHourly', hoursField: 'weeklyHours', hint: '기본급 등 통상임금을 시간당으로 나눈 금액입니다. 모르면 "자동 계산"으로 월 통상임금에서 구할 수 있습니다.' },
       { type: 'decimal', name: 'used', label: '이번 연차 기간에 사용한 연차', unit: '일', value: '0', hint: '반차는 0.5일로 입력하세요.' },
       { type: 'radio', name: 'size5', label: '상시 근로자 5명 이상 사업장인가요?', choices: [['yes', '예', true], ['no', '아니요']] },
       { type: 'radio', name: 'attendance', label: '직전 1년 출근율이 80% 이상인가요?', choices: [['yes', '예', true], ['no', '아니요']] },

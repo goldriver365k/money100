@@ -45,6 +45,16 @@ function field(f) {
   }
   const modeAttrs = f.modeLabels ? ` data-mode-label ${Object.entries(f.modeLabels).map(([k, v]) => `data-label-${k.replace(/[A-Z]/g, (c) => `-${c.toLowerCase()}`)}="${esc(v)}"`).join(' ')}` : '';
   const preview = f.type === 'amount' ? `\n        <p class="preview" id="${id}-preview"></p>` : '';
+  if (f.helper === 'ordinaryHourly') {
+    return `      <div class="field">
+        <label for="${id}"${modeAttrs}><span class="label-text">${esc(f.label)}</span>${req}${unit}</label>
+        <div class="input-with-action">
+          ${control}
+          <button type="button" class="btn btn-ghost helper-toggle" id="${id}-helper-toggle" aria-expanded="false" aria-controls="${id}-helper">자동 계산</button>
+        </div>${err}${preview}${hint}
+${ordinaryHourlyHelper(id, f.hoursField)}
+      </div>`;
+  }
   if (f.helper === 'monthlyPay') {
     return `      <div class="field">
         <label for="${id}"${modeAttrs}><span class="label-text">${esc(f.label)}</span>${req}${unit}</label>
@@ -59,6 +69,27 @@ ${monthlyPayHelper(id, f.nonTaxableField)}
         <label for="${id}"${modeAttrs}><span class="label-text">${esc(f.label)}</span>${req}${unit}</label>
         ${control}${err}${preview}${hint}
       </div>`;
+}
+
+/** '통상시급' 자동 계산 패널 (calc/ordinary-hourly-helper.js). 1주 소정근로시간은 페이지의 기존 입력란(hoursField)을 쓴다. */
+function ordinaryHourlyHelper(target, hoursField) {
+  const amt = (name, label, hint = '') => `
+          <div class="field helper-field">
+            <label for="${name}">${label} <span class="unit">(원)</span></label>
+            <input id="${name}" name="${name}" type="text" inputmode="numeric" autocomplete="off" spellcheck="false" data-amount aria-describedby="${name}-error ${name}-preview${hint ? ` ${name}-hint` : ''}">
+            <p class="error" id="${name}-error" hidden></p>
+            <p class="preview" id="${name}-preview"></p>${hint ? `\n            <p class="hint" id="${name}-hint">${hint}</p>` : ''}
+          </div>`;
+  return `        <div class="pay-helper" id="${target}-helper" data-helper="ordinaryHourly" data-target="${target}" data-hours="${hoursField}" hidden>
+          <p class="pay-helper-title">통상시급 자동 계산</p>
+          <p class="hint">월 통상임금을 월 기준시간(위에 입력한 1주 소정근로시간으로 계산)으로 나눕니다.</p>${amt('ohBase', '기본급 (월)')}${amt('ohFixed', '매달 고정으로 받는 수당 (월)', '직책·자격·식대 등 매달 정해진 금액. 연장·야간수당과 실적 성과급은 빼세요.')}${amt('ohBonus', '정기 상여금 (연간)', '정해진 시기에 정해진 금액으로 주는 상여금. ÷ 12 해서 월 통상임금에 넣습니다.')}
+          <p class="error" id="ohWeekly-error" hidden></p>
+          <div class="pay-helper-result" id="${target}-helper-result" aria-live="polite"></div>
+          <div class="pay-helper-actions">
+            <button type="button" class="btn btn-primary" id="${target}-helper-apply">통상시급에 넣기</button>
+            <button type="button" class="btn btn-ghost" id="${target}-helper-close">닫기</button>
+          </div>
+        </div>`;
 }
 
 /** '세전 월급' 자동 계산 패널 (calc-page.js 가 calc/monthly-pay-helper.js 와 연결). 입력값 이름은 mp… 로 계산 입력과 구분된다. */
