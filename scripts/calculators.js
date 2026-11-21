@@ -192,7 +192,7 @@ export const PAGES_SPEC = [
     fields: [
       yearField,
       { type: 'month', name: 'month', label: '기준 월', hint: '국민연금 기준소득월액 상·하한은 매년 7월에 바뀝니다.' },
-      { type: 'amount', name: 'pay', label: '월 급여 (세전)', required: true, placeholder: '예: 3000000' },
+      { type: 'amount', name: 'pay', label: '월 급여 (세전)', required: true, placeholder: '예: 3000000', helper: 'monthlyPay', nonTaxableField: 'nonTaxable', hint: '비과세 수당을 포함한 한 달 세전 급여입니다. 모르면 "자동 계산"으로 연봉이나 기본급 + 수당에서 구할 수 있습니다.' },
       { type: 'amount', name: 'nonTaxable', label: '월 비과세 금액', value: '0', hint: '식대 등 비과세 수당은 보험료 산정에서 빠집니다.' },
       { type: 'select', name: 'size', label: '사업장 규모 (사업주 고용보험)', options: [['under150', '150명 미만', true], ['priority150', '150명 이상 우선지원대상기업'], ['under1000', '150명 이상 1,000명 미만'], ['over1000', '1,000명 이상·국가·지방자치단체']] },
       { type: 'decimal', name: 'industrialRate', label: '산재보험료율 (선택)', unit: '%', placeholder: '예: 0.7', hint: '사업장 업종별 산재보험료율을 알면 입력하세요(사업주만 부담). 비워 두면 산재보험은 계산하지 않습니다.' },

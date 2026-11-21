@@ -6,6 +6,7 @@ import assert from 'node:assert/strict';
 import { computeMonthlyPay } from '../../site/assets/js/calc/monthly-pay-helper.js';
 import * as mn from '../../site/assets/js/calc/monthly-net.js';
 import * as ns from '../../site/assets/js/calc/net-salary.js';
+import * as si from '../../site/assets/js/calc/social-insurance.js';
 
 const A = (o) => computeMonthlyPay({ mode: 'annual', includedBonusPaid: 'monthly', extraBonusInAverage: 'no', nonTaxableIn: 'included', ...o });
 const stat = (r, l) => r.stats.find((s) => s.label === l)?.value;
@@ -61,5 +62,10 @@ describe('중복 차감 방지 (계산기 연결)', () => {
     const h = computeMonthlyPay({ mode: 'parts', base: '2500000', allowance: '300000', nonTaxable: '200000' });
     const r = mn.calculate({ year: '2026', pay: String(h.pay), nonTaxable: String(h.nonTaxable), dependents: '1', children: '0' });
     assert.equal(r.table.rows.find((x) => x[0] === '고용보험')[1], '25,200원'); // 2,800,000 × 0.9%
+  });
+  test('4대보험: 기본급 + 수당 결과(300만·비과세 20만) → 근로자 부담 272,080원 (과세 280만 기준, 기존 검증값과 동일)', () => {
+    const h = computeMonthlyPay({ mode: 'parts', base: '2500000', allowance: '300000', nonTaxable: '200000' });
+    const r = si.calculate({ year: '2026', month: '3', pay: String(h.pay), nonTaxable: String(h.nonTaxable), size: 'under150', industrialRate: '' });
+    assert.equal(stat(r, '근로자 부담'), '272,080원');
   });
 });

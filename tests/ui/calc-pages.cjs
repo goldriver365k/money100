@@ -139,13 +139,14 @@ const check = (slug, w, item, ok, actual = '') => {
         check(spec.slug, w, '스크립트 오류 없음', errors.length === 0, errors.join(' | '));
         await p.close();
       }
-      // '세전 월급' 자동 계산 도우미 (월급 실수령액)
-      {
+      // '세전 월급' 자동 계산 도우미 (월급 실수령액·4대보험)
+      for (const S of ['monthly-salary-net', 'social-insurance']) {
         const p = await ctx.newPage(); const errs = [];
         p.on('pageerror', (e) => errs.push(String(e)));
-        await gotoRetry(p, '/monthly-salary-net');
+        await gotoRetry(p, `/${S}`);
         await p.waitForSelector('form[data-ready="true"]');
-        const S = 'monthly-salary-net';
+        const specH = PAGES_SPEC.find((x) => x.slug === S);
+        const modH = await import(pathToFileURL(path.join(ROOT, 'site/assets/js/calc', `${specH.module}.js`)).href);
         const tog = p.locator('#pay-helper-toggle');
         const before = await p.evaluate(() => ({ hidden: document.getElementById('pay-helper').hidden, exp: document.getElementById('pay-helper-toggle').getAttribute('aria-expanded'), h: Math.round(document.getElementById('pay-helper-toggle').getBoundingClientRect().height), direct: document.getElementById('pay').readOnly === false }));
         if (mobile) await tog.tap(); else await tog.click();
@@ -161,9 +162,12 @@ const check = (slug, w, item, ok, actual = '') => {
         await p.click('#pay-helper-apply');
         const a = await p.evaluate(() => ({ pay: document.getElementById('pay').value, nt: document.getElementById('nonTaxable').value, closed: document.getElementById('pay-helper').hidden, focus: document.activeElement?.id, preview: document.getElementById('pay-preview').textContent }));
         check(S, w, '연봉 ÷ 12: 미리보기 → 세전 월급 4,166,666원·비과세 200,000원 자동 입력, 패널 닫힘·입력란 포커스', /4,166,666원/.test(prev) && a.pay === '4166666' && a.nt === '200000' && a.closed && a.focus === 'pay' && /4,166,666원/.test(a.preview), JSON.stringify({ prev: prev.slice(0, 80), ...a }));
-        await p.click('#submit'); await p.waitForSelector('#result:not([hidden])');
-        const net = await p.$$eval('#result-stats .stat', (els) => els.map((e) => e.textContent));
-        check(S, w, '자동 입력 후 계산 = 연봉 실수령액과 동일 (비과세 중복 차감 없음)', net[0].includes('3,553,771원'), net[0]);
+        await p.click('#submit'); await p.waitForSelector('#result:not([hidden]) #result-body:not([hidden])');
+        const shown = await p.$$eval('#result-stats .stat', (els) => els.map((e) => e.querySelector('.stat-value').textContent));
+        const formRaw = await p.evaluate(() => Object.fromEntries([...document.querySelectorAll('form [name]')].filter((e) => !e.name.startsWith('mp') && (e.type !== 'radio' || e.checked)).map((e) => [e.name, e.value])));
+        const wantH = modH.calculate(formRaw).stats.map((x) => x.value);
+        const extra = S === 'monthly-salary-net' ? shown[0] === '3,553,771원' : shown[0] === modH.calculate({ ...formRaw, pay: '4166666', nonTaxable: '200000' }).stats[0].value;
+        check(S, w, '자동 입력 후 계산 결과 = 계산 모듈 (비과세 중복 차감 없음)', JSON.stringify(shown) === JSON.stringify(wantH) && extra, `${shown.join(' / ')} | 모듈 ${wantH.join(' / ')}`);
         // 기본급 + 수당
         await tog.click();
         await p.check('input[name="mpMode"][value="parts"]');
