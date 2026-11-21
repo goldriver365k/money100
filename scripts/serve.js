@@ -91,7 +91,7 @@ if (isMain) {
   const host = process.env.HOST ?? '127.0.0.1';
   // --production-headers: 운영 호스팅처럼 X-Robots-Tag 를 붙이지 않음 (운영 빌드 로컬 점검용)
   createServer({ dir, robotsHeader: !args.includes('--production-headers') }).listen(port, host, () => {
-    console.log(`정산노트 미리보기: http://${host}:${port}/  (폴더: ${dir})`);
+    console.log(`생활계산서 미리보기: http://${host}:${port}/  (폴더: ${dir})`);
     console.log(`  홈:          http://${host}:${port}/`);
     console.log(`  월급 일할계산기: http://${host}:${port}/salary-proration`);
   });

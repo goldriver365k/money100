@@ -324,8 +324,8 @@ const CASES = [
     /* ================= 접속과 링크 ================= */
     section('주소 직접 접속·새로고침과 링크');
     for (const [url, title, h1] of [
-      ['/', '급여 계산기 모음 | 정산노트', '급여·세금·부동산 계산기 30종'],
-      ['/salary-proration', '월급 일할계산기 — 중도 입사·퇴사 급여 계산 | 정산노트', '월급 일할계산기'],
+      ['/', '급여 계산기 모음 | 생활계산서', '생활에 필요한 계산을 한곳에서'],
+      ['/salary-proration', '월급 일할계산기 — 중도 입사·퇴사 급여 계산 | 생활계산서', '월급 일할계산기'],
     ]) {
       const fresh = await context.newPage();
       watch(fresh);
@@ -362,11 +362,11 @@ const CASES = [
     await page.click('#home-link');
     await page.waitForURL(`${baseURL}/`);
     T('계산기 → 홈 이동', '계산기 상단 “← 홈” 버튼 클릭', '/ 로 이동', `${page.url().replace(baseURL, '') || '/'} “${await page.title()}”`,
-      (await page.title()) === '급여 계산기 모음 | 정산노트');
+      (await page.title()) === '급여 계산기 모음 | 생활계산서');
     await page.goto('/salary-proration');
     await page.click('.site-header .brand');
     await page.waitForURL(`${baseURL}/`);
-    T('계산기 → 홈 이동(브랜드)', '상단 “정산노트” 로고 클릭', '/ 로 이동', page.url().replace(baseURL, '') || '/', true);
+    T('계산기 → 홈 이동(브랜드)', '상단 “생활계산서” 로고 클릭', '/ 로 이동', page.url().replace(baseURL, '') || '/', true);
 
     /* ================= 안내·출처 ================= */
     section('안내 문구·FAQ·공식 출처');
@@ -860,8 +860,8 @@ const CASES = [
       const t1x = await fresh.title();
       const r2 = await fresh.reload();
       const h1 = await fresh.locator('h1').innerText();
-      T('/weekly-holiday-pay 직접 접속 후 새로고침', '새 탭에서 주소 입력 → 새로고침', 'HTTP 200, 제목 “주휴수당 계산기 — 주 15시간·변동 근무 판독 | 정산노트”, 화면 제목 “주휴수당 계산기”',
-        `${r1.status()}/${r2.status()} · “${await fresh.title()}” · “${h1}”`, r1.status() === 200 && r2.status() === 200 && t1x === '주휴수당 계산기 — 주 15시간·변동 근무 판독 | 정산노트' && h1 === '주휴수당 계산기');
+      T('/weekly-holiday-pay 직접 접속 후 새로고침', '새 탭에서 주소 입력 → 새로고침', 'HTTP 200, 제목 “주휴수당 계산기 — 주 15시간·변동 근무 판독 | 생활계산서”, 화면 제목 “주휴수당 계산기”',
+        `${r1.status()}/${r2.status()} · “${await fresh.title()}” · “${h1}”`, r1.status() === 200 && r2.status() === 200 && t1x === '주휴수당 계산기 — 주 15시간·변동 근무 판독 | 생활계산서' && h1 === '주휴수당 계산기');
       const r3 = await fresh.goto('/weekly-holiday-pay/');
       const c3 = await fresh.evaluate(() => document.querySelector('link[rel=canonical]')?.href ?? null);
       T('/weekly-holiday-pay/ 끝 슬래시 주소', '끝 슬래시 주소 접속', '계산기가 열리고, 슬래시 없는 주소로 이동하거나 canonical 이 슬래시 없는 주소를 가리킴', `${fresh.url().replace(baseURL, '')} (${r3.status()}) · canonical ${c3 ?? '없음(미리보기)'}`,
@@ -872,7 +872,7 @@ const CASES = [
       const okNav = (await fresh.locator('h1').innerText()) === '주휴수당 계산기';
       await fresh.click('#home-link');
       await fresh.waitForURL(`${baseURL}/`);
-      T('홈 ↔ 주휴수당 계산기 이동', '홈 “주휴수당 계산기” 카드 클릭 → “← 홈” 버튼 클릭', '계산기로 이동 후 홈으로 복귀', `${okNav ? '계산기 열림' : '실패'} → ${await fresh.title()}`, okNav && (await fresh.title()) === '급여 계산기 모음 | 정산노트');
+      T('홈 ↔ 주휴수당 계산기 이동', '홈 “주휴수당 계산기” 카드 클릭 → “← 홈” 버튼 클릭', '계산기로 이동 후 홈으로 복귀', `${okNav ? '계산기 열림' : '실패'} → ${await fresh.title()}`, okNav && (await fresh.title()) === '급여 계산기 모음 | 생활계산서');
       await fresh.close();
     }
     for (const [label, opts, tag] of [
@@ -1143,7 +1143,7 @@ function writeReport() {
   const esc = (s) => String(s).replace(/\|/g, '\\|').replace(/\n/g, ' ');
   const all = sections.flatMap((s) => s.rows);
   const count = (s) => all.filter((r) => r.status === s).length;
-  const lines = ['# 정산노트 검수 결과표', ''];
+  const lines = ['# 생활계산서 검수 결과표', ''];
   lines.push(`- 실행: ${new Date().toISOString()} · ${PRODUCTION ? `운영용 빌드(dist/, SITE_URL=${SITE_URL}) · \`npm run verify:production\`` : `미리보기(${DIR}/) · \`npm run test:e2e\``} · Chromium(Playwright) · 시간대 Pacific/Kiritimati(UTC+14)`);
   lines.push(`- 집계: 통과 ${count('통과')} · 실패 ${count('실패')} · 미확인 ${count('미확인')}`, '');
   for (const s of sections) {

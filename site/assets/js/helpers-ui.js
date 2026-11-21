@@ -175,6 +175,7 @@ export async function setupHelpers(form, status) {
     panel.addEventListener('keydown', (e) => { if (e.key === 'Enter' && e.target.tagName === 'INPUT') { e.preventDefault(); doApply(false); } });
     form.addEventListener('reset', () => setTimeout(() => { open(false); out.replaceChildren(); applyShowWhen(form); }, 0));
     render(false);
+    panel.dataset.ready = 'true'; // 연결 완료 표시 (점검 스크립트가 기다림)
   }
   if (form.querySelector('[data-show-when]')) {
     form.addEventListener('change', () => applyShowWhen(form));

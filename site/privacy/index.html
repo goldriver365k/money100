@@ -5,8 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'none'; form-action 'none'; base-uri 'none'">
   <meta name="referrer" content="strict-origin-when-cross-origin">
-  <title>개인정보처리방침 | 정산노트</title>
-  <meta name="description" content="정산노트 개인정보처리방침. 계산기에 입력한 값은 브라우저 안에서만 처리되며, 정산노트는 개인정보를 수집·저장하지 않습니다.">
+  <title>개인정보처리방침 | 생활계산서</title>
+  <meta name="description" content="생활계산서 개인정보처리방침. 계산기에 입력한 값은 브라우저 안에서만 처리되며, 생활계산서는 개인정보를 수집·저장하지 않습니다.">
   <!-- seo:start -->
   <meta name="robots" content="noindex, nofollow">
   <!-- seo:end -->
@@ -18,8 +18,39 @@
   <a class="skip-link" href="#main">본문 바로가기</a>
   <header class="site-header">
     <div class="container container-wide header-inner">
-      <a class="brand" href="/"><span class="brand-mark" aria-hidden="true"></span>정산노트</a>
-      <nav class="main-nav" aria-label="주요 메뉴"><ul><li><a href="/#calculators">계산기 모음</a></li><li><a href="/#basis-fold">이용 가이드</a></li><li><a href="/#home-faq">자주 묻는 질문</a></li></ul></nav>
+      <a class="brand" href="/"><span class="brand-mark" aria-hidden="true"></span>생활계산서</a>
+      <button type="button" class="nav-toggle" aria-expanded="false" aria-controls="site-nav"><span class="nav-toggle-bars" aria-hidden="true"></span><span class="sr-only">메뉴</span></button>
+      <nav class="main-nav" id="site-nav" aria-label="주요 메뉴">
+        <ul class="nav-list">
+        <li><a href="/">홈</a></li>
+        <li class="has-menu cat-labor">
+          <button type="button" class="nav-cat" aria-expanded="false" aria-controls="menu-labor">노동·급여<span class="nav-caret" aria-hidden="true"></span></button>
+          <div class="nav-panel" id="menu-labor">
+            <p class="nav-panel-title">노동·급여 계산기</p>
+            <ul><li><a href="/annual-salary-net">연봉 실수령액</a></li><li><a href="/monthly-salary-net">월급 실수령액</a></li><li><a href="/severance-pay">퇴직금</a></li><li><a href="/weekly-holiday-pay">주휴수당</a></li><li><a href="/hourly-wage">시급</a></li><li><a href="/unemployment-benefit">실업급여</a></li><li><a href="/annual-leave-pay">연차수당</a></li><li><a href="/overtime-pay">야간·연장·휴일수당</a></li><li><a href="/salary-proration">월급 일할</a></li><li><a href="/parental-leave-pay">육아휴직급여</a></li></ul>
+            <a class="nav-panel-all" href="/#labor">노동·급여 전체 보기</a>
+          </div>
+        </li>
+        <li class="has-menu cat-tax">
+          <button type="button" class="nav-cat" aria-expanded="false" aria-controls="menu-tax">세금·보험<span class="nav-caret" aria-hidden="true"></span></button>
+          <div class="nav-panel" id="menu-tax">
+            <p class="nav-panel-title">세금·보험 계산기</p>
+            <ul><li><a href="/social-insurance">4대보험</a></li><li><a href="/comprehensive-income-tax">종합소득세</a></li><li><a href="/vat">부가세</a></li><li><a href="/year-end-tax">연말정산 환급금</a></li><li><a href="/freelancer-tax">3.3% 프리랜서 세금</a></li><li><a href="/income-tax">소득세</a></li><li><a href="/health-insurance">건강보험료</a></li><li><a href="/national-pension">국민연금</a></li><li><a href="/gift-tax">증여세</a></li><li><a href="/inheritance-tax">상속세</a></li></ul>
+            <a class="nav-panel-all" href="/#tax">세금·보험 전체 보기</a>
+          </div>
+        </li>
+        <li class="has-menu cat-realty">
+          <button type="button" class="nav-cat" aria-expanded="false" aria-controls="menu-realty">주거·부동산<span class="nav-caret" aria-hidden="true"></span></button>
+          <div class="nav-panel" id="menu-realty">
+            <p class="nav-panel-title">주거·부동산 계산기</p>
+            <ul><li><a href="/loan-interest">대출이자</a></li><li><a href="/acquisition-tax">취득세</a></li><li><a href="/capital-gains-tax">양도소득세</a></li><li><a href="/brokerage-fee">중개수수료</a></li><li><a href="/rent-conversion">전월세 전환</a></li><li><a href="/dsr-limit">DSR 대출한도</a></li><li><a href="/property-tax">재산세</a></li><li><a href="/pyeong">평수</a></li><li><a href="/subscription-points">청약가점</a></li><li><a href="/jeonse-safety">전세보증금 안전</a></li></ul>
+            <a class="nav-panel-all" href="/#realty">주거·부동산 전체 보기</a>
+          </div>
+        </li>
+        <li><a href="/#calculators">전체 계산기</a></li>
+        <li><a href="/#basis-fold" data-open-fold>이용 가이드</a></li>
+        </ul>
+      </nav>
     </div>
   </header>
 
@@ -28,7 +59,7 @@
 
     <section class="hero" aria-labelledby="page-title">
       <h1 id="page-title">개인정보처리방침</h1>
-      <p class="lead">정산노트(이하 “사이트”)는 이용자의 개인정보를 수집·저장하지 않도록 설계되었습니다.</p>
+      <p class="lead">생활계산서(이하 “사이트”)는 이용자의 개인정보를 수집·저장하지 않도록 설계되었습니다.</p>
     </section>
 
     <section class="content panel">
@@ -54,9 +85,9 @@
 
   <footer class="site-footer">
     <div class="container container-wide">
-      <p class="footer-brand">정산노트<span aria-hidden="true">.</span></p>
-      <p>정산노트의 계산 결과는 단순 모의 계산이며, 법적 효력을 갖는 증빙자료가 아닙니다.</p>
-      <p><a href="/">정산노트 홈</a> · <a href="/privacy">개인정보처리방침</a></p>
+      <p class="footer-brand">생활계산서<span aria-hidden="true">.</span></p>
+      <p>생활계산서의 계산 결과는 단순 모의 계산이며, 법적 효력을 갖는 증빙자료가 아닙니다.</p>
+      <p><a href="/">생활계산서 홈</a> · <a href="/privacy">개인정보처리방침</a></p>
     </div>
   </footer>
 </body>

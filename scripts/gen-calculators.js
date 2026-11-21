@@ -203,20 +203,77 @@ function exampleBlock(r, spec) {
         </ol>`;
 }
 
-const header = (foldIds) => `  <a class="skip-link" href="#main">본문 바로가기</a>
+/** 공통 상단 메뉴 (모든 페이지). current: 'home' | 'labor' | 'tax' | 'realty' | null — 현재 분야 강조 */
+function siteHeader(current = null, guideHref = '#basis-fold') {
+  const cats = Object.entries(CATEGORIES).map(([key, label]) => {
+    const items = CATALOG.filter((c) => c.cat === key && c.slug)
+      .map((c) => `<li><a href="/${c.slug}">${esc(c.name.replace(/ ?계산기$/, ''))}</a></li>`).join('');
+    return `<li class="has-menu cat-${key}${current === key ? ' is-current' : ''}">
+          <button type="button" class="nav-cat" aria-expanded="false" aria-controls="menu-${key}">${label}<span class="nav-caret" aria-hidden="true"></span></button>
+          <div class="nav-panel" id="menu-${key}">
+            <p class="nav-panel-title">${label} 계산기</p>
+            <ul>${items}</ul>
+            <a class="nav-panel-all" href="/#${key}">${label} 전체 보기</a>
+          </div>
+        </li>`;
+  }).join('\n        ');
+  return `  <a class="skip-link" href="#main">본문 바로가기</a>
   <header class="site-header">
     <div class="container container-wide header-inner">
-      <a class="brand" href="/"><span class="brand-mark" aria-hidden="true"></span>정산노트</a>
-      <nav class="main-nav" aria-label="주요 메뉴"><ul><li><a href="/#calculators">계산기 모음</a></li><li><a href="#${foldIds.basis}" data-open-fold>이용 가이드</a></li><li><a href="#${foldIds.faq}" data-open-fold>자주 묻는 질문</a></li></ul></nav>
+      <a class="brand" href="/"><span class="brand-mark" aria-hidden="true"></span>생활계산서</a>
+      <button type="button" class="nav-toggle" aria-expanded="false" aria-controls="site-nav"><span class="nav-toggle-bars" aria-hidden="true"></span><span class="sr-only">메뉴</span></button>
+      <nav class="main-nav" id="site-nav" aria-label="주요 메뉴">
+        <ul class="nav-list">
+        <li><a href="/"${current === 'home' ? ' aria-current="page"' : ''}>홈</a></li>
+        ${cats}
+        <li><a href="/#calculators">전체 계산기</a></li>
+        <li><a href="${guideHref}" data-open-fold>이용 가이드</a></li>
+        </ul>
+      </nav>
     </div>
   </header>`;
+}
+const header = (cat) => siteHeader(cat);
+
+/** 계산기 상세: 왼쪽 사이드바(PC) · 모바일 선택 메뉴 · 현재 위치 */
+function sideLists(cat, slug) {
+  const items = CATALOG.filter((c) => c.cat === cat && c.slug).map((c) => `<li><a href="/${c.slug}"${c.slug === slug ? ' aria-current="page"' : ''}>${esc(c.name)}</a></li>`).join('');
+  const others = Object.entries(CATEGORIES).filter(([k]) => k !== cat).map(([k, l]) => `<li><a class="side-other-link cat-${k}" href="/#${k}">${l} 계산기</a></li>`).join('');
+  return `<ul class="side-list">${items}</ul>
+      <p class="side-other-title">다른 분야</p>
+      <ul class="side-other">${others}</ul>`;
+}
+function shellOpen(cat, slug, title) {
+  const label = CATEGORIES[cat];
+  return `<!-- shell:start -->
+  <div class="container container-wide calc-shell">
+    <aside class="calc-sidebar cat-${cat}" aria-label="${label} 계산기 목록">
+      <p class="side-cat">${label}</p>
+      ${sideLists(cat, slug)}
+    </aside>
+  <main id="main" class="calc-main">
+    <nav class="breadcrumb" aria-label="현재 위치">
+      <ol>
+        <li><a href="/" id="home-link">홈</a></li>
+        <li><a href="/#${cat}">${label}</a></li>
+        <li aria-current="page">${esc(title)}</li>
+      </ol>
+    </nav>
+    <details class="calc-switcher cat-${cat}">
+      <summary>${label} 계산기 10종 · 다른 계산기 선택</summary>
+      <div class="calc-switcher-body">
+      ${sideLists(cat, slug)}
+      </div>
+    </details>
+    <!-- shell:end -->`;
+}
 
 const footer = `  <footer class="site-footer">
     <div class="container container-wide">
-      <p class="footer-brand">정산노트<span aria-hidden="true">.</span></p>
-      <p>정산노트의 계산 결과는 단순 모의 계산이며, 법적 효력을 갖는 증빙자료가 아닙니다.</p>
+      <p class="footer-brand">생활계산서<span aria-hidden="true">.</span></p>
+      <p>생활계산서의 계산 결과는 단순 모의 계산이며, 법적 효력을 갖는 증빙자료가 아닙니다.</p>
       <p>입력한 값은 브라우저 안에서만 계산되며 서버나 분석 도구로 전송되지 않습니다.</p>
-      <p><a href="/">정산노트 홈</a> · <a href="/privacy">개인정보처리방침</a></p>
+      <p><a href="/">생활계산서 홈</a> · <a href="/privacy">개인정보처리방침</a></p>
     </div>
   </footer>`;
 
@@ -246,14 +303,14 @@ async function page(spec) {
   <meta name="robots" content="noindex, nofollow">
   <!-- seo:end -->
   <meta property="og:type" content="website">
-  <meta property="og:site_name" content="정산노트">
+  <meta property="og:site_name" content="생활계산서">
   <meta property="og:title" content="${esc(spec.title)}">
   <meta property="og:description" content="${esc(spec.lead)}">
   <meta property="og:locale" content="ko_KR">
   <meta property="og:image" content="/assets/og-image.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
-  <meta property="og:image:alt" content="정산노트 — 급여·세금·부동산 계산기 30종">
+  <meta property="og:image:alt" content="생활계산서 — 급여·세금·부동산 계산기 30종">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="theme-color" content="#2563e2">
   <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
@@ -266,10 +323,9 @@ async function page(spec) {
 </head>
 <body class="calc-page">
 <!-- 이 파일은 scripts/gen-calculators.js 로 생성됩니다. 직접 고치지 말고 scripts/calculators.js 를 수정하세요. -->
-${header({ basis: 'basis-fold', faq: 'faq-fold' })}
+${header(spec.cat)}
 
-  <main id="main" class="container">
-    <nav class="home-nav" aria-label="홈으로 이동"><a href="/" id="home-link" class="home-btn"><span aria-hidden="true">←</span> 홈</a></nav>
+  ${shellOpen(spec.cat, spec.slug, spec.h1)}
 
     <section class="hero calc-hero" aria-labelledby="page-title">
       <p class="calc-badges"><span class="cat-badge cat-${spec.cat}">${esc(cat)}</span><span class="basis-badge">적용 기준: ${esc(spec.basisYear)}</span></p>
@@ -317,6 +373,13 @@ ${spec.fields.map(field).join('\n\n')}
       </div>
     </section>
 
+    <section class="content related" aria-labelledby="related-title">
+      <h2 id="related-title">관련 계산기</h2>
+      <ul class="related-list">
+        ${related}
+      </ul>
+    </section>
+
     <!-- 공통 아코디언: 계산 방법 · 실제 예제 · 공식출처 (기본 접힘) -->
     <details class="content basis-fold info-fold" id="basis-fold">
       <summary class="fold-summary"><h2 id="info-title">계산 방법 · 실제 예제 · 공식출처</h2><span class="fold-icon" aria-hidden="true"></span></summary>
@@ -348,14 +411,8 @@ ${spec.fields.map(field).join('\n\n')}
       ${spec.faq.map((f) => `<h3>${esc(f.q)}</h3>\n      <p>${esc(f.a)}</p>`).join('\n      ')}
     </div>
     </details>
-
-    <section class="content related" aria-labelledby="related-title">
-      <h2 id="related-title">관련 계산기</h2>
-      <ul class="related-list">
-        ${related}
-      </ul>
-    </section>
   </main>
+  </div>
 
 ${footer}
 </body>
@@ -402,9 +459,74 @@ for (const spec of PAGES_SPEC) {
   fs.writeFileSync(sp, html);
 }
 
+// 기존 두 계산기 페이지에도 같은 상세 틀(사이드바·현재 위치·관련 계산기 위치)을 적용한다 (계산 화면은 그대로)
+for (const [file, slug, title] of [['salary-proration/index.html', 'salary-proration', '월급 일할계산기'], ['weekly-holiday-pay/index.html', 'weekly-holiday-pay', '주휴수당 계산기']]) {
+  const fp = path.join(ROOT, 'site', file);
+  let html = fs.readFileSync(fp, 'utf8');
+  const cat = bySlug[slug].cat;
+  if (html.includes('<!-- shell:start -->')) {
+    html = html.replace(/<!-- shell:start -->[\s\S]*?<!-- shell:end -->/, shellOpen(cat, slug, title));
+  } else {
+    const open = /<main id="main" class="container">\s*<nav class="home-nav"[\s\S]*?<\/nav>\n/;
+    if (!open.test(html)) throw new Error(`${file}: 본문 시작을 찾지 못했습니다.`);
+    html = html.replace(open, `  ${shellOpen(cat, slug, title)}\n`);
+    html = html.replace(/\n  <\/main>\n/, '\n  </main>\n  </div>\n');
+    const relRe = /\n    <section class="content related"[\s\S]*?<\/section>\n/;
+    const rel = html.match(relRe)?.[0];
+    if (rel) { html = html.replace(relRe, '\n'); html = html.replace(/\n    <details class="content basis-fold/, `${rel}\n    <details class="content basis-fold`); }
+  }
+  fs.writeFileSync(fp, html);
+}
+
+// 직접 작성한 페이지에도 같은 상단 메뉴를 넣는다 (기존 <a class="skip-link">…</header> 를 교체)
+for (const [file, cur, guide] of [['index.html', 'home'], ['salary-proration/index.html', 'labor'], ['weekly-holiday-pay/index.html', 'labor', '#basis'], ['privacy/index.html', null, '/#basis-fold'], ['404.html', null, '/#basis-fold']]) {
+  const fp = path.join(ROOT, 'site', file);
+  let html = fs.readFileSync(fp, 'utf8');
+  const re = /[ \t]*(?:<a class="skip-link"[^>]*>[^<]*<\/a>\s*)?<header class="site-header">[\s\S]*?<\/header>/;
+  if (!re.test(html)) throw new Error(`${file}: 머리글을 찾지 못했습니다.`);
+  html = html.replace(re, siteHeader(cur, guide));
+  fs.writeFileSync(fp, html);
+}
+
+/** 홈 '많이 찾는 계산기' 6종 (검색 수요 상위). 아이콘은 직접 그린 단순 선 아이콘 */
+const TOP = [
+  { slug: 'annual-salary-net', name: '연봉 계산기', icon: '<rect x="2.5" y="6" width="19" height="12" rx="2"/><circle cx="12" cy="12" r="2.6"/><path d="M6 9.5v5M18 9.5v5"/>' },
+  { slug: 'severance-pay', name: '퇴직금 계산기', icon: '<rect x="3" y="7.5" width="18" height="12" rx="2"/><path d="M9 7.5V6a1.5 1.5 0 0 1 1.5-1.5h3A1.5 1.5 0 0 1 15 6v1.5M3 12.5h18"/>' },
+  { slug: 'loan-interest', name: '대출이자 계산기', icon: '<path d="M4 10.5 12 4l8 6.5V20H4z"/><path d="M9.5 17.5l5-5"/><circle cx="9.8" cy="12.8" r="0.9"/><circle cx="14.2" cy="17.2" r="0.9"/>' },
+  { slug: 'hourly-wage', name: '시급 계산기', icon: '<circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/>' },
+  { slug: 'vat', name: '부가세 계산기', icon: '<path d="M6 3.5h12v17l-2-1.4-2 1.4-2-1.4-2 1.4-2-1.4-2 1.4z"/><path d="M9 8.5h6M9 12h6M9 15.5h3.5"/>' },
+  { slug: 'social-insurance', name: '4대보험 계산기', icon: '<path d="M12 3.5 19 6v5.5c0 4.4-3 7.8-7 9-4-1.2-7-4.6-7-9V6z"/><path d="M9 12l2.2 2.2L15.5 10"/>' },
+];
+function topHtml() {
+  const cards = TOP.map((t) => {
+    const c = bySlug[t.slug];
+    if (!c) throw new Error(`많이 찾는 계산기: ${t.slug} 없음`);
+    return `        <li class="top-item cat-${c.cat}">
+          <a class="top-card" href="/${t.slug}">
+            <span class="top-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${t.icon}</svg></span>
+            <span class="top-body">
+              <span class="top-cat">${CATEGORIES[c.cat]}</span>
+              <h3 class="top-title">${esc(t.name)}</h3>
+              <span class="top-desc">${esc(c.desc)}</span>
+            </span>
+            <span class="top-btn">계산하기</span>
+          </a>
+        </li>`;
+  }).join('\n');
+  return `<!-- top:start -->
+    <section class="top-calcs" aria-labelledby="top-title">
+      <h2 id="top-title" class="section-title">많이 찾는 계산기</h2>
+      <ul class="top-grid">
+${cards}
+      </ul>
+    </section>
+    <!-- top:end -->`;
+}
+
 const homePath = path.join(ROOT, 'site/index.html');
 let home = fs.readFileSync(homePath, 'utf8');
 const live = CATALOG.filter((c) => c.slug).length;
+home = home.replace(/<!-- top:start -->[\s\S]*<!-- top:end -->/, topHtml());
 home = home.replace(/<!-- catalog:start -->[\s\S]*<!-- catalog:end -->/, `<!-- catalog:start -->\n${catalogHtml()}\n          <!-- catalog:end -->`);
 home = home.replace(/(<p class="calc-count" id="calc-count"[^>]*>)[^<]*(<\/p>)/, `$1계산기 ${CATALOG.length}개 · 이용 가능 ${live}개 · 준비 중 ${CATALOG.length - live}개$2`);
 fs.writeFileSync(homePath, home);

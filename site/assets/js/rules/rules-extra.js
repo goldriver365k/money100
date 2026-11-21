@@ -175,7 +175,7 @@ export const STATIC_RULES = {
     sources: ['smallTenant'],
   },
   hug: { priceMultiplier: 1.4, ltv: 0.9, sources: ['hugGuarantee'] },
-  // 정산노트 참고 기준(법정 기준 아님): 전세가율·부채비율 위험 신호 구간
+  // 생활계산서 참고 기준(법정 기준 아님): 전세가율·부채비율 위험 신호 구간
   jeonseReference: { ratioCaution: 0.7, ratioDanger: 0.8, debtCaution: 0.7, debtDanger: 0.9 },
 };
 

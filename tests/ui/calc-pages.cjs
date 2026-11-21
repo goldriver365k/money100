@@ -144,7 +144,7 @@ const check = (slug, w, item, ok, actual = '') => {
         const p = await ctx.newPage(); const errs = [];
         p.on('pageerror', (e) => errs.push(String(e)));
         await gotoRetry(p, `/${S}`);
-        await p.waitForSelector('form[data-ready="true"]');
+        await p.waitForSelector('#pay-helper[data-ready="true"]', { state: 'attached', timeout: 60000 });
         const specH = PAGES_SPEC.find((x) => x.slug === S);
         const modH = await import(pathToFileURL(path.join(ROOT, 'site/assets/js/calc', `${specH.module}.js`)).href);
         const tog = p.locator('#pay-helper-toggle');
@@ -189,7 +189,7 @@ const check = (slug, w, item, ok, actual = '') => {
         const p = await ctx.newPage(); const errs = [];
         p.on('pageerror', (e) => errs.push(String(e)));
         await gotoRetry(p, `/${S}`);
-        await p.waitForSelector('form[data-ready="true"]');
+        await p.waitForSelector('#hourly-helper[data-ready="true"]', { state: 'attached', timeout: 60000 });
         const tog = p.locator('#hourly-helper-toggle');
         const h = await p.evaluate(() => Math.round(document.getElementById('hourly-helper-toggle').getBoundingClientRect().height));
         if (mobile) await tog.tap(); else await tog.click();
@@ -233,7 +233,7 @@ const check = (slug, w, item, ok, actual = '') => {
         const p = await ctx.newPage(); const errs = [];
         p.on('pageerror', (e) => errs.push(String(e)));
         await gotoRetry(p, `/${c.slug}`);
-        await p.waitForTimeout(400);
+        await p.waitForSelector(`#${c.t}-helper[data-ready="true"]`, { state: 'attached', timeout: 60000 });
         const S = c.slug;
         const setRadio = async (rv) => { const [n, v] = rv.split('='); await p.check(`input[name="${n}"][value="${v}"]`); };
         if (c.hideWhen) {

@@ -1,5 +1,5 @@
 /**
- * 정산노트 화면 자동 점검 (Playwright)
+ * 생활계산서 화면 자동 점검 (Playwright)
  *   npm run test:ui                       → 로컬 서버(site/)
  *   UI_BASE=https://주소 npm run test:ui    → 배포된 주소
  *
@@ -23,9 +23,9 @@ const ROOT = path.resolve(__dirname, '..', '..');
 const WIDTHS = [360, 390, 768, 1440];
 const MOBILE = [360, 390];
 const PAGES = [
-  { key: 'home', path: '/', title: '급여 계산기 모음 | 정산노트', h1: '급여·세금·부동산 계산기 30종' },
-  { key: 'salary', path: '/salary-proration', title: '월급 일할계산기 — 중도 입사·퇴사 급여 계산 | 정산노트', h1: '월급 일할계산기' },
-  { key: 'whp', path: '/weekly-holiday-pay', title: '주휴수당 계산기 — 주 15시간·변동 근무 판독 | 정산노트', h1: '주휴수당 계산기' },
+  { key: 'home', path: '/', title: '급여 계산기 모음 | 생활계산서', h1: '생활에 필요한 계산을 한곳에서' },
+  { key: 'salary', path: '/salary-proration', title: '월급 일할계산기 — 중도 입사·퇴사 급여 계산 | 생활계산서', h1: '월급 일할계산기' },
+  { key: 'whp', path: '/weekly-holiday-pay', title: '주휴수당 계산기 — 주 15시간·변동 근무 판독 | 생활계산서', h1: '주휴수당 계산기' },
 ];
 const LABEL = { home: '홈', salary: '월급 일할계산기', whp: '주휴수당 계산기' };
 

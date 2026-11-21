@@ -5,20 +5,20 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'none'; form-action 'none'; base-uri 'none'">
   <meta name="referrer" content="strict-origin-when-cross-origin">
-  <title>급여 계산기 모음 | 정산노트</title>
-  <meta name="description" content="정산노트는 중도 입사·퇴사 월급 일할계산, 주 15시간 주휴수당 판독 등 급여·노무 계산을 브라우저에서 바로 해 볼 수 있는 계산기 모음입니다. 입력한 급여와 날짜는 서버로 전송되지 않습니다.">
+  <title>급여 계산기 모음 | 생활계산서</title>
+  <meta name="description" content="생활계산서는 중도 입사·퇴사 월급 일할계산, 주 15시간 주휴수당 판독 등 급여·노무 계산을 브라우저에서 바로 해 볼 수 있는 계산기 모음입니다. 입력한 급여와 날짜는 서버로 전송되지 않습니다.">
   <!-- seo:start -->
   <meta name="robots" content="noindex, nofollow">
   <!-- seo:end -->
   <meta property="og:type" content="website">
-  <meta property="og:site_name" content="정산노트">
-  <meta property="og:title" content="급여 계산기 모음 | 정산노트">
+  <meta property="og:site_name" content="생활계산서">
+  <meta property="og:title" content="급여 계산기 모음 | 생활계산서">
   <meta property="og:description" content="중도 입사·퇴사 급여 일할계산 등 급여 정산 계산기 모음">
   <meta property="og:locale" content="ko_KR">
   <meta property="og:image" content="/assets/og-image.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
-  <meta property="og:image:alt" content="정산노트 — 급여·세금·부동산 계산기 30종">
+  <meta property="og:image:alt" content="생활계산서 — 급여·세금·부동산 계산기 30종">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="theme-color" content="#2563e2">
   <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
@@ -30,19 +30,124 @@
   <a class="skip-link" href="#main">본문 바로가기</a>
   <header class="site-header">
     <div class="container container-wide header-inner">
-      <a class="brand" href="/" aria-current="page"><span class="brand-mark" aria-hidden="true"></span>정산노트</a>
-      <nav class="main-nav" aria-label="주요 메뉴"><ul><li><a href="#calculators" aria-current="true">계산기 모음</a></li><li><a href="#basis-fold" data-open-fold>이용 가이드</a></li><li><a href="#home-faq">자주 묻는 질문</a></li></ul></nav>
+      <a class="brand" href="/"><span class="brand-mark" aria-hidden="true"></span>생활계산서</a>
+      <button type="button" class="nav-toggle" aria-expanded="false" aria-controls="site-nav"><span class="nav-toggle-bars" aria-hidden="true"></span><span class="sr-only">메뉴</span></button>
+      <nav class="main-nav" id="site-nav" aria-label="주요 메뉴">
+        <ul class="nav-list">
+        <li><a href="/" aria-current="page">홈</a></li>
+        <li class="has-menu cat-labor">
+          <button type="button" class="nav-cat" aria-expanded="false" aria-controls="menu-labor">노동·급여<span class="nav-caret" aria-hidden="true"></span></button>
+          <div class="nav-panel" id="menu-labor">
+            <p class="nav-panel-title">노동·급여 계산기</p>
+            <ul><li><a href="/annual-salary-net">연봉 실수령액</a></li><li><a href="/monthly-salary-net">월급 실수령액</a></li><li><a href="/severance-pay">퇴직금</a></li><li><a href="/weekly-holiday-pay">주휴수당</a></li><li><a href="/hourly-wage">시급</a></li><li><a href="/unemployment-benefit">실업급여</a></li><li><a href="/annual-leave-pay">연차수당</a></li><li><a href="/overtime-pay">야간·연장·휴일수당</a></li><li><a href="/salary-proration">월급 일할</a></li><li><a href="/parental-leave-pay">육아휴직급여</a></li></ul>
+            <a class="nav-panel-all" href="/#labor">노동·급여 전체 보기</a>
+          </div>
+        </li>
+        <li class="has-menu cat-tax">
+          <button type="button" class="nav-cat" aria-expanded="false" aria-controls="menu-tax">세금·보험<span class="nav-caret" aria-hidden="true"></span></button>
+          <div class="nav-panel" id="menu-tax">
+            <p class="nav-panel-title">세금·보험 계산기</p>
+            <ul><li><a href="/social-insurance">4대보험</a></li><li><a href="/comprehensive-income-tax">종합소득세</a></li><li><a href="/vat">부가세</a></li><li><a href="/year-end-tax">연말정산 환급금</a></li><li><a href="/freelancer-tax">3.3% 프리랜서 세금</a></li><li><a href="/income-tax">소득세</a></li><li><a href="/health-insurance">건강보험료</a></li><li><a href="/national-pension">국민연금</a></li><li><a href="/gift-tax">증여세</a></li><li><a href="/inheritance-tax">상속세</a></li></ul>
+            <a class="nav-panel-all" href="/#tax">세금·보험 전체 보기</a>
+          </div>
+        </li>
+        <li class="has-menu cat-realty">
+          <button type="button" class="nav-cat" aria-expanded="false" aria-controls="menu-realty">주거·부동산<span class="nav-caret" aria-hidden="true"></span></button>
+          <div class="nav-panel" id="menu-realty">
+            <p class="nav-panel-title">주거·부동산 계산기</p>
+            <ul><li><a href="/loan-interest">대출이자</a></li><li><a href="/acquisition-tax">취득세</a></li><li><a href="/capital-gains-tax">양도소득세</a></li><li><a href="/brokerage-fee">중개수수료</a></li><li><a href="/rent-conversion">전월세 전환</a></li><li><a href="/dsr-limit">DSR 대출한도</a></li><li><a href="/property-tax">재산세</a></li><li><a href="/pyeong">평수</a></li><li><a href="/subscription-points">청약가점</a></li><li><a href="/jeonse-safety">전세보증금 안전</a></li></ul>
+            <a class="nav-panel-all" href="/#realty">주거·부동산 전체 보기</a>
+          </div>
+        </li>
+        <li><a href="/#calculators">전체 계산기</a></li>
+        <li><a href="#basis-fold" data-open-fold>이용 가이드</a></li>
+        </ul>
+      </nav>
     </div>
   </header>
 
   <main id="main" class="container container-wide">
     <section class="home-hero home-hero-center" aria-labelledby="page-title">
-      <h1 id="page-title">급여·세금·부동산 계산기 30종</h1>
-      <p class="lead">급여부터 세금·주거까지 필요한 계산을 한곳에서 확인하세요.</p>
+      <h1 id="page-title">생활에 필요한 계산을 한곳에서</h1>
+      <p class="lead">연봉, 퇴직금, 세금, 보험, 대출, 부동산까지 복잡한 계산을 쉽고 빠르게 확인하세요.</p>
     </section>
 
+    <!-- top:start -->
+    <section class="top-calcs" aria-labelledby="top-title">
+      <h2 id="top-title" class="section-title">많이 찾는 계산기</h2>
+      <ul class="top-grid">
+        <li class="top-item cat-labor">
+          <a class="top-card" href="/annual-salary-net">
+            <span class="top-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="6" width="19" height="12" rx="2"/><circle cx="12" cy="12" r="2.6"/><path d="M6 9.5v5M18 9.5v5"/></svg></span>
+            <span class="top-body">
+              <span class="top-cat">노동·급여</span>
+              <h3 class="top-title">연봉 계산기</h3>
+              <span class="top-desc">연봉에서 4대보험과 소득세를 뺀 월·연 실수령액을 확인합니다.</span>
+            </span>
+            <span class="top-btn">계산하기</span>
+          </a>
+        </li>
+        <li class="top-item cat-labor">
+          <a class="top-card" href="/severance-pay">
+            <span class="top-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="7.5" width="18" height="12" rx="2"/><path d="M9 7.5V6a1.5 1.5 0 0 1 1.5-1.5h3A1.5 1.5 0 0 1 15 6v1.5M3 12.5h18"/></svg></span>
+            <span class="top-body">
+              <span class="top-cat">노동·급여</span>
+              <h3 class="top-title">퇴직금 계산기</h3>
+              <span class="top-desc">평균임금과 재직일수로 예상 퇴직금을 계산합니다.</span>
+            </span>
+            <span class="top-btn">계산하기</span>
+          </a>
+        </li>
+        <li class="top-item cat-realty">
+          <a class="top-card" href="/loan-interest">
+            <span class="top-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10.5 12 4l8 6.5V20H4z"/><path d="M9.5 17.5l5-5"/><circle cx="9.8" cy="12.8" r="0.9"/><circle cx="14.2" cy="17.2" r="0.9"/></svg></span>
+            <span class="top-body">
+              <span class="top-cat">주거·부동산</span>
+              <h3 class="top-title">대출이자 계산기</h3>
+              <span class="top-desc">원리금균등·원금균등·만기일시 상환의 월 상환액과 총이자를 계산합니다.</span>
+            </span>
+            <span class="top-btn">계산하기</span>
+          </a>
+        </li>
+        <li class="top-item cat-labor">
+          <a class="top-card" href="/hourly-wage">
+            <span class="top-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg></span>
+            <span class="top-body">
+              <span class="top-cat">노동·급여</span>
+              <h3 class="top-title">시급 계산기</h3>
+              <span class="top-desc">월급과 시급을 서로 환산하고 최저임금과 비교합니다.</span>
+            </span>
+            <span class="top-btn">계산하기</span>
+          </a>
+        </li>
+        <li class="top-item cat-tax">
+          <a class="top-card" href="/vat">
+            <span class="top-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3.5h12v17l-2-1.4-2 1.4-2-1.4-2 1.4-2-1.4-2 1.4z"/><path d="M9 8.5h6M9 12h6M9 15.5h3.5"/></svg></span>
+            <span class="top-body">
+              <span class="top-cat">세금·보험</span>
+              <h3 class="top-title">부가세 계산기</h3>
+              <span class="top-desc">공급가액과 부가세 포함 금액을 서로 환산합니다.</span>
+            </span>
+            <span class="top-btn">계산하기</span>
+          </a>
+        </li>
+        <li class="top-item cat-tax">
+          <a class="top-card" href="/social-insurance">
+            <span class="top-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5 19 6v5.5c0 4.4-3 7.8-7 9-4-1.2-7-4.6-7-9V6z"/><path d="M9 12l2.2 2.2L15.5 10"/></svg></span>
+            <span class="top-body">
+              <span class="top-cat">세금·보험</span>
+              <h3 class="top-title">4대보험 계산기</h3>
+              <span class="top-desc">국민연금·건강·장기요양·고용보험의 근로자·사업주 부담을 계산합니다.</span>
+            </span>
+            <span class="top-btn">계산하기</span>
+          </a>
+        </li>
+      </ul>
+    </section>
+    <!-- top:end -->
+
     <section class="catalog" id="calculators" aria-labelledby="calculators-title">
-      <h2 id="calculators-title" class="sr-only">계산기 모음</h2>
+      <h2 id="calculators-title" class="section-title">전체 계산기 <span class="section-count">30종</span></h2>
       <div class="catalog-tools">
         <div class="search-compact">
           <label for="calc-search" class="search-label">계산기 검색</label>
@@ -310,7 +415,7 @@
           <summary class="fold-summary"><h2 id="basis-title">적용 기준 및 공식 출처</h2></summary>
           <div class="fold-body">
             <h3>적용기준 안내</h3>
-            <p>정산노트는 공식 자료로 계산 기준을 확인한 계산기만 공개합니다. 자세한 기준은 각 계산기 페이지의 ‘적용 기준 및 공식 출처’에서 볼 수 있습니다.</p>
+            <p>생활계산서는 공식 자료로 계산 기준을 확인한 계산기만 공개합니다. 자세한 기준은 각 계산기 페이지의 ‘적용 기준 및 공식 출처’에서 볼 수 있습니다.</p>
             <ul>
               <li>월급 일할계산기: 달력일 기준과 소정근로일 기준 두 가지로 배분해 비교합니다(법정 산식이 아닌 비교용 계산).</li>
               <li>주휴수당 판독기: 4주(4주 미만 근로 시 그 기간) 평균 1주 소정근로시간 15시간 이상, 소정근로일 개근 여부로 주차별 판정합니다.</li>
@@ -350,8 +455,8 @@
 
   <footer class="site-footer">
     <div class="container container-wide">
-      <p class="footer-brand">정산노트<span aria-hidden="true">.</span></p>
-      <p>정산노트의 계산 결과는 단순 모의 계산이며, 법적 효력을 갖는 증빙자료가 아닙니다.</p>
+      <p class="footer-brand">생활계산서<span aria-hidden="true">.</span></p>
+      <p>생활계산서의 계산 결과는 단순 모의 계산이며, 법적 효력을 갖는 증빙자료가 아닙니다.</p>
       <p>입력한 급여와 날짜는 브라우저 안에서만 계산되며 서버나 분석 도구로 전송되지 않습니다.</p>
       <p><a href="/privacy">개인정보처리방침</a></p>
     </div>

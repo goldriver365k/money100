@@ -5,20 +5,20 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'none'; form-action 'none'; base-uri 'none'">
   <meta name="referrer" content="strict-origin-when-cross-origin">
-  <title>평수 계산기 — 제곱미터(㎡) 평 변환 정확하게 | 정산노트</title>
+  <title>평수 계산기 — 제곱미터(㎡) 평 변환 정확하게 | 생활계산서</title>
   <meta name="description" content="제곱미터(㎡)를 평으로, 평을 ㎡로 정확하게 변환합니다(1평 = 400/121㎡ ≈ 3.3058㎡). 전용 59·84·114㎡의 평 환산과 공급면적·전용면적 차이를 함께 안내합니다.">
   <!-- seo:start -->
   <meta name="robots" content="noindex, nofollow">
   <!-- seo:end -->
   <meta property="og:type" content="website">
-  <meta property="og:site_name" content="정산노트">
-  <meta property="og:title" content="평수 계산기 — 제곱미터(㎡) 평 변환 정확하게 | 정산노트">
+  <meta property="og:site_name" content="생활계산서">
+  <meta property="og:title" content="평수 계산기 — 제곱미터(㎡) 평 변환 정확하게 | 생활계산서">
   <meta property="og:description" content="㎡와 평을 서로 정확하게 변환하세요.">
   <meta property="og:locale" content="ko_KR">
   <meta property="og:image" content="/assets/og-image.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
-  <meta property="og:image:alt" content="정산노트 — 급여·세금·부동산 계산기 30종">
+  <meta property="og:image:alt" content="생활계산서 — 급여·세금·부동산 계산기 30종">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="theme-color" content="#2563e2">
   <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
@@ -63,13 +63,67 @@
   <a class="skip-link" href="#main">본문 바로가기</a>
   <header class="site-header">
     <div class="container container-wide header-inner">
-      <a class="brand" href="/"><span class="brand-mark" aria-hidden="true"></span>정산노트</a>
-      <nav class="main-nav" aria-label="주요 메뉴"><ul><li><a href="/#calculators">계산기 모음</a></li><li><a href="#basis-fold" data-open-fold>이용 가이드</a></li><li><a href="#faq-fold" data-open-fold>자주 묻는 질문</a></li></ul></nav>
+      <a class="brand" href="/"><span class="brand-mark" aria-hidden="true"></span>생활계산서</a>
+      <button type="button" class="nav-toggle" aria-expanded="false" aria-controls="site-nav"><span class="nav-toggle-bars" aria-hidden="true"></span><span class="sr-only">메뉴</span></button>
+      <nav class="main-nav" id="site-nav" aria-label="주요 메뉴">
+        <ul class="nav-list">
+        <li><a href="/">홈</a></li>
+        <li class="has-menu cat-labor">
+          <button type="button" class="nav-cat" aria-expanded="false" aria-controls="menu-labor">노동·급여<span class="nav-caret" aria-hidden="true"></span></button>
+          <div class="nav-panel" id="menu-labor">
+            <p class="nav-panel-title">노동·급여 계산기</p>
+            <ul><li><a href="/annual-salary-net">연봉 실수령액</a></li><li><a href="/monthly-salary-net">월급 실수령액</a></li><li><a href="/severance-pay">퇴직금</a></li><li><a href="/weekly-holiday-pay">주휴수당</a></li><li><a href="/hourly-wage">시급</a></li><li><a href="/unemployment-benefit">실업급여</a></li><li><a href="/annual-leave-pay">연차수당</a></li><li><a href="/overtime-pay">야간·연장·휴일수당</a></li><li><a href="/salary-proration">월급 일할</a></li><li><a href="/parental-leave-pay">육아휴직급여</a></li></ul>
+            <a class="nav-panel-all" href="/#labor">노동·급여 전체 보기</a>
+          </div>
+        </li>
+        <li class="has-menu cat-tax">
+          <button type="button" class="nav-cat" aria-expanded="false" aria-controls="menu-tax">세금·보험<span class="nav-caret" aria-hidden="true"></span></button>
+          <div class="nav-panel" id="menu-tax">
+            <p class="nav-panel-title">세금·보험 계산기</p>
+            <ul><li><a href="/social-insurance">4대보험</a></li><li><a href="/comprehensive-income-tax">종합소득세</a></li><li><a href="/vat">부가세</a></li><li><a href="/year-end-tax">연말정산 환급금</a></li><li><a href="/freelancer-tax">3.3% 프리랜서 세금</a></li><li><a href="/income-tax">소득세</a></li><li><a href="/health-insurance">건강보험료</a></li><li><a href="/national-pension">국민연금</a></li><li><a href="/gift-tax">증여세</a></li><li><a href="/inheritance-tax">상속세</a></li></ul>
+            <a class="nav-panel-all" href="/#tax">세금·보험 전체 보기</a>
+          </div>
+        </li>
+        <li class="has-menu cat-realty is-current">
+          <button type="button" class="nav-cat" aria-expanded="false" aria-controls="menu-realty">주거·부동산<span class="nav-caret" aria-hidden="true"></span></button>
+          <div class="nav-panel" id="menu-realty">
+            <p class="nav-panel-title">주거·부동산 계산기</p>
+            <ul><li><a href="/loan-interest">대출이자</a></li><li><a href="/acquisition-tax">취득세</a></li><li><a href="/capital-gains-tax">양도소득세</a></li><li><a href="/brokerage-fee">중개수수료</a></li><li><a href="/rent-conversion">전월세 전환</a></li><li><a href="/dsr-limit">DSR 대출한도</a></li><li><a href="/property-tax">재산세</a></li><li><a href="/pyeong">평수</a></li><li><a href="/subscription-points">청약가점</a></li><li><a href="/jeonse-safety">전세보증금 안전</a></li></ul>
+            <a class="nav-panel-all" href="/#realty">주거·부동산 전체 보기</a>
+          </div>
+        </li>
+        <li><a href="/#calculators">전체 계산기</a></li>
+        <li><a href="#basis-fold" data-open-fold>이용 가이드</a></li>
+        </ul>
+      </nav>
     </div>
   </header>
 
-  <main id="main" class="container">
-    <nav class="home-nav" aria-label="홈으로 이동"><a href="/" id="home-link" class="home-btn"><span aria-hidden="true">←</span> 홈</a></nav>
+  <!-- shell:start -->
+  <div class="container container-wide calc-shell">
+    <aside class="calc-sidebar cat-realty" aria-label="주거·부동산 계산기 목록">
+      <p class="side-cat">주거·부동산</p>
+      <ul class="side-list"><li><a href="/loan-interest">대출이자 계산기</a></li><li><a href="/acquisition-tax">취득세 계산기</a></li><li><a href="/capital-gains-tax">양도소득세 계산기</a></li><li><a href="/brokerage-fee">중개수수료 계산기</a></li><li><a href="/rent-conversion">전월세 전환 계산기</a></li><li><a href="/dsr-limit">DSR 대출한도 계산기</a></li><li><a href="/property-tax">재산세 계산기</a></li><li><a href="/pyeong" aria-current="page">평수 계산기</a></li><li><a href="/subscription-points">청약가점 계산기</a></li><li><a href="/jeonse-safety">전세보증금 안전 계산기</a></li></ul>
+      <p class="side-other-title">다른 분야</p>
+      <ul class="side-other"><li><a class="side-other-link cat-labor" href="/#labor">노동·급여 계산기</a></li><li><a class="side-other-link cat-tax" href="/#tax">세금·보험 계산기</a></li></ul>
+    </aside>
+  <main id="main" class="calc-main">
+    <nav class="breadcrumb" aria-label="현재 위치">
+      <ol>
+        <li><a href="/" id="home-link">홈</a></li>
+        <li><a href="/#realty">주거·부동산</a></li>
+        <li aria-current="page">평수 계산기</li>
+      </ol>
+    </nav>
+    <details class="calc-switcher cat-realty">
+      <summary>주거·부동산 계산기 10종 · 다른 계산기 선택</summary>
+      <div class="calc-switcher-body">
+      <ul class="side-list"><li><a href="/loan-interest">대출이자 계산기</a></li><li><a href="/acquisition-tax">취득세 계산기</a></li><li><a href="/capital-gains-tax">양도소득세 계산기</a></li><li><a href="/brokerage-fee">중개수수료 계산기</a></li><li><a href="/rent-conversion">전월세 전환 계산기</a></li><li><a href="/dsr-limit">DSR 대출한도 계산기</a></li><li><a href="/property-tax">재산세 계산기</a></li><li><a href="/pyeong" aria-current="page">평수 계산기</a></li><li><a href="/subscription-points">청약가점 계산기</a></li><li><a href="/jeonse-safety">전세보증금 안전 계산기</a></li></ul>
+      <p class="side-other-title">다른 분야</p>
+      <ul class="side-other"><li><a class="side-other-link cat-labor" href="/#labor">노동·급여 계산기</a></li><li><a class="side-other-link cat-tax" href="/#tax">세금·보험 계산기</a></li></ul>
+      </div>
+    </details>
+    <!-- shell:end -->
 
     <section class="hero calc-hero" aria-labelledby="page-title">
       <p class="calc-badges"><span class="cat-badge cat-realty">주거·부동산</span><span class="basis-badge">적용 기준: 계량에 관한 법률 (1평 = 400/121㎡)</span></p>
@@ -130,6 +184,15 @@
       </div>
     </section>
 
+    <section class="content related" aria-labelledby="related-title">
+      <h2 id="related-title">관련 계산기</h2>
+      <ul class="related-list">
+        <li><a class="related-link cat-realty" href="/acquisition-tax"><span class="related-cat">주거·부동산</span><strong>취득세 계산기</strong><span>주택 수와 가격에 따른 취득세를 확인합니다.</span></a></li>
+        <li><a class="related-link cat-realty" href="/brokerage-fee"><span class="related-cat">주거·부동산</span><strong>중개수수료 계산기</strong><span>거래금액별 부동산 중개보수 상한을 확인합니다.</span></a></li>
+        <li><a class="related-link cat-realty" href="/subscription-points"><span class="related-cat">주거·부동산</span><strong>청약가점 계산기</strong><span>무주택기간·부양가족·통장 가입기간으로 가점을 계산합니다.</span></a></li>
+      </ul>
+    </section>
+
     <!-- 공통 아코디언: 계산 방법 · 실제 예제 · 공식출처 (기본 접힘) -->
     <details class="content basis-fold info-fold" id="basis-fold">
       <summary class="fold-summary"><h2 id="info-title">계산 방법 · 실제 예제 · 공식출처</h2><span class="fold-icon" aria-hidden="true"></span></summary>
@@ -177,23 +240,15 @@
       <p>부동산 거래·등기의 법정 단위는 ㎡입니다.</p>
     </div>
     </details>
-
-    <section class="content related" aria-labelledby="related-title">
-      <h2 id="related-title">관련 계산기</h2>
-      <ul class="related-list">
-        <li><a class="related-link cat-realty" href="/acquisition-tax"><span class="related-cat">주거·부동산</span><strong>취득세 계산기</strong><span>주택 수와 가격에 따른 취득세를 확인합니다.</span></a></li>
-        <li><a class="related-link cat-realty" href="/brokerage-fee"><span class="related-cat">주거·부동산</span><strong>중개수수료 계산기</strong><span>거래금액별 부동산 중개보수 상한을 확인합니다.</span></a></li>
-        <li><a class="related-link cat-realty" href="/subscription-points"><span class="related-cat">주거·부동산</span><strong>청약가점 계산기</strong><span>무주택기간·부양가족·통장 가입기간으로 가점을 계산합니다.</span></a></li>
-      </ul>
-    </section>
   </main>
+  </div>
 
   <footer class="site-footer">
     <div class="container container-wide">
-      <p class="footer-brand">정산노트<span aria-hidden="true">.</span></p>
-      <p>정산노트의 계산 결과는 단순 모의 계산이며, 법적 효력을 갖는 증빙자료가 아닙니다.</p>
+      <p class="footer-brand">생활계산서<span aria-hidden="true">.</span></p>
+      <p>생활계산서의 계산 결과는 단순 모의 계산이며, 법적 효력을 갖는 증빙자료가 아닙니다.</p>
       <p>입력한 값은 브라우저 안에서만 계산되며 서버나 분석 도구로 전송되지 않습니다.</p>
-      <p><a href="/">정산노트 홈</a> · <a href="/privacy">개인정보처리방침</a></p>
+      <p><a href="/">생활계산서 홈</a> · <a href="/privacy">개인정보처리방침</a></p>
     </div>
   </footer>
 </body>

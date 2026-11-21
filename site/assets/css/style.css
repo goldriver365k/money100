@@ -959,3 +959,141 @@ html { scroll-padding-top: 84px; }
 }
 .home-btn:hover { background: var(--brand-soft); border-color: var(--brand); }
 .home-btn:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+
+/* ===== 생활계산서 상단 메뉴 (분야 드롭다운 · 모바일 햄버거) ===== */
+.site-header .header-inner { display: flex; align-items: center; gap: 12px 20px; min-height: 64px; flex-wrap: wrap; }
+.site-header .brand { flex: none; }
+.site-header .main-nav { margin-left: auto; }
+.site-header .nav-list { display: flex; align-items: center; gap: 2px; list-style: none; margin: 0; padding: 0; }
+.site-header .nav-list > li { position: relative; }
+.site-header .nav-list > li > a, .site-header .nav-cat {
+  display: inline-flex; align-items: center; gap: 6px; min-height: 44px; padding: 0 12px; border: 0; border-radius: 999px;
+  background: none; color: var(--text); font: inherit; font-weight: 700; text-decoration: none; cursor: pointer; white-space: nowrap;
+}
+.site-header .nav-list > li > a:hover { background: var(--brand-soft); }
+.site-header .nav-list > li > a[aria-current="page"] { background: var(--brand-soft); color: var(--brand); }
+.site-header .cat-labor > .nav-cat { color: var(--cat-labor); }
+.site-header .cat-tax > .nav-cat { color: var(--cat-tax); }
+.site-header .cat-realty > .nav-cat { color: var(--cat-realty); }
+.site-header .cat-labor.is-open > .nav-cat, .site-header .cat-labor.is-current > .nav-cat { background: var(--cat-labor-bg); }
+.site-header .cat-tax.is-open > .nav-cat, .site-header .cat-tax.is-current > .nav-cat { background: var(--cat-tax-bg); }
+.site-header .cat-realty.is-open > .nav-cat, .site-header .cat-realty.is-current > .nav-cat { background: var(--cat-realty-bg); }
+.site-header .nav-cat:focus-visible, .site-header .nav-list a:focus-visible, .site-header .nav-toggle:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+.nav-caret { width: 7px; height: 7px; border-right: 2px solid currentColor; border-bottom: 2px solid currentColor; transform: rotate(45deg) translateY(-2px); transition: transform .15s; }
+.has-menu.is-open .nav-caret { transform: rotate(-135deg) translateY(-1px); }
+.nav-panel {
+  display: none; position: absolute; top: calc(100% + 6px); left: 0; z-index: 30; width: 400px; padding: 14px;
+  background: #fff; border: 1px solid var(--border); border-radius: 14px; box-shadow: 0 16px 40px rgb(30 42 90 / 0.16);
+}
+.cat-tax .nav-panel { left: 50%; transform: translateX(-50%); }
+.cat-realty .nav-panel { left: auto; right: 0; }
+.has-menu.is-open .nav-panel { display: block; }
+.nav-panel-title { margin: 0 0 6px 6px; font-size: 0.85rem; font-weight: 800; color: var(--muted); }
+.nav-panel ul { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 2px 8px; }
+.nav-panel a { display: flex; align-items: center; min-height: 44px; padding: 0 10px; border-radius: 8px; color: var(--text); font-weight: 600; text-decoration: none; }
+.cat-labor .nav-panel a:hover { background: var(--cat-labor-bg); color: var(--cat-labor); }
+.cat-tax .nav-panel a:hover { background: var(--cat-tax-bg); color: var(--cat-tax); }
+.cat-realty .nav-panel a:hover { background: var(--cat-realty-bg); color: var(--cat-realty); }
+.nav-panel .nav-panel-all { margin-top: 8px; justify-content: center; border: 1.5px solid var(--border); font-weight: 800; }
+.nav-toggle { display: none; }
+@media (max-width: 899px) {
+  .site-header .header-inner { min-height: 60px; padding-top: 8px; padding-bottom: 8px; }
+  .nav-toggle {
+    display: inline-flex; align-items: center; justify-content: center; margin-left: auto; width: 48px; height: 48px;
+    border: 1.5px solid var(--border); border-radius: 12px; background: #fff; cursor: pointer;
+  }
+  .nav-toggle-bars, .nav-toggle-bars::before, .nav-toggle-bars::after { display: block; width: 20px; height: 2px; background: var(--text); border-radius: 2px; position: relative; transition: transform .15s, opacity .15s; }
+  .nav-toggle-bars::before, .nav-toggle-bars::after { content: ""; position: absolute; left: 0; }
+  .nav-toggle-bars::before { top: -6px; }
+  .nav-toggle-bars::after { top: 6px; }
+  .nav-open .nav-toggle-bars { background: transparent; }
+  .nav-open .nav-toggle-bars::before { transform: translateY(6px) rotate(45deg); }
+  .nav-open .nav-toggle-bars::after { transform: translateY(-6px) rotate(-45deg); }
+  .site-header .main-nav { display: none; width: 100%; margin: 0; }
+  .site-header.nav-open .main-nav { display: block; }
+  .site-header .nav-list { flex-direction: column; align-items: stretch; gap: 2px; padding: 4px 0 8px; }
+  .site-header .nav-list > li > a, .site-header .nav-cat { width: 100%; justify-content: space-between; min-height: 48px; border-radius: 10px; }
+  .nav-panel, .cat-tax .nav-panel, .cat-realty .nav-panel { position: static; transform: none; width: auto; margin: 2px 0 6px; padding: 8px; box-shadow: none; border: 0; }
+  .cat-labor .nav-panel { background: var(--cat-labor-bg); }
+  .cat-tax .nav-panel { background: var(--cat-tax-bg); }
+  .cat-realty .nav-panel { background: var(--cat-realty-bg); }
+  .nav-panel-title { display: none; }
+  .nav-panel .nav-panel-all { background: #fff; }
+}
+@media (prefers-reduced-motion: reduce) { .nav-caret, .nav-toggle-bars, .nav-toggle-bars::before, .nav-toggle-bars::after { transition: none; } }
+
+/* ===== 홈: 소개·많이 찾는 계산기·전체 계산기 ===== */
+.home-hero-center { padding: 32px 0 8px; }
+.home-hero-center h1 { font-size: clamp(1.9rem, 6vw, 3rem); }
+.section-title { margin: 0 0 14px; font-size: clamp(1.3rem, 3.4vw, 1.6rem); font-weight: 900; letter-spacing: -0.02em; color: var(--text); }
+.section-count { color: var(--brand); }
+.top-calcs { margin: 20px 0 40px; }
+.top-grid { list-style: none; margin: 0; padding: 0; display: grid; gap: 14px; grid-template-columns: 1fr; }
+@media (min-width: 720px) { .top-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.top-item { display: flex; }
+.top-card {
+  --c: var(--brand); --c-bg: var(--brand-soft);
+  flex: 1; display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 14px 16px; padding: 18px 20px;
+  background: #fff; border: 1.5px solid var(--border); border-radius: 16px; color: var(--text); text-decoration: none;
+  transition: border-color .15s, box-shadow .15s, transform .15s;
+}
+.top-item.cat-labor .top-card { --c: var(--cat-labor); --c-bg: var(--cat-labor-bg); }
+.top-item.cat-tax .top-card { --c: var(--cat-tax); --c-bg: var(--cat-tax-bg); }
+.top-item.cat-realty .top-card { --c: var(--cat-realty); --c-bg: var(--cat-realty-bg); }
+.top-card:hover { border-color: var(--c); box-shadow: 0 10px 24px rgb(30 42 90 / 0.1); transform: translateY(-2px); }
+.top-card:focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; }
+.top-icon { display: grid; place-items: center; width: 52px; height: 52px; border-radius: 14px; background: var(--c-bg); color: var(--c); }
+.top-icon svg { width: 28px; height: 28px; }
+.top-body { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+.top-cat { font-size: 0.8rem; font-weight: 800; color: var(--c); }
+.top-card h3.top-title { margin: 0; font-size: 1.15rem; font-weight: 900; color: var(--c); }
+.top-desc { font-size: 0.92rem; color: var(--muted); }
+.top-btn { display: inline-flex; align-items: center; min-height: 44px; padding: 0 16px; border-radius: 999px; background: var(--c); color: #fff; font-weight: 800; white-space: nowrap; }
+@media (max-width: 479px) {
+  .top-card { grid-template-columns: auto 1fr; }
+  .top-btn { grid-column: 1 / -1; justify-content: center; }
+}
+@media (prefers-reduced-motion: reduce) { .top-card { transition: none; } .top-card:hover { transform: none; } }
+
+/* ===== 계산기 상세: 왼쪽 목록(PC) · 현재 위치 · 모바일 선택 메뉴 ===== */
+.calc-shell { display: block; }
+.calc-main { min-width: 0; }
+.calc-sidebar { display: none; }
+.breadcrumb { margin: 16px 0 4px; font-size: .9rem; }
+.breadcrumb ol { display: flex; flex-wrap: wrap; align-items: center; gap: 2px 6px; margin: 0; padding: 0; list-style: none; }
+.breadcrumb li { display: inline-flex; align-items: center; gap: 6px; color: var(--muted); }
+.breadcrumb li + li::before { content: "›"; color: var(--muted); }
+.breadcrumb a { display: inline-flex; align-items: center; min-height: 32px; padding: 0 2px; color: var(--brand); font-weight: 700; text-decoration: none; }
+.breadcrumb a:hover { text-decoration: underline; }
+.breadcrumb [aria-current="page"] { color: var(--text); font-weight: 700; }
+.side-list, .side-other { margin: 0; padding: 0; list-style: none; }
+.side-list a, .side-other a { display: flex; align-items: center; min-height: 44px; padding: 8px 12px; border-radius: 10px; color: var(--text); text-decoration: none; font-weight: 600; line-height: 1.35; }
+.side-list a:hover { background: var(--c-bg); color: var(--c); }
+.side-list a[aria-current="page"] { background: var(--c); color: #fff; font-weight: 800; }
+.side-other-title { margin: 16px 0 4px; padding: 0 12px; font-size: .85rem; font-weight: 800; color: var(--muted); }
+.side-other a { font-weight: 700; }
+.side-other .cat-labor { color: var(--cat-labor); }
+.side-other .cat-tax { color: var(--cat-tax); }
+.side-other .cat-realty { color: var(--cat-realty); }
+.side-other a:hover { background: var(--surface); }
+.calc-sidebar.cat-labor, .calc-switcher.cat-labor { --c: var(--cat-labor); --c-bg: var(--cat-labor-bg); --c-line: var(--cat-labor-line); }
+.calc-sidebar.cat-tax, .calc-switcher.cat-tax { --c: var(--cat-tax); --c-bg: var(--cat-tax-bg); --c-line: var(--cat-tax-line); }
+.calc-sidebar.cat-realty, .calc-switcher.cat-realty { --c: var(--cat-realty); --c-bg: var(--cat-realty-bg); --c-line: var(--cat-realty-line); }
+.side-list a:focus-visible, .side-other a:focus-visible, .breadcrumb a:focus-visible, .calc-switcher summary:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+
+/* 모바일·태블릿: 상단 선택 메뉴 */
+.calc-switcher { margin: 8px 0 4px; border: 1.5px solid var(--c-line); border-radius: 12px; background: var(--c-bg); }
+.calc-switcher summary { display: flex; align-items: center; justify-content: space-between; gap: 8px; min-height: 48px; padding: 10px 14px; cursor: pointer; list-style: none; color: var(--c); font-weight: 800; }
+.calc-switcher summary::-webkit-details-marker { display: none; }
+.calc-switcher summary::after { content: ""; width: 9px; height: 9px; border-right: 2px solid currentColor; border-bottom: 2px solid currentColor; transform: rotate(45deg) translateY(-2px); transition: transform .15s; flex: none; }
+.calc-switcher[open] summary::after { transform: rotate(-135deg) translateY(-2px); }
+.calc-switcher-body { padding: 4px 8px 10px; background: #fff; border-radius: 0 0 10px 10px; }
+
+@media (min-width: 900px) {
+  .calc-shell { display: grid; grid-template-columns: 240px minmax(0, 1fr); gap: 32px; align-items: start; }
+  .calc-main { max-width: 820px; }
+  .calc-sidebar { display: block; position: sticky; top: 88px; max-height: calc(100vh - 104px); overflow-y: auto; margin-top: 20px; padding: 14px 8px; border: 1px solid var(--border); border-radius: 16px; background: #fff; }
+  .side-cat { margin: 0 0 8px; padding: 6px 12px; border-radius: 10px; background: var(--c-bg); color: var(--c); font-weight: 900; }
+  .calc-switcher { display: none; }
+}
+@media (prefers-reduced-motion: reduce) { .calc-switcher summary::after { transition: none; } }
