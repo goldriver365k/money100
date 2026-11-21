@@ -541,6 +541,39 @@ function finishResult(text) {
   announceTimer = window.setTimeout(() => { resultStatus.textContent = text; }, 50);
 }
 
+/* ---------- 전체 초기화 ---------- */
+
+function hasUserInput() {
+  const anyDay = [...dayData.values()].some((v) => (v.h ?? '') !== '' || (v.m ?? '') !== '' || v.att);
+  const weekdays = [...form.querySelectorAll('input[name="normalWeekday"]:checked')].map((x) => x.value).join(',');
+  return anyDay || noWork.size > 0 || $('hire-date').value !== '' || $('end-date').value !== '' || $('wage').value.trim() !== '' ||
+    $('check-start').value !== '' || $('week-count').value !== '4' || $('employment-type').value !== 'hourly' ||
+    readBase().status !== 'employed' || weekdays !== '1,2,3,4,5' || !resultSection.hidden;
+}
+
+/** 모든 입력·근무표를 처음 상태로 되돌린다. 접이식 영역의 열림 상태는 그대로 둔다. */
+function resetAll() {
+  if (hasUserInput() && !window.confirm('입력한 근무표와 결과를 모두 지우고 처음 상태로 되돌릴까요?')) return;
+  dayData.clear();
+  noWork.clear();
+  activeWeek = null;
+  $('employment-type').value = 'hourly';
+  for (const id of ['hire-date', 'end-date', 'wage', 'check-start']) $(id).value = '';
+  $('week-count').value = '4';
+  form.querySelector('input[name="status"][value="employed"]').checked = true;
+  for (const box of form.querySelectorAll('input[name="normalWeekday"]')) box.checked = ['1', '2', '3', '4', '5'].includes(box.value);
+  Object.keys(FIELD_ERRORS).forEach(clearError);
+  hideResult();
+  $('basis-body').innerHTML = '';
+  updateScope();
+  renderWeeks();
+  $('employment-type').focus();
+  window.clearTimeout(announceTimer);
+  resultStatus.textContent = '';
+  announceTimer = window.setTimeout(() => { resultStatus.textContent = '입력과 근무표를 모두 지우고 처음 상태로 되돌렸습니다.'; }, 50);
+}
+$('reset-all').addEventListener('click', resetAll);
+
 resultSection.addEventListener('click', (e) => {
   const b = e.target.closest('[data-goto-week]');
   if (!b) return;

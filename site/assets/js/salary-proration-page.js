@@ -343,6 +343,37 @@ function resyncAfterRestore() {
   updateScheduleState();
 }
 
+/* ---------- 전체 초기화 ---------- */
+
+/** 기본값에서 바뀐 입력이 있는지 (있을 때만 확인 창을 띄운다) */
+function hasUserInput() {
+  const now = new Date();
+  const { year, month } = selectedPeriod();
+  const defaults = defaultWorkdays(year, month).join(',');
+  return salaryInput.value.trim() !== '' || startInput.value !== '' || endInput.value !== '' ||
+    selectedType() !== SETTLEMENT_TYPES.JOIN || year !== now.getFullYear() || month !== now.getMonth() + 1 ||
+    selectedWorkdays().join(',') !== defaults || !resultSection.hidden;
+}
+
+/** 모든 입력을 처음 상태(이번 달, 중도 입사, 월~금 근무일)로 되돌린다. 접이식 영역의 열림 상태는 그대로 둔다. */
+function resetAll() {
+  if (hasUserInput() && !window.confirm('입력한 내용과 결과를 모두 지우고 처음 상태로 되돌릴까요?')) return;
+  const now = new Date();
+  salaryInput.value = '';
+  updateSalaryPreview();
+  yearSelect.value = String(now.getFullYear());
+  monthSelect.value = String(now.getMonth() + 1);
+  form.querySelector(`input[name="type"][value="${SETTLEMENT_TYPES.JOIN}"]`).checked = true;
+  applyTypeVisibility();
+  clearAllErrors();
+  hideResult();
+  onPeriodChanged(); // 날짜 비움 · 날짜 범위 · 달력(월~금) · 요약
+  salaryInput.focus();
+  window.clearTimeout(announceTimer);
+  resultStatus.textContent = '';
+  announceTimer = window.setTimeout(() => { resultStatus.textContent = '입력을 모두 지우고 처음 상태로 되돌렸습니다.'; }, 50);
+}
+
 function init() {
   populatePeriodSelects();
   applyDateBounds();
@@ -367,6 +398,7 @@ function init() {
   });
   $('clear-workdays').addEventListener('click', () => setAllWorkdays(() => false));
   form.addEventListener('submit', onSubmit);
+  $('reset-all').addEventListener('click', resetAll);
   window.addEventListener('pageshow', resyncAfterRestore);
 }
 

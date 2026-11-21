@@ -11,6 +11,7 @@
  *   4. 두 계산기 접이식 영역(적용 기준 및 공식 출처·자주 묻는 질문) 기본 닫힘, 클릭·키보드(Enter·Space)로 열고 닫기
  *   5. 접이식 영역을 연 채 재계산해도 열림 유지
  *   6. 기존 계산 테스트 기대값 = 실제값 (월급 일할계산기 5건, 주휴수당 7건)
+ *   7. 전체 초기화: 취소 시 유지, 확인 시 기본값 복원·결과 숨김·접이식 상태 유지, 빈 폼은 확인 창 없음
  * 실패 메시지는 "[페이지 @ 너비px] 항목 — 실제값" 형식이다. 결과는 docs/ui/ui-check-report.md 에 저장한다.
  * 입력값은 모두 테스트용 가상값이다.
  */
@@ -259,6 +260,78 @@ const foldOpen = (p) => p.evaluate(() => document.querySelector('details.basis-f
           const w2 = await whpCalc(p);
           check(key, w, '열린 채 재계산 → 열림 유지·새 값 반영', (await foldOpen(p)) && w2[0].applied.startsWith('평균 15시간 15분'), `열림=${await foldOpen(p)} · ${w2[0].applied}`);
         }
+      }
+
+      // 7. 전체 초기화 (두 계산기): 취소 시 유지, 확인 시 기본값 복원·결과 숨김·접이식 상태 유지·첫 입력 포커스, 빈 폼은 확인 창 없음
+      {
+        const dialogs = [];
+        let answer = true;
+        const onDialog = async (d) => { dialogs.push(d.message()); if (answer) await d.accept(); else await d.dismiss(); };
+        p.on('dialog', onDialog);
+        // 월급 일할계산기
+        await salaryCase(p, { salary: '3100000', year: 2026, month: 1, type: 'both', start: '2026-01-05', end: '2026-01-20', add: [17] });
+        await salaryCalc(p);
+        await p.locator('details.basis-fold > summary').click();
+        answer = false;
+        await p.click('#reset-all');
+        const kept = { salary: await p.inputValue('#salary'), result: await p.locator('#result').isVisible() };
+        answer = true;
+        await p.click('#reset-all');
+        const now = new Date();
+        const st = await p.evaluate(() => ({
+          salary: document.getElementById('salary').value, year: document.getElementById('year').value, month: document.getElementById('month').value,
+          type: document.querySelector('input[name=type]:checked').value, start: document.getElementById('start-date').value, end: document.getElementById('end-date').value,
+          endHidden: document.getElementById('end-field').hidden, checked: document.querySelectorAll('#calendar-grid input:checked').length,
+          result: !document.getElementById('result').hidden, errors: [...document.querySelectorAll('.error')].filter((e) => !e.hidden).length,
+          fold: document.querySelector('details.basis-fold').open, focus: document.activeElement.id,
+        }));
+        const weekdaysNow = (() => { let n = 0; const y = now.getFullYear(); const m = now.getMonth(); const last = new Date(Date.UTC(y, m + 1, 0)).getUTCDate(); for (let d = 1; d <= last; d += 1) { const w = new Date(Date.UTC(y, m, d)).getUTCDay(); if (w >= 1 && w <= 5) n += 1; } return n; })();
+        await salaryCase(p, { salary: '3100000', year: 2026, month: 1, type: 'join', start: '2026-01-16' });
+        const after = await salaryCalc(p);
+        const n1 = dialogs.length;
+        await p.goto('/salary-proration');
+        await p.click('#reset-all'); // 빈 폼
+        const noDialog = dialogs.length === n1;
+        check('salary', w, '전체 초기화: 취소 시 유지 · 확인 시 기본값 복원·결과 숨김·접이식 유지·첫 입력 포커스 · 재계산 정상 · 빈 폼은 확인 창 없음',
+          kept.salary === '3100000' && kept.result && st.salary === '' && st.year === String(now.getFullYear()) && st.month === String(now.getMonth() + 1) &&
+          st.type === 'join' && st.start === '' && st.end === '' && st.endHidden && st.checked === weekdaysNow && !st.result && st.errors === 0 && st.fold && st.focus === 'salary' &&
+          after.cal[2] === '1,600,000원' && noDialog,
+          `취소 후 ${JSON.stringify(kept)} · 확인 후 ${JSON.stringify(st)}(월~금 ${weekdaysNow}일) · 재계산 ${after.cal[2]} · 빈 폼 확인 창 ${noDialog ? '없음' : '있음'}`);
+
+        // 주휴수당 계산기
+        await whpCase(p, { end: '2026-07-31', days: [0, 1, 2, 3].flatMap((x) => MWF(x, '5')), noWork: [] });
+        await p.fill('#check-start', '2026-07-06');
+        await p.selectOption('#employment-type', 'monthly');
+        await whpCalc(p);
+        await p.locator('details.basis-fold > summary').click();
+        answer = false;
+        await p.click('#reset-all');
+        const kept2 = { hire: await p.inputValue('#hire-date'), result: await p.locator('#result').isVisible() };
+        answer = true;
+        await p.click('#reset-all');
+        const st2 = await p.evaluate(() => ({
+          type: document.getElementById('employment-type').value, hire: document.getElementById('hire-date').value, end: document.getElementById('end-date').value,
+          wage: document.getElementById('wage').value, checkStart: document.getElementById('check-start').value, weeks: document.getElementById('week-count').value,
+          status: document.querySelector('input[name=status]:checked').value, endHidden: document.getElementById('end-field').hidden,
+          normal: [...document.querySelectorAll('input[name=normalWeekday]:checked')].map((x) => x.value).join(','),
+          weeksArea: !document.getElementById('weeks-area').hidden, result: !document.getElementById('result').hidden,
+          scope: !document.getElementById('scope-note').hidden, fold: document.querySelector('details.basis-fold').open, focus: document.activeElement.id,
+        }));
+        // 같은 재직 시작일을 다시 넣었을 때 지난 근무표가 남아 있지 않아야 한다
+        await p.fill('#hire-date', '2026-07-06');
+        const leftover = await p.evaluate(() => [...document.querySelectorAll('#week-panels input[type=text]')].filter((i) => i.value !== '').length);
+        await whpCase(p, { days: [0, 1, 2, 3].flatMap((x) => MWF(x, '5')) });
+        const after2 = await whpCalc(p);
+        const n2 = dialogs.length;
+        await p.goto('/weekly-holiday-pay');
+        await p.click('#reset-all');
+        const noDialog2 = dialogs.length === n2;
+        p.off('dialog', onDialog);
+        check('whp', w, '전체 초기화: 취소 시 유지 · 확인 시 기본값 복원(시급제·재직 중·4주·월~금)·근무표 비움·결과 숨김·접이식 유지 · 재계산 정상 · 빈 폼은 확인 창 없음',
+          kept2.hire === '2026-07-06' && kept2.result && st2.type === 'hourly' && st2.hire === '' && st2.end === '' && st2.wage === '' && st2.checkStart === '' && st2.weeks === '4' &&
+          st2.status === 'employed' && st2.endHidden && st2.normal === '1,2,3,4,5' && !st2.weeksArea && !st2.result && !st2.scope && st2.fold && st2.focus === 'employment-type' &&
+          leftover === 0 && after2.length === 4 && after2.every((x) => x.status === '지급 대상') && noDialog2,
+          `취소 후 ${JSON.stringify(kept2)} · 확인 후 ${JSON.stringify(st2)} · 남은 근무표 ${leftover} · 재계산 ${after2.map((x) => x.status).join('/')} · 빈 폼 확인 창 ${noDialog2 ? '없음' : '있음'}`);
       }
 
       // 6. 기존 계산 기대값 (390px에서 1회)

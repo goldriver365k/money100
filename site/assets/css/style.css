@@ -549,3 +549,8 @@ h3.card-title { margin: 0; font-size: 1.15rem; line-height: 1.4; }
 .card-featured { display: flex; flex-direction: column; gap: 6px; }
 .card-featured .card-cta { margin-top: auto; padding-top: 8px; }
 .hero .lead { max-width: 44em; }
+/* 전체 초기화 버튼: 계산 버튼 옆(보조 버튼) */
+.actions { display: flex; gap: 10px; align-items: stretch; }
+.actions .btn-primary { flex: 1 1 auto; }
+.btn-reset { flex: 0 0 auto; min-height: 52px; padding: 8px 16px; font-weight: 700; color: var(--muted); background: var(--surface); border: 1px solid var(--border); }
+.btn-reset:hover { color: var(--error); border-color: var(--error); }
