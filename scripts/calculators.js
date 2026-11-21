@@ -86,10 +86,10 @@ export const PAGES_SPEC = [
     fields: [
       { type: 'date', name: 'startDate', label: '입사일', required: true, hint: '계속근로가 시작된 날입니다.' },
       { type: 'date', name: 'lastDate', label: '마지막 근무일', required: true, hint: '마지막으로 근무(재직)한 날입니다. 퇴직일은 그다음 날로 계산합니다.' },
-      { type: 'amount', name: 'wages3m', label: '퇴직 전 3개월 임금총액 (세전)', required: true, placeholder: '예: 9000000', hint: '퇴직일 전 3개월 동안 받은 기본급·수당 등 세전 임금의 합계입니다. 상여금·연차수당은 아래에 따로 넣으세요.' },
+      { type: 'amount', name: 'wages3m', label: '퇴직 전 3개월 임금총액 (세전)', required: true, placeholder: '예: 9000000', hint: '퇴직일 전 3개월 동안 받은 기본급·수당 등 세전 임금의 합계입니다. 상여금·연차수당은 아래에 따로 넣으세요.', helper: 'wages3m' },
       { type: 'amount', name: 'bonus', label: '최근 1년 상여금 총액', value: '0', hint: '퇴직 전 1년간 받은 정기 상여금 총액입니다. 3/12만큼 평균임금에 더합니다.' },
       { type: 'amount', name: 'leavePay', label: '연차수당', value: '0', hint: '퇴직 전 1년간 받은(전년도 미사용분) 연차수당입니다. 3/12만큼 더합니다.' },
-      { type: 'amount', name: 'ordinaryDaily', label: '1일 통상임금 (선택)', placeholder: '예: 100000', hint: '입력하면 평균임금과 비교해 더 큰 금액을 적용합니다.' },
+      { type: 'amount', name: 'ordinaryDaily', label: '1일 통상임금 (선택)', placeholder: '예: 100000', hint: '입력하면 평균임금과 비교해 더 큰 금액을 적용합니다.', helper: 'ordinary', output: 'daily' },
       { type: 'radio', name: 'hours15', label: '4주 평균 주 15시간 이상 근무했나요?', choices: [['yes', '예', true], ['no', '아니요']] },
     ],
     howto: [
@@ -248,7 +248,7 @@ export const PAGES_SPEC = [
       { type: 'date', name: 'lastDate', label: '마지막 근무일', required: true, hint: '이직일(마지막 근무일)의 연도 기준으로 상·하한액을 적용합니다.' },
       { type: 'count', name: 'age', label: '이직일 기준 나이 (만)', required: true, unit: '세', placeholder: '예: 35' },
       { type: 'select', name: 'period', label: '고용보험 가입기간 (합산)', options: [['under1', '1년 미만'], ['1to3', '1년 이상 3년 미만', true], ['3to5', '3년 이상 5년 미만'], ['5to10', '5년 이상 10년 미만'], ['over10', '10년 이상']] },
-      { type: 'amount', name: 'wages3m', label: '이직 전 3개월 임금총액 (세전)', required: true, placeholder: '예: 9000000', hint: '마지막 근무일 이전 3개월 동안 받은 세전 임금 합계입니다.' },
+      { type: 'amount', name: 'wages3m', label: '이직 전 3개월 임금총액 (세전)', required: true, placeholder: '예: 9000000', hint: '마지막 근무일 이전 3개월 동안 받은 세전 임금 합계입니다.', helper: 'wages3m' },
       { type: 'decimal', name: 'dailyHours', label: '1일 소정근로시간', unit: '시간', value: '8', hint: '하한액 계산에 씁니다 (최대 8시간).' },
       { type: 'radio', name: 'reason', label: '이직 사유', choices: [['involuntary', '비자발적 (권고사직·계약만료·폐업 등)', true], ['justified', '자발적이지만 정당한 사유'], ['voluntary', '자발적 (개인 사정)']] },
       { type: 'radio', name: 'days180', label: '이직 전 18개월 중 피보험단위기간 180일 이상인가요?', choices: [['yes', '예', true], ['no', '아니요']] },
@@ -305,7 +305,7 @@ export const PAGES_SPEC = [
     lead: '근무 시간대를 입력하면 기본임금과 연장·야간·휴일 가산수당을 나눠 계산합니다.',
     basisYear: '근로기준법 제56조 (연도와 무관)',
     fields: [
-      { type: 'amount', name: 'hourly', label: '시급 (통상시급)', required: true, placeholder: '예: 10320' },
+      { type: 'amount', name: 'hourly', label: '시급 (통상시급)', required: true, placeholder: '예: 10320', helper: 'ordinary', output: 'hourly' },
       { type: 'time', name: 'start', label: '근무 시작 시각', value: '18:00' },
       { type: 'time', name: 'end', label: '근무 종료 시각', value: '06:00', hint: '시작보다 이르거나 같으면 다음 날로 계산합니다 (자정 넘김).' },
       { type: 'count', name: 'breakMin', label: '휴게시간 (전체)', unit: '분', value: '60' },
@@ -336,7 +336,7 @@ export const PAGES_SPEC = [
     basisYear: '2026년 고용보험 육아휴직 급여 기준',
     fields: [
       { type: 'date', name: 'startDate', label: '육아휴직 시작일', required: true, hint: '시작일이 속한 연도의 기준을 적용합니다.' },
-      { type: 'amount', name: 'wage', label: '월 통상임금', required: true, placeholder: '예: 3500000', hint: '기본급과 고정수당 등 통상임금입니다 (성과급·연장수당 제외).' },
+      { type: 'amount', name: 'wage', label: '월 통상임금', required: true, placeholder: '예: 3500000', hint: '기본급과 고정수당 등 통상임금입니다 (성과급·연장수당 제외).', helper: 'ordinary', output: 'monthly' },
       { type: 'count', name: 'months', label: '휴직 기간', unit: '개월', value: '12', hint: '1~12개월. 연장 요건 충족 시 최대 18개월.' },
       { type: 'radio', name: 'plan', label: '적용 기준', choices: [['general', '일반', true], ['sixPlusSix', '6+6 부모육아휴직제'], ['singleParent', '한부모 특례']] },
       { type: 'radio', name: 'extended', label: '12개월 초과 연장 요건을 충족하나요?', choices: [['no', '아니요', true], ['yes', '예 (부모 모두 3개월 이상 사용 등)']] },
@@ -397,7 +397,7 @@ export const PAGES_SPEC = [
       { type: 'amount', name: 'totalPay', label: '총급여 (비과세 제외, 연간)', required: true, placeholder: '예: 50000000', hint: '근로소득 원천징수영수증의 "총급여" 금액입니다.' },
       { type: 'count', name: 'dependents', label: '기본공제 인원 (본인 포함)', value: '1', unit: '명' },
       { type: 'count', name: 'children', label: '자녀세액공제 대상 자녀 수', value: '0', unit: '명' },
-      { type: 'amount', name: 'pension', label: '국민연금 보험료 (근로자 부담, 연간)', value: '0' },
+      { type: 'amount', name: 'pension', label: '국민연금 보험료 (근로자 부담, 연간)', value: '0', helper: 'insurance', source: 'totalPay', fillPension: 'pension', fillOther: 'insurance' },
       { type: 'amount', name: 'insurance', label: '건강·장기요양·고용보험료 (근로자 부담, 연간)', value: '0' },
       { type: 'amount', name: 'deductions', label: '그 밖의 소득공제 금액', value: '0', hint: '신용카드 등 소득공제, 주택자금공제 등 한도를 적용한 공제액입니다.' },
       { type: 'amount', name: 'credits', label: '그 밖의 세액공제 금액', value: '0', hint: '보험료·의료비·교육비·기부금·연금계좌·월세 세액공제액 합계입니다.' },
@@ -453,7 +453,7 @@ export const PAGES_SPEC = [
       { type: 'radio', name: 'mode', label: '과세 방식', choices: [['taxBase', '과세표준 → 산출세액', true], ['earned', '근로소득(총급여) → 결정세액']] },
       { type: 'amount', name: 'amount', label: '과세표준', required: true, placeholder: '예: 30000000', modeLabels: { taxBase: '과세표준', earned: '총급여 (비과세 제외)' } },
       { type: 'count', name: 'dependents', label: '기본공제 인원 (근로소득 방식)', value: '1', unit: '명' },
-      { type: 'amount', name: 'insurance', label: '연금·건강·고용보험료 (근로소득 방식, 연간)', value: '0' },
+      { type: 'amount', name: 'insurance', label: '연금·건강·고용보험료 (근로소득 방식, 연간)', value: '0', helper: 'insurance', source: 'amount', fillTotal: 'insurance', showWhen: 'mode=earned' },
     ],
     howto: [
       '기본세율: 1,400만 원 이하 6%, 5,000만 원 이하 15%, 8,800만 원 이하 24%, 1억5천만 원 이하 35%, 3억 원 이하 38%, 5억 원 이하 40%, 10억 원 이하 42%, 초과 45%입니다.',
@@ -478,7 +478,7 @@ export const PAGES_SPEC = [
     fields: [
       yearField,
       { type: 'radio', name: 'type', label: '가입자 유형', choices: [['employee', '직장가입자', true], ['regional', '지역가입자 (소득분)']] },
-      { type: 'amount', name: 'pay', label: '보수월액', required: true, placeholder: '예: 3000000', modeLabels: { employee: '보수월액', regional: '연간 소득금액' }, hint: '직장가입자는 비과세를 뺀 월 보수, 지역가입자는 연간 소득금액입니다.' },
+      { type: 'amount', name: 'pay', label: '보수월액', required: true, placeholder: '예: 3000000', modeLabels: { employee: '보수월액', regional: '연간 소득금액' }, helper: 'monthlyPay', fill: 'taxable', showWhen: 'type=employee', hint: '직장가입자는 비과세를 뺀 월 보수, 지역가입자는 연간 소득금액입니다.' },
       { type: 'amount', name: 'extraIncome', label: '보수 외 연간 소득 (직장가입자)', value: '0', hint: '임대·사업·이자·배당 등 보수 외 소득입니다. 연 2,000만 원 초과분에만 추가 보험료가 붙습니다.' },
       { type: 'radio', name: 'incomeKind', label: '보수 외 소득(지역은 소득)의 종류', choices: [['full', '사업·이자·배당·기타 (100% 반영)', true], ['half', '연금·근로소득 (50% 반영)']] },
     ],
@@ -506,7 +506,7 @@ export const PAGES_SPEC = [
       yearField,
       { type: 'month', name: 'month', label: '기준 월', hint: '기준소득월액 상·하한은 매년 7월에 바뀝니다.' },
       { type: 'radio', name: 'type', label: '가입자 유형', choices: [['workplace', '사업장가입자', true], ['regional', '지역가입자'], ['voluntary', '임의(계속)가입자']] },
-      { type: 'amount', name: 'income', label: '월 소득 (신고 소득월액)', required: true, placeholder: '예: 3000000', hint: '사업장가입자는 비과세를 뺀 월 보수입니다.' },
+      { type: 'amount', name: 'income', label: '월 소득 (신고 소득월액)', required: true, placeholder: '예: 3000000', hint: '사업장가입자는 비과세를 뺀 월 보수입니다.', helper: 'monthlyPay', fill: 'taxable', showWhen: 'type=workplace' },
     ],
     howto: [
       '기준소득월액은 월 소득에서 천원 미만을 버린 금액이며, 그 달의 상·하한 안으로 맞춥니다.',
@@ -707,7 +707,7 @@ export const PAGES_SPEC = [
     basisYear: '금융위원회 DSR·스트레스 DSR 3단계 (참고 가정값 입력)',
     fields: [
       { type: 'amount', name: 'income', label: '연소득 (세전)', required: true, placeholder: '예: 60000000' },
-      { type: 'amount', name: 'existing', label: '기존 대출 연간 원리금 상환액', value: '0', hint: '신용대출·자동차할부 등 모든 대출의 1년 원리금 합계입니다.' },
+      { type: 'amount', name: 'existing', label: '기존 대출 연간 원리금 상환액', value: '0', hint: '신용대출·자동차할부 등 모든 대출의 1년 원리금 합계입니다.', helper: 'loanAnnual' },
       { type: 'decimal', name: 'rate', label: '신규 대출 금리', unit: '%', required: true, placeholder: '예: 4.2' },
       { type: 'decimal', name: 'stress', label: '스트레스 금리', unit: '%p', value: '1.5', hint: '3단계 기본 1.5%p (참고 가정값). 대출 유형·지역별로 다릅니다.' },
       { type: 'count', name: 'years', label: '만기', unit: '년', value: '30' },

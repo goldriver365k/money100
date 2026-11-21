@@ -477,7 +477,7 @@ const CASES = [
     await page.focus('#home-link');
     await tabTo('salary');
     await page.keyboard.type('3100000');
-    await page.keyboard.press('Tab');
+    await tabTo('year'); // 세전 월급 다음 Tab 은 '자동 계산' 버튼, 그다음이 연도
     await page.keyboard.type('2026');
     await page.keyboard.press('Tab');
     await page.keyboard.press('Home');

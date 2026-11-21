@@ -85,9 +85,46 @@
       <h2 id="form-title" class="panel-title"><span class="step">1</span> 입력</h2>
       <div class="field">
         <label for="hourly"><span class="label-text">시급 (통상시급)</span> <span class="req">필수</span> <span class="unit">(원)</span></label>
-        <input id="hourly" name="hourly" type="text" inputmode="numeric" autocomplete="off" spellcheck="false" placeholder="예: 10320" data-amount aria-describedby="hourly-error hourly-preview">
+        <div class="input-with-action">
+          <input id="hourly" name="hourly" type="text" inputmode="numeric" autocomplete="off" spellcheck="false" placeholder="예: 10320" data-amount aria-describedby="hourly-error hourly-preview">
+          <button type="button" class="btn btn-ghost helper-toggle" id="hourly-helper-toggle" aria-expanded="false" aria-controls="hourly-helper">자동 계산</button>
+        </div>
         <p class="error" id="hourly-error" hidden></p>
         <p class="preview" id="hourly-preview"></p>
+        <div class="pay-helper" id="hourly-helper" data-helper="ordinary" data-target="hourly" data-output="hourly" hidden>
+          <p class="pay-helper-title">통상시급 자동 계산</p>
+          <p class="hint">월 통상임금 = 기본급 + 매달 고정으로 받는 수당 + 정기 상여금 ÷ 12. 통상시급 = 월 통상임금 ÷ 월 기준시간(주 40시간이면 209시간).</p>
+          <div class="field helper-field">
+            <label for="hourly__base">기본급 (월) <span class="unit">(원)</span></label>
+            <input id="hourly__base" name="hourly__base" type="text" inputmode="numeric" autocomplete="off" spellcheck="false" data-amount aria-describedby="hourly__base-error hourly__base-preview">
+            <p class="error" id="hourly__base-error" hidden></p>
+            <p class="preview" id="hourly__base-preview"></p>
+          </div>
+          <div class="field helper-field">
+            <label for="hourly__fixed">매달 고정으로 받는 수당 (월) <span class="unit">(원)</span></label>
+            <input id="hourly__fixed" name="hourly__fixed" type="text" inputmode="numeric" autocomplete="off" spellcheck="false" data-amount aria-describedby="hourly__fixed-error hourly__fixed-preview hourly__fixed-hint">
+            <p class="error" id="hourly__fixed-error" hidden></p>
+            <p class="preview" id="hourly__fixed-preview"></p>
+            <p class="hint" id="hourly__fixed-hint">직책·자격·식대 등 매달 정해진 금액. 연장·야간수당과 실적 성과급은 빼세요.</p>
+          </div>
+          <div class="field helper-field">
+            <label for="hourly__bonus">정기 상여금 (연간) <span class="unit">(원)</span></label>
+            <input id="hourly__bonus" name="hourly__bonus" type="text" inputmode="numeric" autocomplete="off" spellcheck="false" data-amount aria-describedby="hourly__bonus-error hourly__bonus-preview hourly__bonus-hint">
+            <p class="error" id="hourly__bonus-error" hidden></p>
+            <p class="preview" id="hourly__bonus-preview"></p>
+            <p class="hint" id="hourly__bonus-hint">정해진 시기에 정해진 금액으로 주는 상여금 (÷ 12 해서 포함).</p>
+          </div>
+          <div class="field helper-field">
+            <label for="hourly__weekly">1주 소정근로시간 <span class="unit">(시간)</span></label>
+            <input id="hourly__weekly" name="hourly__weekly" type="text" inputmode="decimal" autocomplete="off" spellcheck="false" value="40" aria-describedby="hourly__weekly-error">
+            <p class="error" id="hourly__weekly-error" hidden></p>
+          </div>
+          <div class="pay-helper-result" id="hourly-helper-result" aria-live="polite"></div>
+          <div class="pay-helper-actions">
+            <button type="button" class="btn btn-primary" id="hourly-helper-apply">시급에 넣기</button>
+            <button type="button" class="btn btn-ghost" id="hourly-helper-close">닫기</button>
+          </div>
+        </div>
       </div>
 
       <div class="field">

@@ -112,9 +112,22 @@
 
       <div class="field">
         <label for="pension"><span class="label-text">국민연금 보험료 (근로자 부담, 연간)</span> <span class="opt">선택</span> <span class="unit">(원)</span></label>
-        <input id="pension" name="pension" type="text" inputmode="numeric" autocomplete="off" spellcheck="false" value="0" data-amount aria-describedby="pension-error pension-preview">
+        <div class="input-with-action">
+          <input id="pension" name="pension" type="text" inputmode="numeric" autocomplete="off" spellcheck="false" value="0" data-amount aria-describedby="pension-error pension-preview">
+          <button type="button" class="btn btn-ghost helper-toggle" id="pension-helper-toggle" aria-expanded="false" aria-controls="pension-helper">자동 계산</button>
+        </div>
         <p class="error" id="pension-error" hidden></p>
         <p class="preview" id="pension-preview"></p>
+        <div class="pay-helper" id="pension-helper" data-helper="insurance" data-target="pension" data-source="totalPay" data-year="year" data-fill-pension="pension" data-fill-other="insurance" hidden>
+          <p class="pay-helper-title">연간 4대보험료 자동 계산</p>
+          <p class="hint">위에 입력한 총급여를 12달 같은 금액으로 받았다고 보고, 그해 요율로 근로자 부담 국민연금·건강·장기요양·고용보험을 계산합니다 (국민연금과 나머지 보험료를 각 칸에 넣습니다).</p>
+          <p class="error" id="pension__source-error" hidden></p>
+          <div class="pay-helper-result" id="pension-helper-result" aria-live="polite"></div>
+          <div class="pay-helper-actions">
+            <button type="button" class="btn btn-primary" id="pension-helper-apply">보험료 칸에 넣기</button>
+            <button type="button" class="btn btn-ghost" id="pension-helper-close">닫기</button>
+          </div>
+        </div>
       </div>
 
       <div class="field">

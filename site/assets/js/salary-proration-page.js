@@ -19,6 +19,7 @@ import {
   toIsoDate,
 } from './proration.js';
 import { showErrorSummary, hideErrorSummary } from './error-summary.js';
+import { setupHelpers } from './helpers-ui.js';
 
 const $ = (id) => document.getElementById(id);
 
@@ -356,6 +357,7 @@ function hasUserInput() {
 /** 모든 입력을 처음 상태(이번 달, 중도 입사, 월~금 근무일)로 되돌린다. 접이식 영역의 열림 상태는 그대로 둔다. */
 function resetAll() {
   if (hasUserInput() && !window.confirm('입력한 내용과 결과를 모두 지우고 처음 상태로 되돌릴까요?')) return;
+  form.querySelectorAll('.pay-helper').forEach((panel) => { panel.hidden = true; $(`${panel.dataset.target}-helper-toggle`)?.setAttribute('aria-expanded', 'false'); panel.querySelectorAll('input[type="text"]').forEach((i) => { i.value = ''; }); });
   const now = new Date();
   salaryInput.value = '';
   updateSalaryPreview();
@@ -401,3 +403,4 @@ function init() {
 }
 
 init();
+setupHelpers(form, resultStatus);

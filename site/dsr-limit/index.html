@@ -92,10 +92,47 @@
 
       <div class="field">
         <label for="existing"><span class="label-text">기존 대출 연간 원리금 상환액</span> <span class="opt">선택</span> <span class="unit">(원)</span></label>
-        <input id="existing" name="existing" type="text" inputmode="numeric" autocomplete="off" spellcheck="false" value="0" data-amount aria-describedby="existing-error existing-preview existing-hint">
+        <div class="input-with-action">
+          <input id="existing" name="existing" type="text" inputmode="numeric" autocomplete="off" spellcheck="false" value="0" data-amount aria-describedby="existing-error existing-preview existing-hint">
+          <button type="button" class="btn btn-ghost helper-toggle" id="existing-helper-toggle" aria-expanded="false" aria-controls="existing-helper">자동 계산</button>
+        </div>
         <p class="error" id="existing-error" hidden></p>
         <p class="preview" id="existing-preview"></p>
         <p class="hint" id="existing-hint">신용대출·자동차할부 등 모든 대출의 1년 원리금 합계입니다.</p>
+        <div class="pay-helper" id="existing-helper" data-helper="loanAnnual" data-target="existing" hidden>
+          <p class="pay-helper-title">기존 대출 연간 원리금 자동 계산</p>
+          <p class="hint">대출 하나씩 계산합니다. 대출이 여러 개면 하나를 넣은 뒤 다음 대출은 "기존 금액에 더하기"로 합산하세요.</p>
+          <div class="field helper-field">
+            <label for="existing__balance">대출 잔액 <span class="unit">(원)</span></label>
+            <input id="existing__balance" name="existing__balance" type="text" inputmode="numeric" autocomplete="off" spellcheck="false" data-amount aria-describedby="existing__balance-error existing__balance-preview">
+            <p class="error" id="existing__balance-error" hidden></p>
+            <p class="preview" id="existing__balance-preview"></p>
+          </div>
+          <div class="field helper-field">
+            <label for="existing__rate">연 이자율 <span class="unit">(%)</span></label>
+            <input id="existing__rate" name="existing__rate" type="text" inputmode="decimal" autocomplete="off" spellcheck="false" aria-describedby="existing__rate-error">
+            <p class="error" id="existing__rate-error" hidden></p>
+          </div>
+          <div class="field helper-field">
+            <label for="existing__months">남은 기간 <span class="unit">(개월)</span></label>
+            <input id="existing__months" name="existing__months" type="text" inputmode="numeric" autocomplete="off" spellcheck="false" aria-describedby="existing__months-error">
+            <p class="error" id="existing__months-error" hidden></p>
+          </div>
+          <fieldset class="field helper-field">
+            <legend>상환 방식</legend>
+            <div class="choices">
+              <label class="choice"><input type="radio" name="existing__method" value="equalPayment" checked> <span>원리금균등</span></label>
+              <label class="choice"><input type="radio" name="existing__method" value="equalPrincipal"> <span>원금균등</span></label>
+            </div>
+            <p class="error" id="existing__method-error" hidden></p>
+          </fieldset>
+          <div class="pay-helper-result" id="existing-helper-result" aria-live="polite"></div>
+          <div class="pay-helper-actions">
+            <button type="button" class="btn btn-primary" id="existing-helper-apply">넣기 (바꾸기)</button>
+            <button type="button" class="btn btn-ghost" id="existing-helper-add">기존 금액에 더하기</button>
+            <button type="button" class="btn btn-ghost" id="existing-helper-close">닫기</button>
+          </div>
+        </div>
       </div>
 
       <div class="field">

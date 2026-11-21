@@ -104,10 +104,58 @@
 
       <div class="field">
         <label for="wages3m"><span class="label-text">이직 전 3개월 임금총액 (세전)</span> <span class="req">필수</span> <span class="unit">(원)</span></label>
-        <input id="wages3m" name="wages3m" type="text" inputmode="numeric" autocomplete="off" spellcheck="false" placeholder="예: 9000000" data-amount aria-describedby="wages3m-error wages3m-preview wages3m-hint">
+        <div class="input-with-action">
+          <input id="wages3m" name="wages3m" type="text" inputmode="numeric" autocomplete="off" spellcheck="false" placeholder="예: 9000000" data-amount aria-describedby="wages3m-error wages3m-preview wages3m-hint">
+          <button type="button" class="btn btn-ghost helper-toggle" id="wages3m-helper-toggle" aria-expanded="false" aria-controls="wages3m-helper">자동 계산</button>
+        </div>
         <p class="error" id="wages3m-error" hidden></p>
         <p class="preview" id="wages3m-preview"></p>
         <p class="hint" id="wages3m-hint">마지막 근무일 이전 3개월 동안 받은 세전 임금 합계입니다.</p>
+        <div class="pay-helper" id="wages3m-helper" data-helper="wages3m" data-target="wages3m" hidden>
+          <p class="pay-helper-title">3개월 임금총액 자동 계산</p>
+          <fieldset class="field helper-field">
+            <legend>계산 방식</legend>
+            <div class="choices">
+              <label class="choice"><input type="radio" name="wages3m__mode" value="same" checked> <span>월급 × 3 (매달 같음)</span></label>
+              <label class="choice"><input type="radio" name="wages3m__mode" value="each"> <span>3개월 각각 입력</span></label>
+            </div>
+            <p class="error" id="wages3m__mode-error" hidden></p>
+          </fieldset>
+          <div data-mp-group="same">
+          <div class="field helper-field">
+            <label for="wages3m__monthly">월 임금 (세전, 수당 포함) <span class="unit">(원)</span></label>
+            <input id="wages3m__monthly" name="wages3m__monthly" type="text" inputmode="numeric" autocomplete="off" spellcheck="false" data-amount aria-describedby="wages3m__monthly-error wages3m__monthly-preview wages3m__monthly-hint">
+            <p class="error" id="wages3m__monthly-error" hidden></p>
+            <p class="preview" id="wages3m__monthly-preview"></p>
+            <p class="hint" id="wages3m__monthly-hint">기본급과 매달 받은 수당·식대를 모두 더한 금액입니다.</p>
+          </div>
+          </div>
+          <div data-mp-group="each" hidden>
+          <div class="field helper-field">
+            <label for="wages3m__m1">1개월 전 임금 <span class="unit">(원)</span></label>
+            <input id="wages3m__m1" name="wages3m__m1" type="text" inputmode="numeric" autocomplete="off" spellcheck="false" data-amount aria-describedby="wages3m__m1-error wages3m__m1-preview">
+            <p class="error" id="wages3m__m1-error" hidden></p>
+            <p class="preview" id="wages3m__m1-preview"></p>
+          </div>
+          <div class="field helper-field">
+            <label for="wages3m__m2">2개월 전 임금 <span class="unit">(원)</span></label>
+            <input id="wages3m__m2" name="wages3m__m2" type="text" inputmode="numeric" autocomplete="off" spellcheck="false" data-amount aria-describedby="wages3m__m2-error wages3m__m2-preview">
+            <p class="error" id="wages3m__m2-error" hidden></p>
+            <p class="preview" id="wages3m__m2-preview"></p>
+          </div>
+          <div class="field helper-field">
+            <label for="wages3m__m3">3개월 전 임금 <span class="unit">(원)</span></label>
+            <input id="wages3m__m3" name="wages3m__m3" type="text" inputmode="numeric" autocomplete="off" spellcheck="false" data-amount aria-describedby="wages3m__m3-error wages3m__m3-preview">
+            <p class="error" id="wages3m__m3-error" hidden></p>
+            <p class="preview" id="wages3m__m3-preview"></p>
+          </div>
+          </div>
+          <div class="pay-helper-result" id="wages3m-helper-result" aria-live="polite"></div>
+          <div class="pay-helper-actions">
+            <button type="button" class="btn btn-primary" id="wages3m-helper-apply">이직 전 3개월 임금총액에 넣기</button>
+            <button type="button" class="btn btn-ghost" id="wages3m-helper-close">닫기</button>
+          </div>
+        </div>
       </div>
 
       <div class="field">

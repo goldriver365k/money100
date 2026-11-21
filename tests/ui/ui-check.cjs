@@ -133,7 +133,7 @@ const foldOpen = (p) => p.evaluate(() => document.querySelector('details.basis-f
       const p = await ctx.newPage();
       // 운영 주소 점검 시 일시적 네트워크 지연(30초 초과)으로 전체 점검이 끊기지 않도록 페이지 이동만 1회 재시도 (판정 기준 동일)
       const rawGoto = p.goto.bind(p);
-      p.goto = async (u, o) => { try { return await rawGoto(u, o); } catch (e) { if (!/Timeout/.test(String(e))) throw e; return rawGoto(u, o); } };
+      p.goto = async (u, o) => { for (let i = 0; ; i += 1) { try { return await rawGoto(u, { timeout: 60000, ...o }); } catch (e) { if (!/Timeout/.test(String(e)) || i >= 2) throw e; } } };
       const errors = [];
       p.on('pageerror', (e) => errors.push(String(e)));
 

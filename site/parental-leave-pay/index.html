@@ -92,10 +92,42 @@
 
       <div class="field">
         <label for="wage"><span class="label-text">월 통상임금</span> <span class="req">필수</span> <span class="unit">(원)</span></label>
-        <input id="wage" name="wage" type="text" inputmode="numeric" autocomplete="off" spellcheck="false" placeholder="예: 3500000" data-amount aria-describedby="wage-error wage-preview wage-hint">
+        <div class="input-with-action">
+          <input id="wage" name="wage" type="text" inputmode="numeric" autocomplete="off" spellcheck="false" placeholder="예: 3500000" data-amount aria-describedby="wage-error wage-preview wage-hint">
+          <button type="button" class="btn btn-ghost helper-toggle" id="wage-helper-toggle" aria-expanded="false" aria-controls="wage-helper">자동 계산</button>
+        </div>
         <p class="error" id="wage-error" hidden></p>
         <p class="preview" id="wage-preview"></p>
         <p class="hint" id="wage-hint">기본급과 고정수당 등 통상임금입니다 (성과급·연장수당 제외).</p>
+        <div class="pay-helper" id="wage-helper" data-helper="ordinary" data-target="wage" data-output="monthly" hidden>
+          <p class="pay-helper-title">월 통상임금 자동 계산</p>
+          <p class="hint">월 통상임금 = 기본급 + 매달 고정으로 받는 수당 + 정기 상여금 ÷ 12.</p>
+          <div class="field helper-field">
+            <label for="wage__base">기본급 (월) <span class="unit">(원)</span></label>
+            <input id="wage__base" name="wage__base" type="text" inputmode="numeric" autocomplete="off" spellcheck="false" data-amount aria-describedby="wage__base-error wage__base-preview">
+            <p class="error" id="wage__base-error" hidden></p>
+            <p class="preview" id="wage__base-preview"></p>
+          </div>
+          <div class="field helper-field">
+            <label for="wage__fixed">매달 고정으로 받는 수당 (월) <span class="unit">(원)</span></label>
+            <input id="wage__fixed" name="wage__fixed" type="text" inputmode="numeric" autocomplete="off" spellcheck="false" data-amount aria-describedby="wage__fixed-error wage__fixed-preview wage__fixed-hint">
+            <p class="error" id="wage__fixed-error" hidden></p>
+            <p class="preview" id="wage__fixed-preview"></p>
+            <p class="hint" id="wage__fixed-hint">직책·자격·식대 등 매달 정해진 금액. 연장·야간수당과 실적 성과급은 빼세요.</p>
+          </div>
+          <div class="field helper-field">
+            <label for="wage__bonus">정기 상여금 (연간) <span class="unit">(원)</span></label>
+            <input id="wage__bonus" name="wage__bonus" type="text" inputmode="numeric" autocomplete="off" spellcheck="false" data-amount aria-describedby="wage__bonus-error wage__bonus-preview wage__bonus-hint">
+            <p class="error" id="wage__bonus-error" hidden></p>
+            <p class="preview" id="wage__bonus-preview"></p>
+            <p class="hint" id="wage__bonus-hint">정해진 시기에 정해진 금액으로 주는 상여금 (÷ 12 해서 포함).</p>
+          </div>
+          <div class="pay-helper-result" id="wage-helper-result" aria-live="polite"></div>
+          <div class="pay-helper-actions">
+            <button type="button" class="btn btn-primary" id="wage-helper-apply">월 통상임금에 넣기</button>
+            <button type="button" class="btn btn-ghost" id="wage-helper-close">닫기</button>
+          </div>
+        </div>
       </div>
 
       <div class="field">

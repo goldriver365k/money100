@@ -99,10 +99,58 @@
 
       <div class="field">
         <label for="wages3m"><span class="label-text">퇴직 전 3개월 임금총액 (세전)</span> <span class="req">필수</span> <span class="unit">(원)</span></label>
-        <input id="wages3m" name="wages3m" type="text" inputmode="numeric" autocomplete="off" spellcheck="false" placeholder="예: 9000000" data-amount aria-describedby="wages3m-error wages3m-preview wages3m-hint">
+        <div class="input-with-action">
+          <input id="wages3m" name="wages3m" type="text" inputmode="numeric" autocomplete="off" spellcheck="false" placeholder="예: 9000000" data-amount aria-describedby="wages3m-error wages3m-preview wages3m-hint">
+          <button type="button" class="btn btn-ghost helper-toggle" id="wages3m-helper-toggle" aria-expanded="false" aria-controls="wages3m-helper">자동 계산</button>
+        </div>
         <p class="error" id="wages3m-error" hidden></p>
         <p class="preview" id="wages3m-preview"></p>
         <p class="hint" id="wages3m-hint">퇴직일 전 3개월 동안 받은 기본급·수당 등 세전 임금의 합계입니다. 상여금·연차수당은 아래에 따로 넣으세요.</p>
+        <div class="pay-helper" id="wages3m-helper" data-helper="wages3m" data-target="wages3m" hidden>
+          <p class="pay-helper-title">3개월 임금총액 자동 계산</p>
+          <fieldset class="field helper-field">
+            <legend>계산 방식</legend>
+            <div class="choices">
+              <label class="choice"><input type="radio" name="wages3m__mode" value="same" checked> <span>월급 × 3 (매달 같음)</span></label>
+              <label class="choice"><input type="radio" name="wages3m__mode" value="each"> <span>3개월 각각 입력</span></label>
+            </div>
+            <p class="error" id="wages3m__mode-error" hidden></p>
+          </fieldset>
+          <div data-mp-group="same">
+          <div class="field helper-field">
+            <label for="wages3m__monthly">월 임금 (세전, 수당 포함) <span class="unit">(원)</span></label>
+            <input id="wages3m__monthly" name="wages3m__monthly" type="text" inputmode="numeric" autocomplete="off" spellcheck="false" data-amount aria-describedby="wages3m__monthly-error wages3m__monthly-preview wages3m__monthly-hint">
+            <p class="error" id="wages3m__monthly-error" hidden></p>
+            <p class="preview" id="wages3m__monthly-preview"></p>
+            <p class="hint" id="wages3m__monthly-hint">기본급과 매달 받은 수당·식대를 모두 더한 금액입니다.</p>
+          </div>
+          </div>
+          <div data-mp-group="each" hidden>
+          <div class="field helper-field">
+            <label for="wages3m__m1">1개월 전 임금 <span class="unit">(원)</span></label>
+            <input id="wages3m__m1" name="wages3m__m1" type="text" inputmode="numeric" autocomplete="off" spellcheck="false" data-amount aria-describedby="wages3m__m1-error wages3m__m1-preview">
+            <p class="error" id="wages3m__m1-error" hidden></p>
+            <p class="preview" id="wages3m__m1-preview"></p>
+          </div>
+          <div class="field helper-field">
+            <label for="wages3m__m2">2개월 전 임금 <span class="unit">(원)</span></label>
+            <input id="wages3m__m2" name="wages3m__m2" type="text" inputmode="numeric" autocomplete="off" spellcheck="false" data-amount aria-describedby="wages3m__m2-error wages3m__m2-preview">
+            <p class="error" id="wages3m__m2-error" hidden></p>
+            <p class="preview" id="wages3m__m2-preview"></p>
+          </div>
+          <div class="field helper-field">
+            <label for="wages3m__m3">3개월 전 임금 <span class="unit">(원)</span></label>
+            <input id="wages3m__m3" name="wages3m__m3" type="text" inputmode="numeric" autocomplete="off" spellcheck="false" data-amount aria-describedby="wages3m__m3-error wages3m__m3-preview">
+            <p class="error" id="wages3m__m3-error" hidden></p>
+            <p class="preview" id="wages3m__m3-preview"></p>
+          </div>
+          </div>
+          <div class="pay-helper-result" id="wages3m-helper-result" aria-live="polite"></div>
+          <div class="pay-helper-actions">
+            <button type="button" class="btn btn-primary" id="wages3m-helper-apply">퇴직 전 3개월 임금총액에 넣기</button>
+            <button type="button" class="btn btn-ghost" id="wages3m-helper-close">닫기</button>
+          </div>
+        </div>
       </div>
 
       <div class="field">
@@ -123,10 +171,52 @@
 
       <div class="field">
         <label for="ordinaryDaily"><span class="label-text">1일 통상임금 (선택)</span> <span class="opt">선택</span> <span class="unit">(원)</span></label>
-        <input id="ordinaryDaily" name="ordinaryDaily" type="text" inputmode="numeric" autocomplete="off" spellcheck="false" placeholder="예: 100000" data-amount aria-describedby="ordinaryDaily-error ordinaryDaily-preview ordinaryDaily-hint">
+        <div class="input-with-action">
+          <input id="ordinaryDaily" name="ordinaryDaily" type="text" inputmode="numeric" autocomplete="off" spellcheck="false" placeholder="예: 100000" data-amount aria-describedby="ordinaryDaily-error ordinaryDaily-preview ordinaryDaily-hint">
+          <button type="button" class="btn btn-ghost helper-toggle" id="ordinaryDaily-helper-toggle" aria-expanded="false" aria-controls="ordinaryDaily-helper">자동 계산</button>
+        </div>
         <p class="error" id="ordinaryDaily-error" hidden></p>
         <p class="preview" id="ordinaryDaily-preview"></p>
         <p class="hint" id="ordinaryDaily-hint">입력하면 평균임금과 비교해 더 큰 금액을 적용합니다.</p>
+        <div class="pay-helper" id="ordinaryDaily-helper" data-helper="ordinary" data-target="ordinaryDaily" data-output="daily" hidden>
+          <p class="pay-helper-title">1일 통상임금 자동 계산</p>
+          <p class="hint">월 통상임금 = 기본급 + 매달 고정으로 받는 수당 + 정기 상여금 ÷ 12. 통상시급 = 월 통상임금 ÷ 월 기준시간(주 40시간이면 209시간), 1일 통상임금 = 통상시급 × 1일 소정근로시간.</p>
+          <div class="field helper-field">
+            <label for="ordinaryDaily__base">기본급 (월) <span class="unit">(원)</span></label>
+            <input id="ordinaryDaily__base" name="ordinaryDaily__base" type="text" inputmode="numeric" autocomplete="off" spellcheck="false" data-amount aria-describedby="ordinaryDaily__base-error ordinaryDaily__base-preview">
+            <p class="error" id="ordinaryDaily__base-error" hidden></p>
+            <p class="preview" id="ordinaryDaily__base-preview"></p>
+          </div>
+          <div class="field helper-field">
+            <label for="ordinaryDaily__fixed">매달 고정으로 받는 수당 (월) <span class="unit">(원)</span></label>
+            <input id="ordinaryDaily__fixed" name="ordinaryDaily__fixed" type="text" inputmode="numeric" autocomplete="off" spellcheck="false" data-amount aria-describedby="ordinaryDaily__fixed-error ordinaryDaily__fixed-preview ordinaryDaily__fixed-hint">
+            <p class="error" id="ordinaryDaily__fixed-error" hidden></p>
+            <p class="preview" id="ordinaryDaily__fixed-preview"></p>
+            <p class="hint" id="ordinaryDaily__fixed-hint">직책·자격·식대 등 매달 정해진 금액. 연장·야간수당과 실적 성과급은 빼세요.</p>
+          </div>
+          <div class="field helper-field">
+            <label for="ordinaryDaily__bonus">정기 상여금 (연간) <span class="unit">(원)</span></label>
+            <input id="ordinaryDaily__bonus" name="ordinaryDaily__bonus" type="text" inputmode="numeric" autocomplete="off" spellcheck="false" data-amount aria-describedby="ordinaryDaily__bonus-error ordinaryDaily__bonus-preview ordinaryDaily__bonus-hint">
+            <p class="error" id="ordinaryDaily__bonus-error" hidden></p>
+            <p class="preview" id="ordinaryDaily__bonus-preview"></p>
+            <p class="hint" id="ordinaryDaily__bonus-hint">정해진 시기에 정해진 금액으로 주는 상여금 (÷ 12 해서 포함).</p>
+          </div>
+          <div class="field helper-field">
+            <label for="ordinaryDaily__weekly">1주 소정근로시간 <span class="unit">(시간)</span></label>
+            <input id="ordinaryDaily__weekly" name="ordinaryDaily__weekly" type="text" inputmode="decimal" autocomplete="off" spellcheck="false" value="40" aria-describedby="ordinaryDaily__weekly-error">
+            <p class="error" id="ordinaryDaily__weekly-error" hidden></p>
+          </div>
+          <div class="field helper-field">
+            <label for="ordinaryDaily__daily">1일 소정근로시간 <span class="unit">(시간)</span></label>
+            <input id="ordinaryDaily__daily" name="ordinaryDaily__daily" type="text" inputmode="decimal" autocomplete="off" spellcheck="false" value="8" aria-describedby="ordinaryDaily__daily-error">
+            <p class="error" id="ordinaryDaily__daily-error" hidden></p>
+          </div>
+          <div class="pay-helper-result" id="ordinaryDaily-helper-result" aria-live="polite"></div>
+          <div class="pay-helper-actions">
+            <button type="button" class="btn btn-primary" id="ordinaryDaily-helper-apply">1일 통상임금에 넣기</button>
+            <button type="button" class="btn btn-ghost" id="ordinaryDaily-helper-close">닫기</button>
+          </div>
+        </div>
       </div>
 
       <fieldset class="field">

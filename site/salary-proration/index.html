@@ -75,11 +75,104 @@
 
       <div class="field">
         <label for="salary">일할 대상 세전 월급 <span class="req">필수</span> <span class="unit">(원)</span></label>
-        <input id="salary" name="salary" type="text" inputmode="numeric" autocomplete="off" spellcheck="false"
-               placeholder="예: 3100000" aria-describedby="salary-error salary-preview salary-hint">
+        <div class="input-with-action">
+          <input id="salary" name="salary" type="text" inputmode="numeric" autocomplete="off" spellcheck="false"
+                 placeholder="예: 3100000" aria-describedby="salary-error salary-preview salary-hint">
+          <button type="button" class="btn btn-ghost helper-toggle" id="salary-helper-toggle" aria-expanded="false" aria-controls="salary-helper">자동 계산</button>
+        </div>
         <p class="error" id="salary-error" hidden></p>
         <p class="preview" id="salary-preview"></p>
         <p class="hint" id="salary-hint">회사에서 일할 계산에 포함하는 세전 월정급 항목(기본급 등)의 합을 원 단위로 입력하세요.</p>
+        <!-- helper:salary:start -->
+        <div class="pay-helper" id="salary-helper" data-helper="monthlyPay" data-target="salary" data-nontaxable="" data-fill="gross" hidden>
+          <p class="pay-helper-title">세전 월급 자동 계산</p>
+          <p class="hint">계산된 세전 월급(비과세 수당 포함)을 넣습니다.</p>
+          <fieldset class="field helper-field">
+            <legend>계산 방식</legend>
+            <div class="choices">
+              <label class="choice"><input type="radio" name="mpMode" value="annual" checked> <span>연봉 ÷ 12</span></label>
+              <label class="choice"><input type="radio" name="mpMode" value="parts"> <span>기본급 + 수당</span></label>
+            </div>
+          </fieldset>
+          <div data-mp-group="annual">
+          <div class="field helper-field">
+            <label for="mpAnnual">연봉 (세전, 연간 총액) <span class="unit">(원)</span></label>
+            <input id="mpAnnual" name="mpAnnual" type="text" inputmode="numeric" autocomplete="off" spellcheck="false" data-amount aria-describedby="mpAnnual-error mpAnnual-preview">
+            <p class="error" id="mpAnnual-error" hidden></p>
+            <p class="preview" id="mpAnnual-preview"></p>
+          </div>
+          <div class="field helper-field">
+            <label for="mpIncludedBonus">연봉에 포함된 상여금 (연간) <span class="unit">(원)</span></label>
+            <input id="mpIncludedBonus" name="mpIncludedBonus" type="text" inputmode="numeric" autocomplete="off" spellcheck="false" data-amount aria-describedby="mpIncludedBonus-error mpIncludedBonus-preview mpIncludedBonus-hint">
+            <p class="error" id="mpIncludedBonus-error" hidden></p>
+            <p class="preview" id="mpIncludedBonus-preview"></p>
+            <p class="hint" id="mpIncludedBonus-hint">계약 연봉 안에 들어 있는 상여금입니다. 없으면 비워 두세요.</p>
+          </div>
+          <fieldset class="field helper-field">
+            <legend>연봉에 포함된 상여금은 어떻게 받나요?</legend>
+            <div class="choices">
+              <label class="choice"><input type="radio" name="mpIncludedBonusPaid" value="monthly" checked> <span>매달 나눠 받음 (월급에 포함)</span></label>
+              <label class="choice"><input type="radio" name="mpIncludedBonusPaid" value="separate"> <span>상여 달에 따로 받음 (월급에서 제외)</span></label>
+            </div>
+          </fieldset>
+          <div class="field helper-field">
+            <label for="mpExtraBonus">연봉과 별도로 받는 상여금 (연간) <span class="unit">(원)</span></label>
+            <input id="mpExtraBonus" name="mpExtraBonus" type="text" inputmode="numeric" autocomplete="off" spellcheck="false" data-amount aria-describedby="mpExtraBonus-error mpExtraBonus-preview mpExtraBonus-hint">
+            <p class="error" id="mpExtraBonus-error" hidden></p>
+            <p class="preview" id="mpExtraBonus-preview"></p>
+            <p class="hint" id="mpExtraBonus-hint">성과급 등 연봉 외로 받는 금액입니다.</p>
+          </div>
+          <fieldset class="field helper-field">
+            <legend>별도 상여금을 월 평균에 넣을까요?</legend>
+            <div class="choices">
+              <label class="choice"><input type="radio" name="mpExtraBonusInAverage" value="no" checked> <span>아니요 (월급에서 제외)</span></label>
+              <label class="choice"><input type="radio" name="mpExtraBonusInAverage" value="yes"> <span>예 (÷ 12 해서 포함)</span></label>
+            </div>
+          </fieldset>
+          <div class="field helper-field">
+            <label for="mpNonTaxableA">비과세 수당 (월) <span class="unit">(원)</span></label>
+            <input id="mpNonTaxableA" name="mpNonTaxableA" type="text" inputmode="numeric" autocomplete="off" spellcheck="false" data-amount aria-describedby="mpNonTaxableA-error mpNonTaxableA-preview mpNonTaxableA-hint">
+            <p class="error" id="mpNonTaxableA-error" hidden></p>
+            <p class="preview" id="mpNonTaxableA-preview"></p>
+            <p class="hint" id="mpNonTaxableA-hint">식대 등. 아래 비과세 금액 칸에도 자동으로 들어가 한 번만 차감됩니다.</p>
+          </div>
+          <fieldset class="field helper-field">
+            <legend>비과세 수당이 연봉에 포함되어 있나요?</legend>
+            <div class="choices">
+              <label class="choice"><input type="radio" name="mpNonTaxableIn" value="included" checked> <span>예 (연봉 안에 포함)</span></label>
+              <label class="choice"><input type="radio" name="mpNonTaxableIn" value="separate"> <span>아니요 (연봉과 별도로 받음)</span></label>
+            </div>
+          </fieldset>
+          </div>
+          <div data-mp-group="parts" hidden>
+          <div class="field helper-field">
+            <label for="mpBase">기본급 (월) <span class="unit">(원)</span></label>
+            <input id="mpBase" name="mpBase" type="text" inputmode="numeric" autocomplete="off" spellcheck="false" data-amount aria-describedby="mpBase-error mpBase-preview">
+            <p class="error" id="mpBase-error" hidden></p>
+            <p class="preview" id="mpBase-preview"></p>
+          </div>
+          <div class="field helper-field">
+            <label for="mpAllowance">과세 수당 합계 (월) <span class="unit">(원)</span></label>
+            <input id="mpAllowance" name="mpAllowance" type="text" inputmode="numeric" autocomplete="off" spellcheck="false" data-amount aria-describedby="mpAllowance-error mpAllowance-preview mpAllowance-hint">
+            <p class="error" id="mpAllowance-error" hidden></p>
+            <p class="preview" id="mpAllowance-preview"></p>
+            <p class="hint" id="mpAllowance-hint">직책·자격·연장근로 수당 등 세금이 붙는 수당입니다.</p>
+          </div>
+          <div class="field helper-field">
+            <label for="mpNonTaxableP">비과세 수당 (월) <span class="unit">(원)</span></label>
+            <input id="mpNonTaxableP" name="mpNonTaxableP" type="text" inputmode="numeric" autocomplete="off" spellcheck="false" data-amount aria-describedby="mpNonTaxableP-error mpNonTaxableP-preview mpNonTaxableP-hint">
+            <p class="error" id="mpNonTaxableP-error" hidden></p>
+            <p class="preview" id="mpNonTaxableP-preview"></p>
+            <p class="hint" id="mpNonTaxableP-hint">식대 등. 아래 비과세 금액 칸에도 자동으로 들어가 한 번만 차감됩니다.</p>
+          </div>
+          </div>
+          <div class="pay-helper-result" id="salary-helper-result" aria-live="polite"></div>
+          <div class="pay-helper-actions">
+            <button type="button" class="btn btn-primary" id="salary-helper-apply">세전 월급에 넣기</button>
+            <button type="button" class="btn btn-ghost" id="salary-helper-close">닫기</button>
+          </div>
+        </div>
+        <!-- helper:salary:end -->
       </div>
 
       <fieldset class="field">

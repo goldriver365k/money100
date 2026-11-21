@@ -114,9 +114,22 @@
 
       <div class="field">
         <label for="insurance"><span class="label-text">연금·건강·고용보험료 (근로소득 방식, 연간)</span> <span class="opt">선택</span> <span class="unit">(원)</span></label>
-        <input id="insurance" name="insurance" type="text" inputmode="numeric" autocomplete="off" spellcheck="false" value="0" data-amount aria-describedby="insurance-error insurance-preview">
+        <div class="input-with-action">
+          <input id="insurance" name="insurance" type="text" inputmode="numeric" autocomplete="off" spellcheck="false" value="0" data-amount aria-describedby="insurance-error insurance-preview">
+          <button type="button" class="btn btn-ghost helper-toggle" id="insurance-helper-toggle" aria-expanded="false" aria-controls="insurance-helper" data-show-when="mode=earned">자동 계산</button>
+        </div>
         <p class="error" id="insurance-error" hidden></p>
         <p class="preview" id="insurance-preview"></p>
+        <div class="pay-helper" id="insurance-helper" data-helper="insurance" data-target="insurance" data-source="amount" data-year="year" data-fill-total="insurance" hidden>
+          <p class="pay-helper-title">연간 4대보험료 자동 계산</p>
+          <p class="hint">위에 입력한 총급여를 12달 같은 금액으로 받았다고 보고, 그해 요율로 근로자 부담 국민연금·건강·장기요양·고용보험을 계산합니다 (합계를 넣습니다).</p>
+          <p class="error" id="insurance__source-error" hidden></p>
+          <div class="pay-helper-result" id="insurance-helper-result" aria-live="polite"></div>
+          <div class="pay-helper-actions">
+            <button type="button" class="btn btn-primary" id="insurance-helper-apply">보험료에 넣기</button>
+            <button type="button" class="btn btn-ghost" id="insurance-helper-close">닫기</button>
+          </div>
+        </div>
       </div>
 
       <div class="actions actions-sticky">

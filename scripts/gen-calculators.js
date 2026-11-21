@@ -45,6 +45,16 @@ function field(f) {
   }
   const modeAttrs = f.modeLabels ? ` data-mode-label ${Object.entries(f.modeLabels).map(([k, v]) => `data-label-${k.replace(/[A-Z]/g, (c) => `-${c.toLowerCase()}`)}="${esc(v)}"`).join(' ')}` : '';
   const preview = f.type === 'amount' ? `\n        <p class="preview" id="${id}-preview"></p>` : '';
+  if (f.helper && !['ordinaryHourly', 'monthlyPay'].includes(f.helper)) {
+    return `      <div class="field">
+        <label for="${id}"${modeAttrs}><span class="label-text">${esc(f.label)}</span>${req}${unit}</label>
+        <div class="input-with-action">
+          ${control}
+          <button type="button" class="btn btn-ghost helper-toggle" id="${id}-helper-toggle" aria-expanded="false" aria-controls="${id}-helper"${f.showWhen ? ` data-show-when="${f.showWhen}"` : ''}>자동 계산</button>
+        </div>${err}${preview}${hint}
+${genericHelper(f)}
+      </div>`;
+  }
   if (f.helper === 'ordinaryHourly') {
     return `      <div class="field">
         <label for="${id}"${modeAttrs}><span class="label-text">${esc(f.label)}</span>${req}${unit}</label>
@@ -60,15 +70,70 @@ ${ordinaryHourlyHelper(id, f.hoursField)}
         <label for="${id}"${modeAttrs}><span class="label-text">${esc(f.label)}</span>${req}${unit}</label>
         <div class="input-with-action">
           ${control}
-          <button type="button" class="btn btn-ghost helper-toggle" id="${id}-helper-toggle" aria-expanded="false" aria-controls="${id}-helper">자동 계산</button>
+          <button type="button" class="btn btn-ghost helper-toggle" id="${id}-helper-toggle" aria-expanded="false" aria-controls="${id}-helper"${f.showWhen ? ` data-show-when="${f.showWhen}"` : ''}>자동 계산</button>
         </div>${err}${preview}${hint}
-${monthlyPayHelper(id, f.nonTaxableField)}
+${monthlyPayHelper(id, f.nonTaxableField, f.fill)}
       </div>`;
   }
   return `      <div class="field">
         <label for="${id}"${modeAttrs}><span class="label-text">${esc(f.label)}</span>${req}${unit}</label>
         ${control}${err}${preview}${hint}
       </div>`;
+}
+
+/** 새 입력 도우미 패널 (helpers-ui.js 가 연결). 입력 이름은 '대상__항목' 으로 계산 입력과 구분된다. */
+function genericHelper(f) {
+  const t = f.name;
+  const n = (k) => `${t}__${k}`;
+  const box = (k, label, { unit = '원', hint = '', value = '', mode = 'numeric', amount = true } = {}) => `
+          <div class="field helper-field">
+            <label for="${n(k)}">${label} <span class="unit">(${unit})</span></label>
+            <input id="${n(k)}" name="${n(k)}" type="text" inputmode="${mode}" autocomplete="off" spellcheck="false"${amount ? ' data-amount' : ''}${value ? ` value="${value}"` : ''} aria-describedby="${n(k)}-error${amount ? ` ${n(k)}-preview` : ''}${hint ? ` ${n(k)}-hint` : ''}">
+            <p class="error" id="${n(k)}-error" hidden></p>${amount ? `\n            <p class="preview" id="${n(k)}-preview"></p>` : ''}${hint ? `\n            <p class="hint" id="${n(k)}-hint">${hint}</p>` : ''}
+          </div>`;
+  const radio = (k, legend, choices) => `
+          <fieldset class="field helper-field">
+            <legend>${legend}</legend>
+            <div class="choices">
+              ${choices.map(([v, l, on]) => `<label class="choice"><input type="radio" name="${n(k)}" value="${v}"${on ? ' checked' : ''}> <span>${l}</span></label>`).join('\n              ')}
+            </div>
+            <p class="error" id="${n(k)}-error" hidden></p>
+          </fieldset>`;
+  let title; let body; let data = ''; let applyLabel = `${esc(f.label.replace(/ \(.*\)$/, ''))}에 넣기`; let extra = '';
+  if (f.helper === 'ordinary') {
+    title = { daily: '1일 통상임금 자동 계산', monthly: '월 통상임금 자동 계산', hourly: '통상시급 자동 계산' }[f.output];
+    data = ` data-output="${f.output}"${f.hoursField ? ` data-hours="${f.hoursField}"` : ''}`;
+    body = `
+          <p class="hint">월 통상임금 = 기본급 + 매달 고정으로 받는 수당 + 정기 상여금 ÷ 12${f.output !== 'monthly' ? '. 통상시급 = 월 통상임금 ÷ 월 기준시간(주 40시간이면 209시간)' : ''}${f.output === 'daily' ? ', 1일 통상임금 = 통상시급 × 1일 소정근로시간' : ''}.</p>${box('base', '기본급 (월)')}${box('fixed', '매달 고정으로 받는 수당 (월)', { hint: '직책·자격·식대 등 매달 정해진 금액. 연장·야간수당과 실적 성과급은 빼세요.' })}${box('bonus', '정기 상여금 (연간)', { hint: '정해진 시기에 정해진 금액으로 주는 상여금 (÷ 12 해서 포함).' })}${f.output !== 'monthly' && !f.hoursField ? box('weekly', '1주 소정근로시간', { unit: '시간', value: '40', mode: 'decimal', amount: false }) : ''}${f.output !== 'monthly' && f.hoursField ? `\n          <p class="error" id="${n('weeklyNote')}-error" hidden></p>` : ''}${f.output === 'daily' ? box('daily', '1일 소정근로시간', { unit: '시간', value: '8', mode: 'decimal', amount: false }) : ''}`;
+  } else if (f.helper === 'wages3m') {
+    title = '3개월 임금총액 자동 계산';
+    body = `${radio('mode', '계산 방식', [['same', '월급 × 3 (매달 같음)', true], ['each', '3개월 각각 입력']])}
+          <div data-mp-group="same">${box('monthly', '월 임금 (세전, 수당 포함)', { hint: '기본급과 매달 받은 수당·식대를 모두 더한 금액입니다.' })}
+          </div>
+          <div data-mp-group="each" hidden>${box('m1', '1개월 전 임금')}${box('m2', '2개월 전 임금')}${box('m3', '3개월 전 임금')}
+          </div>`;
+  } else if (f.helper === 'insurance') {
+    title = '연간 4대보험료 자동 계산';
+    data = ` data-source="${f.source}" data-year="year"${f.fillTotal ? ` data-fill-total="${f.fillTotal}"` : ` data-fill-pension="${f.fillPension}" data-fill-other="${f.fillOther}"`}`;
+    applyLabel = f.fillTotal ? '보험료에 넣기' : '보험료 칸에 넣기';
+    body = `
+          <p class="hint">위에 입력한 총급여를 12달 같은 금액으로 받았다고 보고, 그해 요율로 근로자 부담 국민연금·건강·장기요양·고용보험을 계산합니다${f.fillTotal ? ' (합계를 넣습니다)' : ' (국민연금과 나머지 보험료를 각 칸에 넣습니다)'}.</p>
+          <p class="error" id="${n('source')}-error" hidden></p>`;
+  } else if (f.helper === 'loanAnnual') {
+    title = '기존 대출 연간 원리금 자동 계산';
+    applyLabel = '넣기 (바꾸기)';
+    extra = `\n            <button type="button" class="btn btn-ghost" id="${t}-helper-add">기존 금액에 더하기</button>`;
+    body = `
+          <p class="hint">대출 하나씩 계산합니다. 대출이 여러 개면 하나를 넣은 뒤 다음 대출은 "기존 금액에 더하기"로 합산하세요.</p>${box('balance', '대출 잔액')}${box('rate', '연 이자율', { unit: '%', mode: 'decimal', amount: false })}${box('months', '남은 기간', { unit: '개월', amount: false })}${radio('method', '상환 방식', [['equalPayment', '원리금균등', true], ['equalPrincipal', '원금균등']])}`;
+  }
+  return `        <div class="pay-helper" id="${t}-helper" data-helper="${f.helper}" data-target="${t}"${data} hidden>
+          <p class="pay-helper-title">${title}</p>${body}
+          <div class="pay-helper-result" id="${t}-helper-result" aria-live="polite"></div>
+          <div class="pay-helper-actions">
+            <button type="button" class="btn btn-primary" id="${t}-helper-apply">${applyLabel}</button>${extra}
+            <button type="button" class="btn btn-ghost" id="${t}-helper-close">닫기</button>
+          </div>
+        </div>`;
 }
 
 /** '통상시급' 자동 계산 패널 (calc/ordinary-hourly-helper.js). 1주 소정근로시간은 페이지의 기존 입력란(hoursField)을 쓴다. */
@@ -93,7 +158,7 @@ function ordinaryHourlyHelper(target, hoursField) {
 }
 
 /** '세전 월급' 자동 계산 패널 (calc-page.js 가 calc/monthly-pay-helper.js 와 연결). 입력값 이름은 mp… 로 계산 입력과 구분된다. */
-function monthlyPayHelper(target, nonTaxableField) {
+function monthlyPayHelper(target, nonTaxableField = '', fillMode = 'gross') {
   const amt = (name, label, hint = '', value = '') => `
           <div class="field helper-field">
             <label for="${name}">${label} <span class="unit">(원)</span></label>
@@ -108,8 +173,11 @@ function monthlyPayHelper(target, nonTaxableField) {
               ${choices.map(([v, l, on]) => `<label class="choice"><input type="radio" name="${name}" value="${v}"${on ? ' checked' : ''}> <span>${l}</span></label>`).join('\n              ')}
             </div>
           </fieldset>`;
-  return `        <div class="pay-helper" id="${target}-helper" data-helper="monthlyPay" data-target="${target}" data-nontaxable="${nonTaxableField}" hidden>
-          <p class="pay-helper-title">세전 월급 자동 계산</p>${radio('mpMode', '계산 방식', [['annual', '연봉 ÷ 12', true], ['parts', '기본급 + 수당']])}
+  const fillNote = nonTaxableField ? '' : fillMode === 'taxable'
+    ? '\n          <p class="hint">이 칸은 비과세를 뺀 금액이라, 계산된 세전 월급에서 비과세 수당을 뺀 과세분만 넣습니다.</p>'
+    : '\n          <p class="hint">계산된 세전 월급(비과세 수당 포함)을 넣습니다.</p>';
+  return `        <div class="pay-helper" id="${target}-helper" data-helper="monthlyPay" data-target="${target}" data-nontaxable="${nonTaxableField}" data-fill="${fillMode}" hidden>
+          <p class="pay-helper-title">세전 월급 자동 계산</p>${fillNote}${radio('mpMode', '계산 방식', [['annual', '연봉 ÷ 12', true], ['parts', '기본급 + 수당']])}
           <div data-mp-group="annual">${amt('mpAnnual', '연봉 (세전, 연간 총액)')}${amt('mpIncludedBonus', '연봉에 포함된 상여금 (연간)', '계약 연봉 안에 들어 있는 상여금입니다. 없으면 비워 두세요.')}${radio('mpIncludedBonusPaid', '연봉에 포함된 상여금은 어떻게 받나요?', [['monthly', '매달 나눠 받음 (월급에 포함)', true], ['separate', '상여 달에 따로 받음 (월급에서 제외)']])}${amt('mpExtraBonus', '연봉과 별도로 받는 상여금 (연간)', '성과급 등 연봉 외로 받는 금액입니다.')}${radio('mpExtraBonusInAverage', '별도 상여금을 월 평균에 넣을까요?', [['no', '아니요 (월급에서 제외)', true], ['yes', '예 (÷ 12 해서 포함)']])}${amt('mpNonTaxableA', '비과세 수당 (월)', '식대 등. 아래 비과세 금액 칸에도 자동으로 들어가 한 번만 차감됩니다.')}${radio('mpNonTaxableIn', '비과세 수당이 연봉에 포함되어 있나요?', [['included', '예 (연봉 안에 포함)', true], ['separate', '아니요 (연봉과 별도로 받음)']])}
           </div>
           <div data-mp-group="parts" hidden>${amt('mpBase', '기본급 (월)')}${amt('mpAllowance', '과세 수당 합계 (월)', '직책·자격·연장근로 수당 등 세금이 붙는 수당입니다.')}${amt('mpNonTaxableP', '비과세 수당 (월)', '식대 등. 아래 비과세 금액 칸에도 자동으로 들어가 한 번만 차감됩니다.')}
@@ -324,6 +392,14 @@ for (const spec of PAGES_SPEC) {
   fs.mkdirSync(dir, { recursive: true });
   fs.writeFileSync(path.join(dir, 'index.html'), await page(spec));
   console.log(`생성: site/${spec.slug}/index.html`);
+}
+
+// 기존 월급 일할계산기(직접 작성한 페이지)에도 같은 '세전 월급' 자동 계산 패널을 넣는다 (계산 로직은 그대로)
+{
+  const sp = path.join(ROOT, 'site/salary-proration/index.html');
+  let html = fs.readFileSync(sp, 'utf8');
+  html = html.replace(/<!-- helper:salary:start -->[\s\S]*<!-- helper:salary:end -->/, `<!-- helper:salary:start -->\n${monthlyPayHelper('salary', '', 'gross')}\n        <!-- helper:salary:end -->`);
+  fs.writeFileSync(sp, html);
 }
 
 const homePath = path.join(ROOT, 'site/index.html');

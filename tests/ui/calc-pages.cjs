@@ -22,7 +22,7 @@ const ROOT = path.resolve(__dirname, '..', '..');
 const WIDTHS = [360, 390, 768, 1440];
 const results = [];
 // 운영 주소 점검 시 일시적인 네트워크 지연(30초 초과)으로 전체 점검이 끊기지 않도록 페이지 이동만 한 번 다시 시도한다 (판정 기준은 그대로)
-const gotoRetry = async (p, url) => { try { return await p.goto(url); } catch (e) { if (!/Timeout/.test(String(e))) throw e; return p.goto(url); } };
+const gotoRetry = async (p, url) => { for (let i = 0; ; i += 1) { try { return await p.goto(url, { timeout: 60000 }); } catch (e) { if (!/Timeout/.test(String(e)) || i >= 2) throw e; } } };
 const check = (slug, w, item, ok, actual = '') => {
   const where = `[${slug} @ ${w}px]`;
   results.push({ where, item, ok: Boolean(ok), actual: String(actual) });
@@ -212,6 +212,65 @@ const check = (slug, w, item, ok, actual = '') => {
           check(S, w, '통상시급 패널 모바일: 가로 넘침·잘림 없음, 버튼 44px 이상', ov.overflow <= 0 && ov.bad === 0 && ov.small === 0, JSON.stringify(ov));
         }
         check(S, w, '통상시급 자동 계산: 스크립트 오류 없음', errs.length === 0, errs.join(' | '));
+        await p.close();
+      }
+      // 자동 계산 도우미 9종 (데이터 기반)
+      const HELPER_CASES = [
+        { slug: 'severance-pay', t: 'wages3m', fill: { 'wages3m__monthly': '3000000' }, want: { wages3m: '9000000' }, label: '퇴직금 3개월 임금 (월급 × 3)' },
+        { slug: 'severance-pay', t: 'wages3m', radio: 'wages3m__mode=each', fill: { 'wages3m__m1': '3100000', 'wages3m__m2': '2900000', 'wages3m__m3': '3000000' }, want: { wages3m: '9000000' }, label: '퇴직금 3개월 임금 (각각 입력)' },
+        { slug: 'severance-pay', t: 'ordinaryDaily', fill: { 'ordinaryDaily__base': '2500000', 'ordinaryDaily__fixed': '200000', 'ordinaryDaily__bonus': '2400000' }, want: { ordinaryDaily: '111000' }, label: '퇴직금 1일 통상임금' },
+        { slug: 'unemployment-benefit', t: 'wages3m', fill: { 'wages3m__monthly': '3000000' }, want: { wages3m: '9000000' }, label: '실업급여 3개월 임금' },
+        { slug: 'parental-leave-pay', t: 'wage', fill: { 'wage__base': '3000000', 'wage__fixed': '200000', 'wage__bonus': '3600000' }, want: { wage: '3500000' }, label: '육아휴직 월 통상임금' },
+        { slug: 'overtime-pay', t: 'hourly', fill: { 'hourly__base': '2500000', 'hourly__fixed': '200000', 'hourly__bonus': '2400000' }, want: { hourly: '13875' }, label: '야간·연장 통상시급' },
+        { slug: 'year-end-tax', t: 'pension', pre: { totalPay: '47599992' }, fill: {}, want: { pension: '2260560', insurance: '2364240' }, label: '연말정산 연간 보험료' },
+        { slug: 'income-tax', t: 'insurance', preRadio: 'mode=earned', pre: { amount: '47599992' }, hideWhen: 'mode=taxBase', fill: {}, want: { insurance: '4624800' }, label: '소득세 연간 보험료' },
+        { slug: 'health-insurance', t: 'pay', preRadio: 'type=employee', hideWhen: 'type=regional', radio: 'mpMode=parts', fill: { mpBase: '2500000', mpAllowance: '300000', mpNonTaxableP: '200000' }, want: { pay: '2800000' }, label: '건강보험 보수월액 (과세분)' },
+        { slug: 'national-pension', t: 'income', preRadio: 'type=workplace', hideWhen: 'type=regional', radio: 'mpMode=parts', fill: { mpBase: '2500000', mpAllowance: '300000', mpNonTaxableP: '200000' }, want: { income: '2800000' }, label: '국민연금 월 소득 (과세분)' },
+        { slug: 'dsr-limit', t: 'existing', fill: { 'existing__balance': '100000000', 'existing__rate': '4.5', 'existing__months': '360' }, want: { existing: '6080220' }, add: { fill: { 'existing__balance': '12000000', 'existing__rate': '6', 'existing__months': '12' }, radio: 'existing__method=equalPrincipal', want: '18470220' }, label: '기존 대출 연간 원리금 (+ 두 번째 대출 더하기)' },
+        { slug: 'salary-proration', t: 'salary', fill: { mpAnnual: '37200000' }, want: { salary: '3100000' }, label: '월급 일할 세전 월급 (연봉 ÷ 12)' },
+      ];
+      for (const c of HELPER_CASES) {
+        const p = await ctx.newPage(); const errs = [];
+        p.on('pageerror', (e) => errs.push(String(e)));
+        await gotoRetry(p, `/${c.slug}`);
+        await p.waitForTimeout(400);
+        const S = c.slug;
+        const setRadio = async (rv) => { const [n, v] = rv.split('='); await p.check(`input[name="${n}"][value="${v}"]`); };
+        if (c.hideWhen) {
+          await setRadio(c.hideWhen);
+          const hidden = await p.evaluate((t) => document.getElementById(`${t}-helper-toggle`).hidden, c.t);
+          check(S, w, `${c.label}: 해당하지 않는 유형에서는 자동 계산 버튼 숨김`, hidden, String(hidden));
+        }
+        if (c.preRadio) await setRadio(c.preRadio);
+        for (const [k, v] of Object.entries(c.pre ?? {})) await p.fill(`[name="${k}"]`, v);
+        const tog = p.locator(`#${c.t}-helper-toggle`);
+        const th = await p.evaluate((t) => Math.round(document.getElementById(`${t}-helper-toggle`).getBoundingClientRect().height), c.t);
+        if (mobile) await tog.tap(); else await tog.click();
+        if (Object.keys(c.fill).length) {
+          await p.click(`#${c.t}-helper-apply`);
+          const stay = await p.evaluate((t) => ({ open: !document.getElementById(`${t}-helper`).hidden, errs: document.querySelectorAll(`#${t}-helper .error:not([hidden])`).length }), c.t);
+          check(S, w, `${c.label}: 빈 값으로 넣기 → 오류·패널 유지`, stay.open && stay.errs > 0, JSON.stringify(stay));
+        }
+        if (c.radio) await setRadio(c.radio);
+        for (const [k, v] of Object.entries(c.fill)) await p.fill(`[name="${k}"]`, v);
+        await p.click(`#${c.t}-helper-apply`);
+        const got = await p.evaluate(({ t, keys }) => ({ vals: Object.fromEntries(keys.map((k) => [k, document.querySelector(`[name="${k}"]`).value])), closed: document.getElementById(`${t}-helper`).hidden, focus: document.activeElement?.name }), { t: c.t, keys: Object.keys(c.want) });
+        const ok = Object.entries(c.want).every(([k, v]) => got.vals[k] === v);
+        check(S, w, `${c.label}: 자동 입력 ${Object.entries(c.want).map(([k, v]) => `${k}=${v}`).join(', ')}·패널 닫힘·버튼 44px`, ok && got.closed && got.focus === c.t && th >= 44, JSON.stringify({ ...got, th }));
+        if (c.add) {
+          await tog.click();
+          if (c.add.radio) await setRadio(c.add.radio);
+          for (const [k, v] of Object.entries(c.add.fill)) await p.fill(`[name="${k}"]`, v);
+          await p.click(`#${c.t}-helper-add`);
+          const v2 = await p.inputValue(`[name="${c.t}"]`);
+          check(S, w, `${c.label}: 기존 금액에 더하기 → ${c.add.want}`, v2 === c.add.want, v2);
+        }
+        if (mobile) {
+          await tog.click();
+          const ov = await p.evaluate((t) => { const vw = document.documentElement.clientWidth; const panel = document.getElementById(`${t}-helper`); const bad = [...panel.querySelectorAll('input, button, .choice')].filter((e) => e.checkVisibility() && e.getBoundingClientRect().right > vw + 0.5).length; const small = [...panel.querySelectorAll('button, .choice')].filter((e) => e.checkVisibility() && e.getBoundingClientRect().height < 44).length; return { overflow: document.documentElement.scrollWidth - vw, bad, small }; }, c.t);
+          check(S, w, `${c.label}: 모바일 패널 넘침·잘림 없음, 버튼·선택지 44px`, ov.overflow <= 0 && ov.bad === 0 && ov.small === 0, JSON.stringify(ov));
+        }
+        check(S, w, `${c.label}: 스크립트 오류 없음`, errs.length === 0, errs.join(' | '));
         await p.close();
       }
       // 공통 아코디언 (이용 가능한 모든 계산기)
