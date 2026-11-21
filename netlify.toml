@@ -11,3 +11,9 @@
 
 [context.production.environment]
   PUBLIC_LAUNCH = "true"
+
+# 홈 화면(바탕화면) 추가용 매니페스트의 콘텐츠 유형 (Netlify 기본값은 application/octet-stream)
+[[headers]]
+  for = "/site.webmanifest"
+  [headers.values]
+    Content-Type = "application/manifest+json; charset=utf-8"
