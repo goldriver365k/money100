@@ -11,6 +11,8 @@
     "start": "node scripts/serve.js",
     "test": "node --test tests/unit/*.test.js",
     "test:e2e": "node tests/e2e/run.cjs",
+    "test:ui": "node tests/ui/ui-check.cjs",
+    "ui:capture": "node scripts/ui-capture.cjs",
     "build": "node scripts/build.js",
     "build:production": "node scripts/build.js --production",
     "preview": "node scripts/serve.js --dir dist",
