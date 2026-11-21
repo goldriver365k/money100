@@ -4,7 +4,8 @@
  *   UI_BASE=https://주소 npm run test:ui    → 배포된 주소
  *
  * 한 번 실행으로 확인하는 항목
- *   1. 세 페이지 직접 접속·새로고침 (360·390·1440px)
+ *   0. 홈 계산기 10종 목록: 카드 열 수(PC 3·태블릿 2·모바일 1), 대표 계산기, 준비 중 표시, 검색·분야별 보기
+ *   1. 세 페이지 직접 접속·새로고침 (360·390·768·1440px)
  *   2. 360·390px 가로 스크롤·입력/결과 잘림 (입력 화면, 결과 화면)
  *   3. 홈 카드 → 각 계산기 이동 → 대표 사례 입력 → 결과 표시 (360·390·1440px)
  *   4. 두 계산기 접이식 영역(적용 기준 및 공식 출처·자주 묻는 질문) 기본 닫힘, 클릭·키보드(Enter·Space)로 열고 닫기
@@ -18,7 +19,7 @@ const fs = require('node:fs');
 const { chromium } = require('playwright');
 
 const ROOT = path.resolve(__dirname, '..', '..');
-const WIDTHS = [360, 390, 1440];
+const WIDTHS = [360, 390, 768, 1440];
 const MOBILE = [360, 390];
 const PAGES = [
   { key: 'home', path: '/', title: '급여 계산기 모음 | 정산노트', h1: '급여 계산기 모음' },
@@ -146,7 +147,31 @@ const foldOpen = (p) => p.evaluate(() => document.querySelector('details.basis-f
       // 3. 홈 카드 → 계산기 → 대표 사례
       await p.goto('/');
       const cardCount = await p.locator('a.card').count();
-      check('home', w, '계산기 카드 2개', cardCount === 2, `${cardCount}개`);
+      const allCards = await p.locator('.calc-item').count();
+      const soonLinks = await p.locator('.calc-item[data-status="soon"] a').count();
+      const soonLabels = await p.locator('.calc-item[data-status="soon"] .status-soon').count();
+      check('home', w, '계산기 10종: 이용 가능 2개만 링크, 준비 중 8개는 링크 없음·‘준비 중’ 표시', allCards === 10 && cardCount === 2 && soonLinks === 0 && soonLabels === 8,
+        `카드 ${allCards} · 링크 ${cardCount} · 준비 중 링크 ${soonLinks} · 준비 중 표시 ${soonLabels}`);
+      const cols = await p.evaluate(() => getComputedStyle(document.getElementById('calc-grid')).gridTemplateColumns.split(' ').length);
+      const expectCols = w >= 1024 ? 3 : w >= 640 ? 2 : 1;
+      const first = await p.evaluate(() => { const f = document.querySelector('.calc-item'); return { featured: f.classList.contains('is-featured'), title: f.querySelector('.card-title').textContent }; });
+      check('home', w, `카드 ${expectCols}열·대표 계산기(1번) 맨 앞`, cols === expectCols && first.featured && first.title.startsWith('중도 입·퇴사자 월급'), `${cols}열 · 첫 카드 ${first.title}(${first.featured ? '대표' : '일반'})`);
+      // 검색·분야별 보기
+      await p.fill('#calc-search', '주휴');
+      const s1 = await p.$$eval('.calc-item:not([hidden]) .card-title', (e) => e.map((x) => x.textContent));
+      await p.fill('#calc-search', '없는계산기명');
+      const s2 = { n: await p.locator('.calc-item:not([hidden])').count(), empty: await p.locator('#no-results').isVisible() };
+      await p.fill('#calc-search', '');
+      await p.click('.chip[data-filter="realty"]');
+      const s3 = await p.$$eval('.calc-item:not([hidden]) .card-title', (e) => e.map((x) => x.textContent));
+      await p.click('.chip[data-filter="all"]');
+      const s4 = await p.locator('.calc-item:not([hidden])').count();
+      check('home', w, '검색(주휴→1개, 없는 말→안내)·분야별 보기(부동산→2개)·전체 복귀',
+        s1.length === 1 && s1[0].includes('주휴수당') && s2.n === 0 && s2.empty && s3.length === 2 && s4 === 10,
+        `주휴 ${s1.length}개 · 없는 말 ${s2.n}개(안내 ${s2.empty}) · 부동산 ${s3.length}개 · 전체 ${s4}개`);
+      // 홈 접이식 ‘적용 기준 및 공식 출처’
+      const homeFold = await p.evaluate(() => { const d = document.querySelector('details.basis-fold'); return d && !d.open && d.querySelector('summary').textContent.trim(); });
+      check('home', w, '홈 ‘적용 기준 및 공식 출처’ 기본 접힘', homeFold === '적용 기준 및 공식 출처', String(homeFold));
       await p.locator('a.card[href="/salary-proration"]').click();
       await p.waitForURL(`${base}/salary-proration`);
       await salaryCase(p, { salary: '3100000', year: 2026, month: 1, type: 'join', start: '2026-01-16' });

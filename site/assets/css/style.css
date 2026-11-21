@@ -501,3 +501,45 @@ input[aria-invalid="true"] { border-color: var(--error); box-shadow: 0 0 0 1px v
 /* 자주 묻는 질문 접이식: 적용 기준 영역과 간격 */
 .faq-fold { margin-top: 12px; }
 .faq-fold .fold-body > h3:first-of-type { margin-top: 12px; }
+
+/* ---------- 홈: 계산기 10종 목록 (검색·분야별 보기·대표 계산기) ---------- */
+/* 디자인 토큰(:root 변수)은 Canva 디자인 자료를 받으면 한곳에서 교체한다 */
+.container-wide { max-width: 1160px; }
+.catalog-tools { display: grid; gap: 12px; margin-bottom: 16px; }
+.search-field { margin: 0; }
+.search-field input[type="search"] {
+  width: 100%; max-width: 520px; min-height: 48px; padding: 10px 14px;
+  font: inherit; color: var(--text); background: var(--surface); border: 1px solid var(--border); border-radius: 10px;
+}
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip {
+  font: inherit; font-size: 0.9rem; font-weight: 700; min-height: 44px; padding: 8px 16px;
+  border-radius: 999px; border: 1px solid var(--border); background: var(--surface); color: var(--text); cursor: pointer;
+}
+.chip[aria-pressed="true"] { background: var(--brand); border-color: var(--brand); color: #fff; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .chip[aria-pressed="true"] { color: #0d1a15; } }
+.calc-count { margin: 0; font-size: 0.9rem; color: var(--muted); }
+
+.calc-grid { list-style: none; margin: 0; padding: 0; display: grid; gap: 16px; grid-template-columns: 1fr; }
+@media (min-width: 640px) { .calc-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }   /* 태블릿 2열 */
+@media (min-width: 1024px) { .calc-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }  /* PC 3열 */
+.calc-item { display: flex; min-width: 0; }
+.calc-item[hidden] { display: none; }
+.calc-item > .card { width: 100%; height: auto; align-content: start; }
+@media (min-width: 640px) { .calc-item.is-featured { grid-column: span 2; } }
+.card-badges { display: flex; flex-wrap: wrap; gap: 6px; }
+.card-cat, .status { font-size: 0.78rem; font-weight: 700; padding: 2px 8px; border-radius: 999px; }
+.card-cat { color: var(--muted); background: var(--bg); border: 1px solid var(--border); }
+.status-live { color: var(--brand); background: var(--brand-soft); }
+.status-soon { color: var(--text); background: var(--range-soft); border: 1px solid var(--range); }
+h3.card-title { margin: 0; font-size: 1.15rem; line-height: 1.4; }
+.card-featured { border: 2px solid var(--brand); background: linear-gradient(135deg, var(--brand-soft), var(--surface) 70%); padding: 24px; }
+.card-featured h3.card-title { font-size: 1.4rem; }
+.card-featured .card-tag { background: var(--brand); color: #fff; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .card-featured .card-tag { color: #0d1a15; } }
+.card-soon { cursor: default; background: var(--bg); border-style: dashed; }
+.card-soon:hover { border-color: var(--border); box-shadow: none; }
+.card-soon .card-title { color: var(--muted); }
+.card-soon-note { font-size: 0.85rem; color: var(--muted); margin-top: 4px; }
+.no-results { padding: 24px; text-align: center; color: var(--muted); border: 1px dashed var(--border); border-radius: var(--radius); }
+.catalog + .basis-fold { margin-top: 32px; }
