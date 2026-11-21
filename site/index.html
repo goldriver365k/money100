@@ -5,15 +5,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'none'; form-action 'none'; base-uri 'none'">
   <meta name="referrer" content="strict-origin-when-cross-origin">
-  <title>급여 계산기 모음 | 생활계산서</title>
-  <meta name="description" content="생활계산서는 중도 입사·퇴사 월급 일할계산, 주 15시간 주휴수당 판독 등 급여·노무 계산을 브라우저에서 바로 해 볼 수 있는 계산기 모음입니다. 입력한 급여와 날짜는 서버로 전송되지 않습니다.">
+  <title>급여·세금·부동산 계산기 30종 | 생활계산서</title>
+  <meta name="description" content="연봉 실수령액·퇴직금·4대보험·부가세·대출이자·취득세 등 급여·세금·부동산 계산기 30종을 2026년 기준으로 바로 계산합니다. 입력한 값은 서버로 전송되지 않습니다.">
   <!-- seo:start -->
   <meta name="robots" content="noindex, nofollow">
   <!-- seo:end -->
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="생활계산서">
-  <meta property="og:title" content="급여 계산기 모음 | 생활계산서">
-  <meta property="og:description" content="중도 입사·퇴사 급여 일할계산 등 급여 정산 계산기 모음">
+  <meta property="og:title" content="급여·세금·부동산 계산기 30종 | 생활계산서">
+  <meta property="og:description" content="연봉·퇴직금·세금·보험·대출·부동산 계산을 한곳에서. 2026년 기준, 입력값은 서버로 전송되지 않습니다.">
   <meta property="og:locale" content="ko_KR">
   <meta property="og:image" content="/assets/og-image.png">
   <meta property="og:image:width" content="1200">
@@ -70,6 +70,15 @@
     <section class="home-hero home-hero-center" aria-labelledby="page-title">
       <h1 id="page-title">생활에 필요한 계산을 한곳에서</h1>
       <p class="lead">연봉, 퇴직금, 세금, 보험, 대출, 부동산까지 복잡한 계산을 쉽고 빠르게 확인하세요.</p>
+      <div class="hero-search" role="search">
+        <div class="search-compact">
+          <label for="calc-search" class="search-label">어떤 계산이 필요하세요?</label>
+          <svg class="search-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M20 20l-3.6-3.6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
+          <input id="calc-search" type="search" placeholder="예: 퇴사, 전세, 연봉, 알바" autocomplete="off" aria-describedby="search-privacy" aria-controls="search-suggest">
+          <ul class="search-suggest" id="search-suggest" aria-label="검색 결과 바로가기" hidden></ul>
+        </div>
+        <p class="search-privacy" id="search-privacy"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>입력한 값은 이 기기 안에서만 계산되고, 저장·전송되지 않습니다.</p>
+      </div>
     </section>
 
     <!-- top:start -->
@@ -81,7 +90,7 @@
             <span class="top-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="6" width="19" height="12" rx="2"/><circle cx="12" cy="12" r="2.6"/><path d="M6 9.5v5M18 9.5v5"/></svg></span>
             <span class="top-body">
               <span class="top-cat">노동·급여</span>
-              <h3 class="top-title">연봉 계산기</h3>
+              <h3 class="top-title">연봉 실수령액 계산기</h3>
               <span class="top-desc">연봉에서 4대보험과 소득세를 뺀 월·연 실수령액을 확인합니다.</span>
             </span>
             <span class="top-btn">계산하기</span>
@@ -149,11 +158,6 @@
     <section class="catalog" id="calculators" aria-labelledby="calculators-title">
       <h2 id="calculators-title" class="section-title">전체 계산기 <span class="section-count">30종</span></h2>
       <div class="catalog-tools">
-        <div class="search-compact">
-          <label for="calc-search" class="search-label">계산기 검색</label>
-          <svg class="search-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M20 20l-3.6-3.6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
-          <input id="calc-search" type="search" placeholder="예: 주휴수당, 퇴직금" autocomplete="off" aria-describedby="calc-count">
-        </div>
         <div class="chips" role="group" aria-label="분야별 보기">
           <button type="button" class="chip chip-all" data-filter="all" aria-pressed="true">전체</button>
           <button type="button" class="chip chip-labor" data-filter="labor" aria-pressed="false">노동·급여</button>
@@ -161,272 +165,305 @@
           <button type="button" class="chip chip-realty" data-filter="realty" aria-pressed="false">주거·부동산</button>
         </div>
       </div>
-      <p class="calc-count" id="calc-count" role="status" aria-live="polite">계산기 30개 · 이용 가능 30개 · 준비 중 0개</p>
+      <p class="calc-count" id="calc-count" role="status" aria-live="polite">계산기 30개</p>
       <ul class="calc-grid calc-grid-2" id="calc-grid">
           <!-- catalog:start -->
-          <li class="calc-item" data-category="labor" data-status="live" data-keywords="연봉 실수령액 세후 월급 4대보험 소득세 연봉표 연봉 실수령액 계산기 노동·급여">
-            <a class="card calc-card tone-c1" href="/annual-salary-net">
-              <span class="card-badges"><span class="card-no" aria-label="노동·급여 1번">1</span><span class="card-cat cat-labor">노동·급여</span><span class="status status-live">이용 가능</span></span>
+          <li class="calc-item cat-labor" data-category="labor" data-status="live" data-keywords="연봉 실수령액 세후 월급 4대보험 소득세 연봉표 연봉 실수령액 계산기 노동·급여">
+            <a class="card calc-card" href="/annual-salary-net">
+              <span class="card-ico" aria-hidden="true"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="6" width="19" height="12" rx="2"/><circle cx="12" cy="12" r="2.6"/><path d="M6 9.5v5M18 9.5v5"/></svg></span>
+              <div class="card-main"><span class="card-cat cat-labor">노동·급여</span>
               <h3 class="card-title">연봉 실수령액 계산기</h3>
-              <span class="card-desc">연봉에서 4대보험과 소득세를 뺀 월·연 실수령액을 확인합니다.</span>
-              <span class="card-btn">계산기 열기</span>
+              <span class="card-desc">연봉에서 4대보험과 소득세를 뺀 월·연 실수령액을 확인합니다.</span></div>
+              <span class="card-btn">계산하기</span>
             </a>
           </li>
-          <li class="calc-item" data-category="labor" data-status="live" data-keywords="월급 실수령액 세후 월급 실수령액 계산기 노동·급여">
-            <a class="card calc-card tone-c2" href="/monthly-salary-net">
-              <span class="card-badges"><span class="card-no" aria-label="노동·급여 2번">2</span><span class="card-cat cat-labor">노동·급여</span><span class="status status-live">이용 가능</span></span>
+          <li class="calc-item cat-labor" data-category="labor" data-status="live" data-keywords="월급 실수령액 세후 월급 실수령액 계산기 노동·급여">
+            <a class="card calc-card" href="/monthly-salary-net">
+              <span class="card-ico" aria-hidden="true"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="6" width="19" height="12" rx="2"/><circle cx="12" cy="12" r="2.6"/><path d="M6 9.5v5M18 9.5v5"/></svg></span>
+              <div class="card-main"><span class="card-cat cat-labor">노동·급여</span>
               <h3 class="card-title">월급 실수령액 계산기</h3>
-              <span class="card-desc">세전 월급에서 공제액을 뺀 실수령액을 확인합니다.</span>
-              <span class="card-btn">계산기 열기</span>
+              <span class="card-desc">세전 월급에서 공제액을 뺀 실수령액을 확인합니다.</span></div>
+              <span class="card-btn">계산하기</span>
             </a>
           </li>
-          <li class="calc-item" data-category="labor" data-status="live" data-keywords="퇴직금 평균임금 재직일수 퇴직 퇴직금 계산기 노동·급여">
-            <a class="card calc-card tone-c3" href="/severance-pay">
-              <span class="card-badges"><span class="card-no" aria-label="노동·급여 3번">3</span><span class="card-cat cat-labor">노동·급여</span><span class="status status-live">이용 가능</span></span>
+          <li class="calc-item cat-labor" data-category="labor" data-status="live" data-keywords="퇴직금 평균임금 재직일수 퇴직 퇴사 퇴직급여 퇴직금 계산기 노동·급여">
+            <a class="card calc-card" href="/severance-pay">
+              <span class="card-ico" aria-hidden="true"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="7.5" width="18" height="12" rx="2"/><path d="M9 7.5V6a1.5 1.5 0 0 1 1.5-1.5h3A1.5 1.5 0 0 1 15 6v1.5M3 12.5h18"/></svg></span>
+              <div class="card-main"><span class="card-cat cat-labor">노동·급여</span>
               <h3 class="card-title">퇴직금 계산기</h3>
-              <span class="card-desc">평균임금과 재직일수로 예상 퇴직금을 계산합니다.</span>
-              <span class="card-btn">계산기 열기</span>
+              <span class="card-desc">평균임금과 재직일수로 예상 퇴직금을 계산합니다.</span></div>
+              <span class="card-btn">계산하기</span>
             </a>
           </li>
-          <li class="calc-item" data-category="labor" data-status="live" data-keywords="주휴수당 주휴 15시간 알바 아르바이트 초단시간 판독기 주휴수당 계산기 노동·급여">
-            <a class="card calc-card tone-c4" href="/weekly-holiday-pay">
-              <span class="card-badges"><span class="card-no" aria-label="노동·급여 4번">4</span><span class="card-cat cat-labor">노동·급여</span><span class="status status-live">이용 가능</span></span>
+          <li class="calc-item cat-labor" data-category="labor" data-status="live" data-keywords="주휴수당 주휴 15시간 알바 아르바이트 초단시간 판독기 주휴수당 계산기 노동·급여">
+            <a class="card calc-card" href="/weekly-holiday-pay">
+              <span class="card-ico" aria-hidden="true"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="5" width="17" height="15" rx="2"/><path d="M3.5 9.5h17M8 3v4M16 3v4M8 13.5h2M14 13.5h2M8 16.5h2"/></svg></span>
+              <div class="card-main"><span class="card-cat cat-labor">노동·급여</span>
               <h3 class="card-title">주휴수당 계산기</h3>
-              <span class="card-desc">주 15시간 기준으로 주휴수당 지급 여부와 금액을 판독합니다.</span>
-              <span class="card-btn">계산기 열기</span>
+              <span class="card-desc">주 15시간 기준으로 주휴수당 지급 여부와 금액을 판독합니다.</span></div>
+              <span class="card-btn">계산하기</span>
             </a>
           </li>
-          <li class="calc-item" data-category="labor" data-status="live" data-keywords="시급 월급 환산 최저임금 209시간 시급 계산기 노동·급여">
-            <a class="card calc-card tone-c2" href="/hourly-wage">
-              <span class="card-badges"><span class="card-no" aria-label="노동·급여 5번">5</span><span class="card-cat cat-labor">노동·급여</span><span class="status status-live">이용 가능</span></span>
+          <li class="calc-item cat-labor" data-category="labor" data-status="live" data-keywords="시급 월급 환산 최저임금 209시간 시급 계산기 노동·급여">
+            <a class="card calc-card" href="/hourly-wage">
+              <span class="card-ico" aria-hidden="true"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg></span>
+              <div class="card-main"><span class="card-cat cat-labor">노동·급여</span>
               <h3 class="card-title">시급 계산기</h3>
-              <span class="card-desc">월급과 시급을 서로 환산하고 최저임금과 비교합니다.</span>
-              <span class="card-btn">계산기 열기</span>
+              <span class="card-desc">월급과 시급을 서로 환산하고 최저임금과 비교합니다.</span></div>
+              <span class="card-btn">계산하기</span>
             </a>
           </li>
-          <li class="calc-item" data-category="labor" data-status="live" data-keywords="실업급여 구직급여 실업급여 계산기 노동·급여">
-            <a class="card calc-card tone-c1" href="/unemployment-benefit">
-              <span class="card-badges"><span class="card-no" aria-label="노동·급여 6번">6</span><span class="card-cat cat-labor">노동·급여</span><span class="status status-live">이용 가능</span></span>
+          <li class="calc-item cat-labor" data-category="labor" data-status="live" data-keywords="실업급여 구직급여 퇴사 실직 권고사직 실업급여 계산기 노동·급여">
+            <a class="card calc-card" href="/unemployment-benefit">
+              <span class="card-ico" aria-hidden="true"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="7.5" width="18" height="12" rx="2"/><path d="M9 7.5V6a1.5 1.5 0 0 1 1.5-1.5h3A1.5 1.5 0 0 1 15 6v1.5M3 12.5h18"/></svg></span>
+              <div class="card-main"><span class="card-cat cat-labor">노동·급여</span>
               <h3 class="card-title">실업급여 계산기</h3>
-              <span class="card-desc">구직급여 예상 일액과 지급일수를 확인합니다.</span>
-              <span class="card-btn">계산기 열기</span>
+              <span class="card-desc">구직급여 예상 일액과 지급일수를 확인합니다.</span></div>
+              <span class="card-btn">계산하기</span>
             </a>
           </li>
-          <li class="calc-item" data-category="labor" data-status="live" data-keywords="연차수당 연차 유급휴가 연차수당 계산기 노동·급여">
-            <a class="card calc-card tone-c4" href="/annual-leave-pay">
-              <span class="card-badges"><span class="card-no" aria-label="노동·급여 7번">7</span><span class="card-cat cat-labor">노동·급여</span><span class="status status-live">이용 가능</span></span>
+          <li class="calc-item cat-labor" data-category="labor" data-status="live" data-keywords="연차수당 연차 유급휴가 연차수당 계산기 노동·급여">
+            <a class="card calc-card" href="/annual-leave-pay">
+              <span class="card-ico" aria-hidden="true"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="5" width="17" height="15" rx="2"/><path d="M3.5 9.5h17M8 3v4M16 3v4M8 13.5h2M14 13.5h2M8 16.5h2"/></svg></span>
+              <div class="card-main"><span class="card-cat cat-labor">노동·급여</span>
               <h3 class="card-title">연차수당 계산기</h3>
-              <span class="card-desc">연차 발생일수와 미사용 연차수당을 계산합니다.</span>
-              <span class="card-btn">계산기 열기</span>
+              <span class="card-desc">연차 발생일수와 미사용 연차수당을 계산합니다.</span></div>
+              <span class="card-btn">계산하기</span>
             </a>
           </li>
-          <li class="calc-item" data-category="labor" data-status="live" data-keywords="야간수당 연장수당 휴일수당 가산 야간·연장·휴일수당 계산기 노동·급여">
-            <a class="card calc-card tone-c3" href="/overtime-pay">
-              <span class="card-badges"><span class="card-no" aria-label="노동·급여 8번">8</span><span class="card-cat cat-labor">노동·급여</span><span class="status status-live">이용 가능</span></span>
+          <li class="calc-item cat-labor" data-category="labor" data-status="live" data-keywords="야간수당 연장수당 휴일수당 가산 야간·연장·휴일수당 계산기 노동·급여">
+            <a class="card calc-card" href="/overtime-pay">
+              <span class="card-ico" aria-hidden="true"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg></span>
+              <div class="card-main"><span class="card-cat cat-labor">노동·급여</span>
               <h3 class="card-title">야간·연장·휴일수당 계산기</h3>
-              <span class="card-desc">가산임금이 붙는 근로시간의 수당을 계산합니다.</span>
-              <span class="card-btn">계산기 열기</span>
+              <span class="card-desc">가산임금이 붙는 근로시간의 수당을 계산합니다.</span></div>
+              <span class="card-btn">계산하기</span>
             </a>
           </li>
-          <li class="calc-item" data-category="labor" data-status="live" data-keywords="월급 일할 중도 입사 퇴사 급여 일할계산 월급 일할계산기 노동·급여">
-            <a class="card calc-card tone-c1" href="/salary-proration">
-              <span class="card-badges"><span class="card-no" aria-label="노동·급여 9번">9</span><span class="card-cat cat-labor">노동·급여</span><span class="status status-live">이용 가능</span></span>
+          <li class="calc-item cat-labor" data-category="labor" data-status="live" data-keywords="월급 일할 중도 입사 퇴사 급여 일할계산 입사 월급 일할계산기 노동·급여">
+            <a class="card calc-card" href="/salary-proration">
+              <span class="card-ico" aria-hidden="true"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="5" width="17" height="15" rx="2"/><path d="M3.5 9.5h17M8 3v4M16 3v4M8 13.5h2M14 13.5h2M8 16.5h2"/></svg></span>
+              <div class="card-main"><span class="card-cat cat-labor">노동·급여</span>
               <h3 class="card-title">월급 일할계산기</h3>
-              <span class="card-desc">중도 입사·퇴사한 달의 급여를 달력일·소정근로일 기준으로 비교합니다.</span>
-              <span class="card-btn">계산기 열기</span>
+              <span class="card-desc">중도 입사·퇴사한 달의 급여를 달력일·소정근로일 기준으로 비교합니다.</span></div>
+              <span class="card-btn">계산하기</span>
             </a>
           </li>
-          <li class="calc-item" data-category="labor" data-status="live" data-keywords="육아휴직급여 육아휴직 육아휴직급여 계산기 노동·급여">
-            <a class="card calc-card tone-c2" href="/parental-leave-pay">
-              <span class="card-badges"><span class="card-no" aria-label="노동·급여 10번">10</span><span class="card-cat cat-labor">노동·급여</span><span class="status status-live">이용 가능</span></span>
+          <li class="calc-item cat-labor" data-category="labor" data-status="live" data-keywords="육아휴직급여 육아휴직 육아휴직급여 계산기 노동·급여">
+            <a class="card calc-card" href="/parental-leave-pay">
+              <span class="card-ico" aria-hidden="true"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19.5s-7.5-4.4-7.5-9.6A4 4 0 0 1 12 7.6a4 4 0 0 1 7.5 2.3c0 5.2-7.5 9.6-7.5 9.6z"/></svg></span>
+              <div class="card-main"><span class="card-cat cat-labor">노동·급여</span>
               <h3 class="card-title">육아휴직급여 계산기</h3>
-              <span class="card-desc">육아휴직 기간별 예상 급여를 확인합니다.</span>
-              <span class="card-btn">계산기 열기</span>
+              <span class="card-desc">육아휴직 기간별 예상 급여를 확인합니다.</span></div>
+              <span class="card-btn">계산하기</span>
             </a>
           </li>
-          <li class="calc-item" data-category="tax" data-status="live" data-keywords="4대보험 국민연금 건강보험 장기요양 고용보험 산재 사대보험 4대보험 계산기 세금·보험">
-            <a class="card calc-card tone-c1" href="/social-insurance">
-              <span class="card-badges"><span class="card-no" aria-label="세금·보험 1번">1</span><span class="card-cat cat-tax">세금·보험</span><span class="status status-live">이용 가능</span></span>
+          <li class="calc-item cat-tax" data-category="tax" data-status="live" data-keywords="4대보험 국민연금 건강보험 장기요양 고용보험 산재 사대보험 4대보험 계산기 세금·보험">
+            <a class="card calc-card" href="/social-insurance">
+              <span class="card-ico" aria-hidden="true"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5 19 6v5.5c0 4.4-3 7.8-7 9-4-1.2-7-4.6-7-9V6z"/><path d="M9 12l2.2 2.2L15.5 10"/></svg></span>
+              <div class="card-main"><span class="card-cat cat-tax">세금·보험</span>
               <h3 class="card-title">4대보험 계산기</h3>
-              <span class="card-desc">국민연금·건강·장기요양·고용보험의 근로자·사업주 부담을 계산합니다.</span>
-              <span class="card-btn">계산기 열기</span>
+              <span class="card-desc">국민연금·건강·장기요양·고용보험의 근로자·사업주 부담을 계산합니다.</span></div>
+              <span class="card-btn">계산하기</span>
             </a>
           </li>
-          <li class="calc-item" data-category="tax" data-status="live" data-keywords="종합소득세 종소세 종합소득세 계산기 세금·보험">
-            <a class="card calc-card tone-c2" href="/comprehensive-income-tax">
-              <span class="card-badges"><span class="card-no" aria-label="세금·보험 2번">2</span><span class="card-cat cat-tax">세금·보험</span><span class="status status-live">이용 가능</span></span>
+          <li class="calc-item cat-tax" data-category="tax" data-status="live" data-keywords="종합소득세 종소세 종합소득세 계산기 세금·보험">
+            <a class="card calc-card" href="/comprehensive-income-tax">
+              <span class="card-ico" aria-hidden="true"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3.5h7l4 4v13H7z"/><path d="M14 3.5v4h4M9.5 12h6M9.5 15.5h6"/></svg></span>
+              <div class="card-main"><span class="card-cat cat-tax">세금·보험</span>
               <h3 class="card-title">종합소득세 계산기</h3>
-              <span class="card-desc">종합소득 과세표준에 따른 예상 세액을 확인합니다.</span>
-              <span class="card-btn">계산기 열기</span>
+              <span class="card-desc">종합소득 과세표준에 따른 예상 세액을 확인합니다.</span></div>
+              <span class="card-btn">계산하기</span>
             </a>
           </li>
-          <li class="calc-item" data-category="tax" data-status="live" data-keywords="부가세 부가가치세 공급가액 10% vat 부가세 계산기 세금·보험">
-            <a class="card calc-card tone-c3" href="/vat">
-              <span class="card-badges"><span class="card-no" aria-label="세금·보험 3번">3</span><span class="card-cat cat-tax">세금·보험</span><span class="status status-live">이용 가능</span></span>
+          <li class="calc-item cat-tax" data-category="tax" data-status="live" data-keywords="부가세 부가가치세 공급가액 10% vat 부가세 계산기 세금·보험">
+            <a class="card calc-card" href="/vat">
+              <span class="card-ico" aria-hidden="true"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3.5h12v17l-2-1.4-2 1.4-2-1.4-2 1.4-2-1.4-2 1.4z"/><path d="M9 8.5h6M9 12h6M9 15.5h3.5"/></svg></span>
+              <div class="card-main"><span class="card-cat cat-tax">세금·보험</span>
               <h3 class="card-title">부가세 계산기</h3>
-              <span class="card-desc">공급가액과 부가세 포함 금액을 서로 환산합니다.</span>
-              <span class="card-btn">계산기 열기</span>
+              <span class="card-desc">공급가액과 부가세 포함 금액을 서로 환산합니다.</span></div>
+              <span class="card-btn">계산하기</span>
             </a>
           </li>
-          <li class="calc-item" data-category="tax" data-status="live" data-keywords="연말정산 환급금 연말정산 환급금 계산기 세금·보험">
-            <a class="card calc-card tone-c4" href="/year-end-tax">
-              <span class="card-badges"><span class="card-no" aria-label="세금·보험 4번">4</span><span class="card-cat cat-tax">세금·보험</span><span class="status status-live">이용 가능</span></span>
+          <li class="calc-item cat-tax" data-category="tax" data-status="live" data-keywords="연말정산 환급금 연말정산 환급금 계산기 세금·보험">
+            <a class="card calc-card" href="/year-end-tax">
+              <span class="card-ico" aria-hidden="true"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3.5h12v17l-2-1.4-2 1.4-2-1.4-2 1.4-2-1.4-2 1.4z"/><path d="M9 8.5h6M9 12h6M9 15.5h3.5"/></svg></span>
+              <div class="card-main"><span class="card-cat cat-tax">세금·보험</span>
               <h3 class="card-title">연말정산 환급금 계산기</h3>
-              <span class="card-desc">공제 항목을 반영한 예상 환급·추가 납부액을 확인합니다.</span>
-              <span class="card-btn">계산기 열기</span>
+              <span class="card-desc">공제 항목을 반영한 예상 환급·추가 납부액을 확인합니다.</span></div>
+              <span class="card-btn">계산하기</span>
             </a>
           </li>
-          <li class="calc-item" data-category="tax" data-status="live" data-keywords="3.3% 프리랜서 원천징수 3.3% 프리랜서 세금 계산기 세금·보험">
-            <a class="card calc-card tone-c2" href="/freelancer-tax">
-              <span class="card-badges"><span class="card-no" aria-label="세금·보험 5번">5</span><span class="card-cat cat-tax">세금·보험</span><span class="status status-live">이용 가능</span></span>
+          <li class="calc-item cat-tax" data-category="tax" data-status="live" data-keywords="3.3% 프리랜서 원천징수 3.3% 프리랜서 세금 계산기 세금·보험">
+            <a class="card calc-card" href="/freelancer-tax">
+              <span class="card-ico" aria-hidden="true"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M9 15l6-6"/><circle cx="9.3" cy="9.3" r="1"/><circle cx="14.7" cy="14.7" r="1"/></svg></span>
+              <div class="card-main"><span class="card-cat cat-tax">세금·보험</span>
               <h3 class="card-title">3.3% 프리랜서 세금 계산기</h3>
-              <span class="card-desc">사업소득 원천징수 3.3%와 실수령액을 계산합니다.</span>
-              <span class="card-btn">계산기 열기</span>
+              <span class="card-desc">사업소득 원천징수 3.3%와 실수령액을 계산합니다.</span></div>
+              <span class="card-btn">계산하기</span>
             </a>
           </li>
-          <li class="calc-item" data-category="tax" data-status="live" data-keywords="소득세 세율 소득세 계산기 세금·보험">
-            <a class="card calc-card tone-c1" href="/income-tax">
-              <span class="card-badges"><span class="card-no" aria-label="세금·보험 6번">6</span><span class="card-cat cat-tax">세금·보험</span><span class="status status-live">이용 가능</span></span>
+          <li class="calc-item cat-tax" data-category="tax" data-status="live" data-keywords="소득세 세율 소득세 계산기 세금·보험">
+            <a class="card calc-card" href="/income-tax">
+              <span class="card-ico" aria-hidden="true"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3.5h7l4 4v13H7z"/><path d="M14 3.5v4h4M9.5 12h6M9.5 15.5h6"/></svg></span>
+              <div class="card-main"><span class="card-cat cat-tax">세금·보험</span>
               <h3 class="card-title">소득세 계산기</h3>
-              <span class="card-desc">과세표준별 기본세율로 소득세를 계산합니다.</span>
-              <span class="card-btn">계산기 열기</span>
+              <span class="card-desc">과세표준별 기본세율로 소득세를 계산합니다.</span></div>
+              <span class="card-btn">계산하기</span>
             </a>
           </li>
-          <li class="calc-item" data-category="tax" data-status="live" data-keywords="건강보험료 건보료 건강보험료 계산기 세금·보험">
-            <a class="card calc-card tone-c4" href="/health-insurance">
-              <span class="card-badges"><span class="card-no" aria-label="세금·보험 7번">7</span><span class="card-cat cat-tax">세금·보험</span><span class="status status-live">이용 가능</span></span>
+          <li class="calc-item cat-tax" data-category="tax" data-status="live" data-keywords="건강보험료 건보료 건강보험료 계산기 세금·보험">
+            <a class="card calc-card" href="/health-insurance">
+              <span class="card-ico" aria-hidden="true"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5 19 6v5.5c0 4.4-3 7.8-7 9-4-1.2-7-4.6-7-9V6z"/><path d="M9 12l2.2 2.2L15.5 10"/></svg></span>
+              <div class="card-main"><span class="card-cat cat-tax">세금·보험</span>
               <h3 class="card-title">건강보험료 계산기</h3>
-              <span class="card-desc">직장·지역가입자 건강보험료를 확인합니다.</span>
-              <span class="card-btn">계산기 열기</span>
+              <span class="card-desc">직장·지역가입자 건강보험료를 확인합니다.</span></div>
+              <span class="card-btn">계산하기</span>
             </a>
           </li>
-          <li class="calc-item" data-category="tax" data-status="live" data-keywords="국민연금 보험료 국민연금 계산기 세금·보험">
-            <a class="card calc-card tone-c3" href="/national-pension">
-              <span class="card-badges"><span class="card-no" aria-label="세금·보험 8번">8</span><span class="card-cat cat-tax">세금·보험</span><span class="status status-live">이용 가능</span></span>
+          <li class="calc-item cat-tax" data-category="tax" data-status="live" data-keywords="국민연금 보험료 국민연금 계산기 세금·보험">
+            <a class="card calc-card" href="/national-pension">
+              <span class="card-ico" aria-hidden="true"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5 19 6v5.5c0 4.4-3 7.8-7 9-4-1.2-7-4.6-7-9V6z"/><path d="M9 12l2.2 2.2L15.5 10"/></svg></span>
+              <div class="card-main"><span class="card-cat cat-tax">세금·보험</span>
               <h3 class="card-title">국민연금 계산기</h3>
-              <span class="card-desc">기준소득월액에 따른 국민연금 보험료를 계산합니다.</span>
-              <span class="card-btn">계산기 열기</span>
+              <span class="card-desc">기준소득월액에 따른 국민연금 보험료를 계산합니다.</span></div>
+              <span class="card-btn">계산하기</span>
             </a>
           </li>
-          <li class="calc-item" data-category="tax" data-status="live" data-keywords="증여세 증여세 계산기 세금·보험">
-            <a class="card calc-card tone-c1" href="/gift-tax">
-              <span class="card-badges"><span class="card-no" aria-label="세금·보험 9번">9</span><span class="card-cat cat-tax">세금·보험</span><span class="status status-live">이용 가능</span></span>
+          <li class="calc-item cat-tax" data-category="tax" data-status="live" data-keywords="증여세 증여세 계산기 세금·보험">
+            <a class="card calc-card" href="/gift-tax">
+              <span class="card-ico" aria-hidden="true"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="9" width="16" height="11" rx="1.5"/><path d="M3 9h18M12 9v11M12 9c-1.5-3.5-5-3.5-5-1.2C7 9 12 9 12 9zM12 9c1.5-3.5 5-3.5 5-1.2C17 9 12 9 12 9z"/></svg></span>
+              <div class="card-main"><span class="card-cat cat-tax">세금·보험</span>
               <h3 class="card-title">증여세 계산기</h3>
-              <span class="card-desc">증여재산 공제를 반영한 예상 증여세를 확인합니다.</span>
-              <span class="card-btn">계산기 열기</span>
+              <span class="card-desc">증여재산 공제를 반영한 예상 증여세를 확인합니다.</span></div>
+              <span class="card-btn">계산하기</span>
             </a>
           </li>
-          <li class="calc-item" data-category="tax" data-status="live" data-keywords="상속세 상속세 계산기 세금·보험">
-            <a class="card calc-card tone-c2" href="/inheritance-tax">
-              <span class="card-badges"><span class="card-no" aria-label="세금·보험 10번">10</span><span class="card-cat cat-tax">세금·보험</span><span class="status status-live">이용 가능</span></span>
+          <li class="calc-item cat-tax" data-category="tax" data-status="live" data-keywords="상속세 상속세 계산기 세금·보험">
+            <a class="card calc-card" href="/inheritance-tax">
+              <span class="card-ico" aria-hidden="true"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3.5h7l4 4v13H7z"/><path d="M14 3.5v4h4M9.5 12h6M9.5 15.5h6"/></svg></span>
+              <div class="card-main"><span class="card-cat cat-tax">세금·보험</span>
               <h3 class="card-title">상속세 계산기</h3>
-              <span class="card-desc">상속공제를 반영한 예상 상속세를 확인합니다.</span>
-              <span class="card-btn">계산기 열기</span>
+              <span class="card-desc">상속공제를 반영한 예상 상속세를 확인합니다.</span></div>
+              <span class="card-btn">계산하기</span>
             </a>
           </li>
-          <li class="calc-item" data-category="realty" data-status="live" data-keywords="대출이자 원리금균등 원금균등 만기일시 주택담보대출 상환 대출이자 계산기 주거·부동산">
-            <a class="card calc-card tone-c1" href="/loan-interest">
-              <span class="card-badges"><span class="card-no" aria-label="주거·부동산 1번">1</span><span class="card-cat cat-realty">주거·부동산</span><span class="status status-live">이용 가능</span></span>
+          <li class="calc-item cat-realty" data-category="realty" data-status="live" data-keywords="대출이자 원리금균등 원금균등 만기일시 주택담보대출 상환 이자 전세대출 신용대출 대출이자 계산기 주거·부동산">
+            <a class="card calc-card" href="/loan-interest">
+              <span class="card-ico" aria-hidden="true"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10.5 12 4l8 6.5V20H4z"/><path d="M9.5 17.5l5-5"/><circle cx="9.8" cy="12.8" r="0.9"/><circle cx="14.2" cy="17.2" r="0.9"/></svg></span>
+              <div class="card-main"><span class="card-cat cat-realty">주거·부동산</span>
               <h3 class="card-title">대출이자 계산기</h3>
-              <span class="card-desc">원리금균등·원금균등·만기일시 상환의 월 상환액과 총이자를 계산합니다.</span>
-              <span class="card-btn">계산기 열기</span>
+              <span class="card-desc">원리금균등·원금균등·만기일시 상환의 월 상환액과 총이자를 계산합니다.</span></div>
+              <span class="card-btn">계산하기</span>
             </a>
           </li>
-          <li class="calc-item" data-category="realty" data-status="live" data-keywords="취득세 취득세 계산기 주거·부동산">
-            <a class="card calc-card tone-c2" href="/acquisition-tax">
-              <span class="card-badges"><span class="card-no" aria-label="주거·부동산 2번">2</span><span class="card-cat cat-realty">주거·부동산</span><span class="status status-live">이용 가능</span></span>
+          <li class="calc-item cat-realty" data-category="realty" data-status="live" data-keywords="취득세 집 살 때 세금 주택 구입 이사 매매 취득세 계산기 주거·부동산">
+            <a class="card calc-card" href="/acquisition-tax">
+              <span class="card-ico" aria-hidden="true"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10.5 12 4l8 6.5V20H4z"/><path d="M10 20v-5h4v5"/></svg></span>
+              <div class="card-main"><span class="card-cat cat-realty">주거·부동산</span>
               <h3 class="card-title">취득세 계산기</h3>
-              <span class="card-desc">주택 수와 가격에 따른 취득세를 확인합니다.</span>
-              <span class="card-btn">계산기 열기</span>
+              <span class="card-desc">주택 수와 가격에 따른 취득세를 확인합니다.</span></div>
+              <span class="card-btn">계산하기</span>
             </a>
           </li>
-          <li class="calc-item" data-category="realty" data-status="live" data-keywords="양도소득세 양도세 양도소득세 계산기 주거·부동산">
-            <a class="card calc-card tone-c3" href="/capital-gains-tax">
-              <span class="card-badges"><span class="card-no" aria-label="주거·부동산 3번">3</span><span class="card-cat cat-realty">주거·부동산</span><span class="status status-live">이용 가능</span></span>
+          <li class="calc-item cat-realty" data-category="realty" data-status="live" data-keywords="양도소득세 양도세 양도소득세 계산기 주거·부동산">
+            <a class="card calc-card" href="/capital-gains-tax">
+              <span class="card-ico" aria-hidden="true"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10.5 12 4l8 6.5V20H4z"/><path d="M10 20v-5h4v5"/></svg></span>
+              <div class="card-main"><span class="card-cat cat-realty">주거·부동산</span>
               <h3 class="card-title">양도소득세 계산기</h3>
-              <span class="card-desc">보유기간과 공제를 반영한 양도세를 확인합니다.</span>
-              <span class="card-btn">계산기 열기</span>
+              <span class="card-desc">보유기간과 공제를 반영한 양도세를 확인합니다.</span></div>
+              <span class="card-btn">계산하기</span>
             </a>
           </li>
-          <li class="calc-item" data-category="realty" data-status="live" data-keywords="중개수수료 복비 중개보수 중개수수료 계산기 주거·부동산">
-            <a class="card calc-card tone-c4" href="/brokerage-fee">
-              <span class="card-badges"><span class="card-no" aria-label="주거·부동산 4번">4</span><span class="card-cat cat-realty">주거·부동산</span><span class="status status-live">이용 가능</span></span>
+          <li class="calc-item cat-realty" data-category="realty" data-status="live" data-keywords="중개수수료 복비 중개보수 이사 부동산 수수료 전세 월세 매매 중개수수료 계산기 주거·부동산">
+            <a class="card calc-card" href="/brokerage-fee">
+              <span class="card-ico" aria-hidden="true"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="15" r="3.5"/><path d="M10.5 12.5 19 4M16 7l2 2M14 9l1.5 1.5"/></svg></span>
+              <div class="card-main"><span class="card-cat cat-realty">주거·부동산</span>
               <h3 class="card-title">중개수수료 계산기</h3>
-              <span class="card-desc">거래금액별 부동산 중개보수 상한을 확인합니다.</span>
-              <span class="card-btn">계산기 열기</span>
+              <span class="card-desc">거래금액별 부동산 중개보수 상한을 확인합니다.</span></div>
+              <span class="card-btn">계산하기</span>
             </a>
           </li>
-          <li class="calc-item" data-category="realty" data-status="live" data-keywords="전월세 전환율 전월세 전환 계산기 주거·부동산">
-            <a class="card calc-card tone-c2" href="/rent-conversion">
-              <span class="card-badges"><span class="card-no" aria-label="주거·부동산 5번">5</span><span class="card-cat cat-realty">주거·부동산</span><span class="status status-live">이용 가능</span></span>
+          <li class="calc-item cat-realty" data-category="realty" data-status="live" data-keywords="전월세 전환율 전세 월세 반전세 보증금 이사 전월세 전환 계산기 주거·부동산">
+            <a class="card calc-card" href="/rent-conversion">
+              <span class="card-ico" aria-hidden="true"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h14l-3-3M20 16H6l3 3"/></svg></span>
+              <div class="card-main"><span class="card-cat cat-realty">주거·부동산</span>
               <h3 class="card-title">전월세 전환 계산기</h3>
-              <span class="card-desc">전세와 월세를 전환율로 서로 환산합니다.</span>
-              <span class="card-btn">계산기 열기</span>
+              <span class="card-desc">전세와 월세를 전환율로 서로 환산합니다.</span></div>
+              <span class="card-btn">계산하기</span>
             </a>
           </li>
-          <li class="calc-item" data-category="realty" data-status="live" data-keywords="DSR 대출한도 DSR 대출한도 계산기 주거·부동산">
-            <a class="card calc-card tone-c1" href="/dsr-limit">
-              <span class="card-badges"><span class="card-no" aria-label="주거·부동산 6번">6</span><span class="card-cat cat-realty">주거·부동산</span><span class="status status-live">이용 가능</span></span>
+          <li class="calc-item cat-realty" data-category="realty" data-status="live" data-keywords="DSR 대출한도 LTV 주택담보대출 한도 대출 가능 금액 DSR 대출한도 계산기 주거·부동산">
+            <a class="card calc-card" href="/dsr-limit">
+              <span class="card-ico" aria-hidden="true"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 17a8 8 0 1 1 16 0"/><path d="M12 17l4-5"/></svg></span>
+              <div class="card-main"><span class="card-cat cat-realty">주거·부동산</span>
               <h3 class="card-title">DSR 대출한도 계산기</h3>
-              <span class="card-desc">소득과 기존 대출로 DSR 기준 대출 한도를 확인합니다.</span>
-              <span class="card-btn">계산기 열기</span>
+              <span class="card-desc">소득과 기존 대출로 DSR 기준 대출 한도를 확인합니다.</span></div>
+              <span class="card-btn">계산하기</span>
             </a>
           </li>
-          <li class="calc-item" data-category="realty" data-status="live" data-keywords="재산세 재산세 계산기 주거·부동산">
-            <a class="card calc-card tone-c4" href="/property-tax">
-              <span class="card-badges"><span class="card-no" aria-label="주거·부동산 7번">7</span><span class="card-cat cat-realty">주거·부동산</span><span class="status status-live">이용 가능</span></span>
+          <li class="calc-item cat-realty" data-category="realty" data-status="live" data-keywords="재산세 재산세 계산기 주거·부동산">
+            <a class="card calc-card" href="/property-tax">
+              <span class="card-ico" aria-hidden="true"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10.5 12 4l8 6.5V20H4z"/><path d="M10 20v-5h4v5"/></svg></span>
+              <div class="card-main"><span class="card-cat cat-realty">주거·부동산</span>
               <h3 class="card-title">재산세 계산기</h3>
-              <span class="card-desc">공시가격 기준 주택 재산세를 확인합니다.</span>
-              <span class="card-btn">계산기 열기</span>
+              <span class="card-desc">공시가격 기준 주택 재산세를 확인합니다.</span></div>
+              <span class="card-btn">계산하기</span>
             </a>
           </li>
-          <li class="calc-item" data-category="realty" data-status="live" data-keywords="평수 제곱미터 평수 계산기 주거·부동산">
-            <a class="card calc-card tone-c3" href="/pyeong">
-              <span class="card-badges"><span class="card-no" aria-label="주거·부동산 8번">8</span><span class="card-cat cat-realty">주거·부동산</span><span class="status status-live">이용 가능</span></span>
+          <li class="calc-item cat-realty" data-category="realty" data-status="live" data-keywords="평수 제곱미터 평수 계산기 주거·부동산">
+            <a class="card calc-card" href="/pyeong">
+              <span class="card-ico" aria-hidden="true"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="8" width="18" height="8" rx="1.5"/><path d="M7 8v3M11 8v4M15 8v3M19 8v2"/></svg></span>
+              <div class="card-main"><span class="card-cat cat-realty">주거·부동산</span>
               <h3 class="card-title">평수 계산기</h3>
-              <span class="card-desc">제곱미터와 평을 서로 환산합니다.</span>
-              <span class="card-btn">계산기 열기</span>
+              <span class="card-desc">제곱미터와 평을 서로 환산합니다.</span></div>
+              <span class="card-btn">계산하기</span>
             </a>
           </li>
-          <li class="calc-item" data-category="realty" data-status="live" data-keywords="청약가점 청약가점 계산기 주거·부동산">
-            <a class="card calc-card tone-c1" href="/subscription-points">
-              <span class="card-badges"><span class="card-no" aria-label="주거·부동산 9번">9</span><span class="card-cat cat-realty">주거·부동산</span><span class="status status-live">이용 가능</span></span>
+          <li class="calc-item cat-realty" data-category="realty" data-status="live" data-keywords="청약가점 청약가점 계산기 주거·부동산">
+            <a class="card calc-card" href="/subscription-points">
+              <span class="card-ico" aria-hidden="true"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4l2.4 4.9 5.4.8-3.9 3.8.9 5.4-4.8-2.5-4.8 2.5.9-5.4-3.9-3.8 5.4-.8z"/></svg></span>
+              <div class="card-main"><span class="card-cat cat-realty">주거·부동산</span>
               <h3 class="card-title">청약가점 계산기</h3>
-              <span class="card-desc">무주택기간·부양가족·통장 가입기간으로 가점을 계산합니다.</span>
-              <span class="card-btn">계산기 열기</span>
+              <span class="card-desc">무주택기간·부양가족·통장 가입기간으로 가점을 계산합니다.</span></div>
+              <span class="card-btn">계산하기</span>
             </a>
           </li>
-          <li class="calc-item" data-category="realty" data-status="live" data-keywords="전세보증금 깡통전세 전세보증금 안전 계산기 주거·부동산">
-            <a class="card calc-card tone-c2" href="/jeonse-safety">
-              <span class="card-badges"><span class="card-no" aria-label="주거·부동산 10번">10</span><span class="card-cat cat-realty">주거·부동산</span><span class="status status-live">이용 가능</span></span>
+          <li class="calc-item cat-realty" data-category="realty" data-status="live" data-keywords="전세보증금 깡통전세 전세 전세사기 보증금 안전 최우선변제 HUG 전세보증금 안전 계산기 주거·부동산">
+            <a class="card calc-card" href="/jeonse-safety">
+              <span class="card-ico" aria-hidden="true"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4 21 19.5H3z"/><path d="M12 10v4M12 17v.01"/></svg></span>
+              <div class="card-main"><span class="card-cat cat-realty">주거·부동산</span>
               <h3 class="card-title">전세보증금 안전 계산기</h3>
-              <span class="card-desc">매매가 대비 보증금 비율로 위험도를 점검합니다.</span>
-              <span class="card-btn">계산기 열기</span>
+              <span class="card-desc">매매가 대비 보증금 비율로 위험도를 점검합니다.</span></div>
+              <span class="card-btn">계산하기</span>
             </a>
           </li>
           <!-- catalog:end -->
       </ul>
-      <p class="no-results" id="no-results" hidden>검색 결과가 없습니다. 다른 낱말로 찾거나 ‘전체’를 눌러 주세요.</p>
+      <div class="no-results" id="no-results" hidden><p id="no-results-text">검색 결과가 없습니다. 다른 낱말로 찾아 주세요.</p><button type="button" class="btn btn-ghost" id="no-results-all" hidden>전체 분야에서 보기</button></div>
     </section>
 
     <div class="home-bottom">
       <section class="bottom-col" aria-labelledby="basis-title">
         <details class="content basis-fold" id="basis-fold">
-          <summary class="fold-summary"><h2 id="basis-title">적용 기준 및 공식 출처</h2></summary>
+          <summary class="fold-summary"><h2 id="basis-title">이용 가이드 · 적용 기준</h2></summary>
           <div class="fold-body">
+            <h3>이용 방법</h3>
+            <ol>
+              <li>위 검색창에 상황(예: 퇴사, 전세)을 입력하거나 분야를 골라 계산기를 엽니다.</li>
+              <li>금액·날짜 등 필요한 값을 입력하고 ‘계산하기’를 누릅니다. 모르는 값은 ‘자동 계산’ 도우미로 채울 수 있습니다.</li>
+              <li>결과 아래 ‘계산 방법 · 실제 예제 · 공식출처’를 펼치면 계산식과 근거 자료를 볼 수 있습니다.</li>
+            </ol>
             <h3>적용기준 안내</h3>
-            <p>생활계산서는 공식 자료로 계산 기준을 확인한 계산기만 공개합니다. 자세한 기준은 각 계산기 페이지의 ‘적용 기준 및 공식 출처’에서 볼 수 있습니다.</p>
-            <ul>
-              <li>월급 일할계산기: 달력일 기준과 소정근로일 기준 두 가지로 배분해 비교합니다(법정 산식이 아닌 비교용 계산).</li>
-              <li>주휴수당 판독기: 4주(4주 미만 근로 시 그 기간) 평균 1주 소정근로시간 15시간 이상, 소정근로일 개근 여부로 주차별 판정합니다.</li>
-            </ul>
+            <p>생활계산서의 계산기 30종은 공식 자료로 확인한 2026년 기준(세율·요율·법령)으로 계산합니다. 계산기마다 적용 기준과 기준일이 페이지 위쪽과 ‘공식출처’에 표시됩니다. 공식 발표 전인 연도는 계산하지 않고 그 사유를 안내합니다.</p>
             <h3>공식출처 확인</h3>
             <ul>
               <li><a href="https://www.law.go.kr/lsLinkCommonInfo.do?chrClsCd=010202&amp;lsJoLnkSeq=1027161983" target="_blank" rel="noopener noreferrer">근로기준법 제43조 (임금 지급)<span class="sr-only"> (새 창에서 열림)</span></a> · <a href="https://www.law.go.kr/lsLinkCommonInfo.do?chrClsCd=010202&amp;lsJoLnkSeq=1029728419" target="_blank" rel="noopener noreferrer">근로기준법 제48조 (임금대장 및 임금명세서)<span class="sr-only"> (새 창에서 열림)</span></a></li>
               <li><a href="https://www.law.go.kr/법령/근로기준법/제18조" target="_blank" rel="noopener noreferrer">근로기준법 제18조제3항<span class="sr-only"> (새 창에서 열림)</span></a> · <a href="https://www.law.go.kr/법령/근로기준법/제55조" target="_blank" rel="noopener noreferrer">근로기준법 제55조제1항<span class="sr-only"> (새 창에서 열림)</span></a> · <a href="https://www.law.go.kr/법령/근로기준법시행령/제30조" target="_blank" rel="noopener noreferrer">근로기준법 시행령 제30조제1항<span class="sr-only"> (새 창에서 열림)</span></a></li>
             </ul>
+            <p>각 계산기 페이지에는 해당 계산에 쓴 법령 조문과 기관 자료가 따로 정리되어 있습니다.</p>
             <h3>업데이트 안내</h3>
-            <p>준비 중인 8종(퇴직금, 야간·연장수당, 연차수당, 4대보험, 3.3% 프리랜서 세액, 실업급여, 최우선변제금, 양도세)은 법령·세율·기준일을 공식 자료로 확인한 뒤 순서대로 공개합니다.</p>
+            <p>법령·세율·요율이 바뀌면 공식 자료로 다시 확인한 뒤 계산 기준을 갱신하고, 확인일을 함께 고칩니다.</p>
             <p class="checked-date">공식 자료 확인일: <time datetime="2026-11-21">2026년 11월 21일</time></p>
           </div>
         </details>
@@ -435,15 +472,15 @@
         <h2 id="home-faq-title">자주 묻는 질문</h2>
           <details class="faq-item">
             <summary>어떤 계산기부터 사용하면 되나요?</summary>
-            <p>상황에 맞는 분야를 고르거나 검색창에 ‘주휴수당’, ‘퇴직금’처럼 찾는 계산을 입력하세요. 지금 바로 쓸 수 있는 계산기는 ‘이용 가능’으로 표시된 2종입니다.</p>
+            <p>맨 위 검색창에 ‘퇴사’, ‘전세’, ‘알바’처럼 상황을 입력하거나 ‘많이 찾는 계산기’ 6종부터 열어 보세요. 노동·급여, 세금·보험, 주거·부동산 3개 분야의 계산기 30종을 모두 바로 쓸 수 있습니다.</p>
           </details>
           <details class="faq-item">
             <summary>입력한 정보는 어떻게 활용되나요?</summary>
-            <p>입력한 급여·날짜·근무시간은 이 기기의 브라우저 안에서만 계산에 쓰이고, 서버나 분석 도구로 전송되지 않습니다.</p>
+            <p>입력한 금액·날짜·근무시간은 이 기기의 브라우저 안에서만 계산에 쓰이고, 서버나 분석 도구로 전송되지 않습니다.</p>
           </details>
           <details class="faq-item">
             <summary>적용기준과 공식출처는 어디서 확인하나요?</summary>
-            <p>이 페이지 아래 ‘적용 기준 및 공식 출처’와 각 계산기 페이지의 같은 영역에서 법령 조문과 공식 자료 확인일을 볼 수 있습니다.</p>
+            <p>이 페이지 아래 ‘이용 가이드 · 적용 기준’과 각 계산기 페이지의 ‘계산 방법 · 실제 예제 · 공식출처’에서 법령 조문과 공식 자료 확인일을 볼 수 있습니다.</p>
           </details>
           <details class="faq-item">
             <summary>계산 결과를 법적 판단에 바로 사용할 수 있나요?</summary>

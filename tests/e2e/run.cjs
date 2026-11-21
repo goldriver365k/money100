@@ -324,7 +324,7 @@ const CASES = [
     /* ================= 접속과 링크 ================= */
     section('주소 직접 접속·새로고침과 링크');
     for (const [url, title, h1] of [
-      ['/', '급여 계산기 모음 | 생활계산서', '생활에 필요한 계산을 한곳에서'],
+      ['/', '급여·세금·부동산 계산기 30종 | 생활계산서', '생활에 필요한 계산을 한곳에서'],
       ['/salary-proration', '월급 일할계산기 — 중도 입사·퇴사 급여 계산 | 생활계산서', '월급 일할계산기'],
     ]) {
       const fresh = await context.newPage();
@@ -362,7 +362,7 @@ const CASES = [
     await page.click('#home-link');
     await page.waitForURL(`${baseURL}/`);
     T('계산기 → 홈 이동', '계산기 상단 “← 홈” 버튼 클릭', '/ 로 이동', `${page.url().replace(baseURL, '') || '/'} “${await page.title()}”`,
-      (await page.title()) === '급여 계산기 모음 | 생활계산서');
+      (await page.title()) === '급여·세금·부동산 계산기 30종 | 생활계산서');
     await page.goto('/salary-proration');
     await page.click('.site-header .brand');
     await page.waitForURL(`${baseURL}/`);
@@ -872,7 +872,7 @@ const CASES = [
       const okNav = (await fresh.locator('h1').innerText()) === '주휴수당 계산기';
       await fresh.click('#home-link');
       await fresh.waitForURL(`${baseURL}/`);
-      T('홈 ↔ 주휴수당 계산기 이동', '홈 “주휴수당 계산기” 카드 클릭 → “← 홈” 버튼 클릭', '계산기로 이동 후 홈으로 복귀', `${okNav ? '계산기 열림' : '실패'} → ${await fresh.title()}`, okNav && (await fresh.title()) === '급여 계산기 모음 | 생활계산서');
+      T('홈 ↔ 주휴수당 계산기 이동', '홈 “주휴수당 계산기” 카드 클릭 → “← 홈” 버튼 클릭', '계산기로 이동 후 홈으로 복귀', `${okNav ? '계산기 열림' : '실패'} → ${await fresh.title()}`, okNav && (await fresh.title()) === '급여·세금·부동산 계산기 30종 | 생활계산서');
       await fresh.close();
     }
     for (const [label, opts, tag] of [

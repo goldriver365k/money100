@@ -15,13 +15,13 @@ export const CATALOG = [
   // 노동·급여
   { cat: 'labor', name: '연봉 실수령액 계산기', desc: '연봉에서 4대보험과 소득세를 뺀 월·연 실수령액을 확인합니다.', slug: 'annual-salary-net', kw: '연봉 실수령액 세후 월급 4대보험 소득세 연봉표' },
   { cat: 'labor', name: '월급 실수령액 계산기', desc: '세전 월급에서 공제액을 뺀 실수령액을 확인합니다.', slug: 'monthly-salary-net', kw: '월급 실수령액 세후' },
-  { cat: 'labor', name: '퇴직금 계산기', desc: '평균임금과 재직일수로 예상 퇴직금을 계산합니다.', slug: 'severance-pay', kw: '퇴직금 평균임금 재직일수 퇴직' },
+  { cat: 'labor', name: '퇴직금 계산기', desc: '평균임금과 재직일수로 예상 퇴직금을 계산합니다.', slug: 'severance-pay', kw: '퇴직금 평균임금 재직일수 퇴직 퇴사 퇴직급여' },
   { cat: 'labor', name: '주휴수당 계산기', desc: '주 15시간 기준으로 주휴수당 지급 여부와 금액을 판독합니다.', slug: 'weekly-holiday-pay', kw: '주휴수당 주휴 15시간 알바 아르바이트 초단시간 판독기' },
   { cat: 'labor', name: '시급 계산기', desc: '월급과 시급을 서로 환산하고 최저임금과 비교합니다.', slug: 'hourly-wage', kw: '시급 월급 환산 최저임금 209시간' },
-  { cat: 'labor', name: '실업급여 계산기', desc: '구직급여 예상 일액과 지급일수를 확인합니다.', slug: 'unemployment-benefit', kw: '실업급여 구직급여' },
+  { cat: 'labor', name: '실업급여 계산기', desc: '구직급여 예상 일액과 지급일수를 확인합니다.', slug: 'unemployment-benefit', kw: '실업급여 구직급여 퇴사 실직 권고사직' },
   { cat: 'labor', name: '연차수당 계산기', desc: '연차 발생일수와 미사용 연차수당을 계산합니다.', slug: 'annual-leave-pay', kw: '연차수당 연차 유급휴가' },
   { cat: 'labor', name: '야간·연장·휴일수당 계산기', desc: '가산임금이 붙는 근로시간의 수당을 계산합니다.', slug: 'overtime-pay', kw: '야간수당 연장수당 휴일수당 가산' },
-  { cat: 'labor', name: '월급 일할계산기', desc: '중도 입사·퇴사한 달의 급여를 달력일·소정근로일 기준으로 비교합니다.', slug: 'salary-proration', kw: '월급 일할 중도 입사 퇴사 급여 일할계산' },
+  { cat: 'labor', name: '월급 일할계산기', desc: '중도 입사·퇴사한 달의 급여를 달력일·소정근로일 기준으로 비교합니다.', slug: 'salary-proration', kw: '월급 일할 중도 입사 퇴사 급여 일할계산 입사' },
   { cat: 'labor', name: '육아휴직급여 계산기', desc: '육아휴직 기간별 예상 급여를 확인합니다.', slug: 'parental-leave-pay', kw: '육아휴직급여 육아휴직' },
   // 세금·보험
   { cat: 'tax', name: '4대보험 계산기', desc: '국민연금·건강·장기요양·고용보험의 근로자·사업주 부담을 계산합니다.', slug: 'social-insurance', kw: '4대보험 국민연금 건강보험 장기요양 고용보험 산재 사대보험' },
@@ -35,16 +35,16 @@ export const CATALOG = [
   { cat: 'tax', name: '증여세 계산기', desc: '증여재산 공제를 반영한 예상 증여세를 확인합니다.', slug: 'gift-tax', kw: '증여세' },
   { cat: 'tax', name: '상속세 계산기', desc: '상속공제를 반영한 예상 상속세를 확인합니다.', slug: 'inheritance-tax', kw: '상속세' },
   // 주거·부동산
-  { cat: 'realty', name: '대출이자 계산기', desc: '원리금균등·원금균등·만기일시 상환의 월 상환액과 총이자를 계산합니다.', slug: 'loan-interest', kw: '대출이자 원리금균등 원금균등 만기일시 주택담보대출 상환' },
-  { cat: 'realty', name: '취득세 계산기', desc: '주택 수와 가격에 따른 취득세를 확인합니다.', slug: 'acquisition-tax', kw: '취득세' },
+  { cat: 'realty', name: '대출이자 계산기', desc: '원리금균등·원금균등·만기일시 상환의 월 상환액과 총이자를 계산합니다.', slug: 'loan-interest', kw: '대출이자 원리금균등 원금균등 만기일시 주택담보대출 상환 이자 전세대출 신용대출' },
+  { cat: 'realty', name: '취득세 계산기', desc: '주택 수와 가격에 따른 취득세를 확인합니다.', slug: 'acquisition-tax', kw: '취득세 집 살 때 세금 주택 구입 이사 매매' },
   { cat: 'realty', name: '양도소득세 계산기', desc: '보유기간과 공제를 반영한 양도세를 확인합니다.', slug: 'capital-gains-tax', kw: '양도소득세 양도세' },
-  { cat: 'realty', name: '중개수수료 계산기', desc: '거래금액별 부동산 중개보수 상한을 확인합니다.', slug: 'brokerage-fee', kw: '중개수수료 복비 중개보수' },
-  { cat: 'realty', name: '전월세 전환 계산기', desc: '전세와 월세를 전환율로 서로 환산합니다.', slug: 'rent-conversion', kw: '전월세 전환율' },
-  { cat: 'realty', name: 'DSR 대출한도 계산기', desc: '소득과 기존 대출로 DSR 기준 대출 한도를 확인합니다.', slug: 'dsr-limit', kw: 'DSR 대출한도' },
+  { cat: 'realty', name: '중개수수료 계산기', desc: '거래금액별 부동산 중개보수 상한을 확인합니다.', slug: 'brokerage-fee', kw: '중개수수료 복비 중개보수 이사 부동산 수수료 전세 월세 매매' },
+  { cat: 'realty', name: '전월세 전환 계산기', desc: '전세와 월세를 전환율로 서로 환산합니다.', slug: 'rent-conversion', kw: '전월세 전환율 전세 월세 반전세 보증금 이사' },
+  { cat: 'realty', name: 'DSR 대출한도 계산기', desc: '소득과 기존 대출로 DSR 기준 대출 한도를 확인합니다.', slug: 'dsr-limit', kw: 'DSR 대출한도 LTV 주택담보대출 한도 대출 가능 금액' },
   { cat: 'realty', name: '재산세 계산기', desc: '공시가격 기준 주택 재산세를 확인합니다.', slug: 'property-tax', kw: '재산세' },
   { cat: 'realty', name: '평수 계산기', desc: '제곱미터와 평을 서로 환산합니다.', slug: 'pyeong', kw: '평수 제곱미터' },
   { cat: 'realty', name: '청약가점 계산기', desc: '무주택기간·부양가족·통장 가입기간으로 가점을 계산합니다.', slug: 'subscription-points', kw: '청약가점' },
-  { cat: 'realty', name: '전세보증금 안전 계산기', desc: '매매가 대비 보증금 비율로 위험도를 점검합니다.', slug: 'jeonse-safety', kw: '전세보증금 깡통전세' },
+  { cat: 'realty', name: '전세보증금 안전 계산기', desc: '매매가 대비 보증금 비율로 위험도를 점검합니다.', slug: 'jeonse-safety', kw: '전세보증금 깡통전세 전세 전세사기 보증금 안전 최우선변제 HUG' },
 ];
 
 const yearField = { type: 'year', name: 'year', label: '적용 기준 연도', hint: '연도를 바꾸면 그해 기준(요율·세율)으로 계산합니다. 공식 확정 전인 항목은 계산하지 않고 사유를 알려 드립니다.' };

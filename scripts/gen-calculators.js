@@ -14,7 +14,6 @@ import { CHECKED_DATE } from '../site/assets/js/rules/rules-data.js';
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 const checkedKo = (() => { const [y, m, d] = CHECKED_DATE.split('-').map(Number); return `${y}년 ${m}월 ${d}일`; })();
-const TONE = { 1: 'c1', 6: 'c1', 9: 'c1', 2: 'c2', 5: 'c2', 10: 'c2', 3: 'c3', 8: 'c3', 4: 'c4', 7: 'c4' };
 const bySlug = Object.fromEntries(CATALOG.filter((c) => c.slug).map((c) => [c.slug, c]));
 
 function field(f) {
@@ -452,23 +451,20 @@ ${footer}
 }
 
 function catalogHtml() {
-  const counters = { labor: 0, tax: 0, realty: 0 };
   return CATALOG.map((c) => {
-    counters[c.cat] += 1;
-    const n = counters[c.cat];
     const label = CATEGORIES[c.cat];
     const live = Boolean(c.slug);
     const kw = esc(`${c.kw} ${c.name} ${label}`);
-    const badges = `<span class="card-badges"><span class="card-no" aria-label="${label} ${n}번">${n}</span><span class="card-cat cat-${c.cat}">${label}</span><span class="status status-${live ? 'live' : 'soon'}">${live ? '이용 가능' : '준비 중'}</span></span>`;
-    const body = `\n              ${badges}\n              <h3 class="card-title">${esc(c.name)}</h3>\n              <span class="card-desc">${esc(c.desc)}</span>`;
+    const icon = `<span class="card-ico" aria-hidden="true"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${NAV_ICONS[NAV_ICON_OF[c.slug]] ?? NAV_ICONS.doc}</svg></span>`;
+    const body = `\n              ${icon}\n              <div class="card-main"><span class="card-cat cat-${c.cat}">${label}</span>${live ? '' : '<span class="status status-soon">준비 중</span>'}\n              <h3 class="card-title">${esc(c.name)}</h3>\n              <span class="card-desc">${esc(c.desc)}</span></div>`;
     return live
-      ? `          <li class="calc-item" data-category="${c.cat}" data-status="live" data-keywords="${kw}">
-            <a class="card calc-card tone-${TONE[n]}" href="/${c.slug}">${body}
-              <span class="card-btn">계산기 열기</span>
+      ? `          <li class="calc-item cat-${c.cat}" data-category="${c.cat}" data-status="live" data-keywords="${kw}">
+            <a class="card calc-card" href="/${c.slug}">${body}
+              <span class="card-btn">계산하기</span>
             </a>
           </li>`
-      : `          <li class="calc-item" data-category="${c.cat}" data-status="soon" data-keywords="${kw}">
-            <div class="card calc-card card-soon tone-${TONE[n]}">${body}
+      : `          <li class="calc-item cat-${c.cat}" data-category="${c.cat}" data-status="soon" data-keywords="${kw}">
+            <div class="card calc-card card-soon">${body}
               <span class="card-btn card-btn-soon">공개 준비 중 · 아직 계산할 수 없습니다</span>
             </div>
           </li>`;
@@ -521,7 +517,7 @@ for (const [file, cur, guide] of [['index.html', 'home'], ['salary-proration/ind
 
 /** 홈 '많이 찾는 계산기' 6종 (검색 수요 상위). 아이콘은 직접 그린 단순 선 아이콘 */
 const TOP = [
-  { slug: 'annual-salary-net', name: '연봉 계산기', icon: '<rect x="2.5" y="6" width="19" height="12" rx="2"/><circle cx="12" cy="12" r="2.6"/><path d="M6 9.5v5M18 9.5v5"/>' },
+  { slug: 'annual-salary-net', name: '연봉 실수령액 계산기', icon: '<rect x="2.5" y="6" width="19" height="12" rx="2"/><circle cx="12" cy="12" r="2.6"/><path d="M6 9.5v5M18 9.5v5"/>' },
   { slug: 'severance-pay', name: '퇴직금 계산기', icon: '<rect x="3" y="7.5" width="18" height="12" rx="2"/><path d="M9 7.5V6a1.5 1.5 0 0 1 1.5-1.5h3A1.5 1.5 0 0 1 15 6v1.5M3 12.5h18"/>' },
   { slug: 'loan-interest', name: '대출이자 계산기', icon: '<path d="M4 10.5 12 4l8 6.5V20H4z"/><path d="M9.5 17.5l5-5"/><circle cx="9.8" cy="12.8" r="0.9"/><circle cx="14.2" cy="17.2" r="0.9"/>' },
   { slug: 'hourly-wage', name: '시급 계산기', icon: '<circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/>' },
@@ -559,6 +555,6 @@ let home = fs.readFileSync(homePath, 'utf8');
 const live = CATALOG.filter((c) => c.slug).length;
 home = home.replace(/<!-- top:start -->[\s\S]*<!-- top:end -->/, topHtml());
 home = home.replace(/<!-- catalog:start -->[\s\S]*<!-- catalog:end -->/, `<!-- catalog:start -->\n${catalogHtml()}\n          <!-- catalog:end -->`);
-home = home.replace(/(<p class="calc-count" id="calc-count"[^>]*>)[^<]*(<\/p>)/, `$1계산기 ${CATALOG.length}개 · 이용 가능 ${live}개 · 준비 중 ${CATALOG.length - live}개$2`);
+home = home.replace(/(<p class="calc-count" id="calc-count"[^>]*>)[^<]*(<\/p>)/, `$1계산기 ${CATALOG.length}개${CATALOG.length - live ? ` · 준비 중 ${CATALOG.length - live}개` : ''}$2`);
 fs.writeFileSync(homePath, home);
 console.log(`홈 카드 ${CATALOG.length}개 (이용 가능 ${live}개)`);
