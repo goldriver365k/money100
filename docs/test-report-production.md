@@ -1,6 +1,6 @@
 # 정산노트 검수 결과표
 
-- 실행: 2026-11-21T02:39:57.133Z · 운영용 빌드(dist/, SITE_URL=https://example.com) · `npm run verify:production` · Chromium(Playwright) · 시간대 Pacific/Kiritimati(UTC+14)
+- 실행: 2026-11-21T02:41:14.989Z · 운영용 빌드(dist/, SITE_URL=https://example.com) · `npm run verify:production` · Chromium(Playwright) · 시간대 Pacific/Kiritimati(UTC+14)
 - 집계: 통과 91 · 실패 0 · 미확인 3
 
 ## 월급 일할계산기 — 필수 검증 사례 5건 (회귀, 브라우저 직접 입력)
