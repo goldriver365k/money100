@@ -949,3 +949,13 @@ html { scroll-padding-top: 84px; }
   .pay-helper { padding: 14px 12px; }
   .pay-helper-actions .btn-primary { flex: 1 1 100%; }
 }
+
+/* ===== 계산기 상단 홈 버튼 (이동 경로 대신) ===== */
+.home-nav { margin: 16px 0 4px; }
+.home-btn {
+  display: inline-flex; align-items: center; gap: 6px; min-height: 44px; padding: 0 18px;
+  border: 1.5px solid var(--border); border-radius: 999px; background: #fff;
+  color: var(--brand-strong); font-weight: 800; text-decoration: none;
+}
+.home-btn:hover { background: var(--brand-soft); border-color: var(--brand); }
+.home-btn:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }

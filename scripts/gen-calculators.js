@@ -170,12 +170,7 @@ async function page(spec) {
 ${header({ basis: 'basis-fold', faq: 'faq-fold' })}
 
   <main id="main" class="container">
-    <nav class="breadcrumb" aria-label="현재 위치">
-      <ol>
-        <li><a href="/" id="home-link">← 계산기 목록(홈)</a></li>
-        <li aria-current="page">${esc(spec.h1)}</li>
-      </ol>
-    </nav>
+    <nav class="home-nav" aria-label="홈으로 이동"><a href="/" id="home-link" class="home-btn"><span aria-hidden="true">←</span> 홈</a></nav>
 
     <section class="hero calc-hero" aria-labelledby="page-title">
       <p class="calc-badges"><span class="cat-badge cat-${spec.cat}">${esc(cat)}</span><span class="basis-badge">적용 기준: ${esc(spec.basisYear)}</span></p>

@@ -361,7 +361,7 @@ const CASES = [
       `카드 ${cards}개 → ${page.url().replace(baseURL, '')} “${await page.title()}”`, cards === LIVE_COUNT && (await page.locator('h1').innerText()) === '월급 일할계산기');
     await page.click('#home-link');
     await page.waitForURL(`${baseURL}/`);
-    T('계산기 → 홈 이동', '계산기 상단 “← 계산기 목록(홈)” 클릭', '/ 로 이동', `${page.url().replace(baseURL, '') || '/'} “${await page.title()}”`,
+    T('계산기 → 홈 이동', '계산기 상단 “← 홈” 버튼 클릭', '/ 로 이동', `${page.url().replace(baseURL, '') || '/'} “${await page.title()}”`,
       (await page.title()) === '급여 계산기 모음 | 정산노트');
     await page.goto('/salary-proration');
     await page.click('.site-header .brand');
@@ -872,7 +872,7 @@ const CASES = [
       const okNav = (await fresh.locator('h1').innerText()) === '주휴수당 계산기';
       await fresh.click('#home-link');
       await fresh.waitForURL(`${baseURL}/`);
-      T('홈 ↔ 주휴수당 계산기 이동', '홈 “주휴수당 계산기” 카드 클릭 → “← 계산기 목록(홈)” 클릭', '계산기로 이동 후 홈으로 복귀', `${okNav ? '계산기 열림' : '실패'} → ${await fresh.title()}`, okNav && (await fresh.title()) === '급여 계산기 모음 | 정산노트');
+      T('홈 ↔ 주휴수당 계산기 이동', '홈 “주휴수당 계산기” 카드 클릭 → “← 홈” 버튼 클릭', '계산기로 이동 후 홈으로 복귀', `${okNav ? '계산기 열림' : '실패'} → ${await fresh.title()}`, okNav && (await fresh.title()) === '급여 계산기 모음 | 정산노트');
       await fresh.close();
     }
     for (const [label, opts, tag] of [
