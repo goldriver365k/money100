@@ -1,8 +1,6 @@
-# 정산노트 검수 결과표 — 운영 주소 https://급여계산기.site (전체 초기화 반영 후)
+# 정산노트 검수 결과표 — 운영 주소 https://급여계산기.site (Canva 디자인 반영 후, dd810c4)
 
-> 실제 운영 주소에서 실행. 배포 커밋 8177f31, `PUBLIC_LAUNCH` 미설정(noindex).
-
-- 실행: 2026-11-21T05:18:23.698Z · 미리보기(dist/) · `npm run test:e2e` · Chromium(Playwright) · 시간대 Pacific/Kiritimati(UTC+14)
+- 실행: 2026-11-21T05:45:09.516Z · 미리보기(dist/) · `npm run test:e2e` · Chromium(Playwright) · 시간대 Pacific/Kiritimati(UTC+14)
 - 집계: 통과 101 · 실패 0 · 미확인 3
 
 ## 월급 일할계산기 — 필수 검증 사례 5건 (회귀, 브라우저 직접 입력)
@@ -51,7 +49,7 @@
 
 | 검수 항목 | 입력 또는 재현 방법 | 기대값 | 실제값 | 상태 |
 |---|---|---|---|---|
-| / 직접 접속 후 새로고침 | 새 탭에서 / 주소 입력 → 새로고침 | HTTP 200, 제목 “급여 계산기 모음 \| 정산노트”, 화면 제목 “급여 계산기 모음” | 200/200 · “급여 계산기 모음 \| 정산노트” · “급여 계산기 모음” | 통과 |
+| / 직접 접속 후 새로고침 | 새 탭에서 / 주소 입력 → 새로고침 | HTTP 200, 제목 “급여 계산기 모음 \| 정산노트”, 화면 제목 “복잡한 계산, 쉽고 정확하게” | 200/200 · “급여 계산기 모음 \| 정산노트” · “복잡한 계산, 쉽고 정확하게” | 통과 |
 | /salary-proration 직접 접속 후 새로고침 | 새 탭에서 /salary-proration 주소 입력 → 새로고침 | HTTP 200, 제목 “월급 일할계산기 — 중도 입사·퇴사 급여 계산 \| 정산노트”, 화면 제목 “월급 일할계산기” | 200/200 · “월급 일할계산기 — 중도 입사·퇴사 급여 계산 \| 정산노트” · “월급 일할계산기” | 통과 |
 | 끝 슬래시 주소 | /salary-proration/ 접속 | 계산기가 열리고, 슬래시 없는 주소로 이동하거나 canonical 이 슬래시 없는 주소를 가리킴 | /salary-proration (200) · canonical 없음(미리보기) | 통과 |
 | 없는 주소 | /salary-proration-x 접속 | 404 안내 페이지와 홈 링크 | 404 · 페이지를 찾을 수 없습니다 | 통과 |
@@ -74,7 +72,7 @@
 
 | 검수 항목 | 입력 또는 재현 방법 | 기대값 | 실제값 | 상태 |
 |---|---|---|---|---|
-| Tab 키로 모든 컨트롤 도달 | 페이지 처음부터 Tab 반복 | home-link → salary → year → month → [type] → start-date → reset-weekdays → clear-workdays → workday-1 → workday-30 → submit | skip-link → brand → home-link → salary → year → month → [type] → start-date → reset-weekdays → clear-workdays → workday-1 → workday-30 → submit | 통과 |
+| Tab 키로 모든 컨트롤 도달 | 페이지 처음부터 Tab 반복 | home-link → salary → year → month → [type] → start-date → reset-weekdays → clear-workdays → workday-1 → workday-30 → submit | skip-link → brand →  → btn btn-primary header-cta → home-link → salary → year → month → [type] → start-date → reset-weekdays → clear-workdays → workday-1 → workday-30 → submit | 통과 |
 | 현재 선택된 요소 표시(포커스 테두리) | 각 컨트롤에 Tab으로 이동 | 포커스된 요소에 3px 테두리 표시 | 금액 입력 solid 3px, 연도 선택 solid 3px, 정산 유형 solid 3px, 입사일 solid 3px, 초기화 버튼 solid 3px, 근무일(5일) solid 3px, 계산하기 solid 3px | 통과 |
 | 키보드만으로 입력·근무일 선택·계산 | Tab 이동 → 금액 입력 → 연도 2026·월 1월(Home) → 유형 화살표 → 날짜 입력 → 17일에서 Space → [계산하기]에서 Enter | 사례 3과 같은 결과 (100,000원 / 134,783원) | 달력일 1일/31일 → 100,000원 · 소정근로일 1일/23일 → 134,783원 · 차액 34,783원 · 소정근로일 기준이 더 큽니다 | 통과 |
 | 결과 갱신 시 스크린리더 알림 | 계산 후 알림 영역 확인 | role=status, aria-live=polite 영역에 결과 요약 | status/polite: 계산 결과: 달력일 기준 100,000원, 소정근로일 기준 134,783원. 차액 34,783원 · 소정근로일 기준이 더 큽니다. | 통과 |
