@@ -18,6 +18,7 @@ import {
   resolveEmploymentRange,
   toIsoDate,
 } from './proration.js';
+import { showErrorSummary, hideErrorSummary } from './error-summary.js';
 
 const $ = (id) => document.getElementById(id);
 
@@ -175,24 +176,21 @@ function clearError(field) {
 }
 
 function clearAllErrors() {
+  hideErrorSummary(form);
   Object.keys(FIELD_ERROR_TARGETS).forEach(clearError);
 }
 
 function showErrors(errors) {
-  let firstFocus = null;
+  const items = [];
   for (const [field, message] of Object.entries(errors)) {
     const target = FIELD_ERROR_TARGETS[field];
     if (!target) continue;
     target.error.textContent = message;
     target.error.hidden = false;
-    if (target.input) {
-      target.input.setAttribute('aria-invalid', 'true');
-      if (!firstFocus) firstFocus = target.input;
-    } else if (!firstFocus) {
-      firstFocus = grid.querySelector('input');
-    }
+    if (target.input) target.input.setAttribute('aria-invalid', 'true');
+    items.push({ target: target.input ?? grid.querySelector('input'), message });
   }
-  firstFocus?.focus();
+  showErrorSummary(form, items)?.focus();
 }
 
 /* ---------- 결과 ---------- */

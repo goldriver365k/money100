@@ -65,8 +65,21 @@ const check = (slug, w, item, ok, actual = '') => {
         const firstText = spec.fields.find((f) => f.required) ?? spec.fields.find((f) => f.type === 'amount');
         await p.fill(`[name="${firstText.name}"]`, '');
         await p.click('#submit');
-        const empty = await p.evaluate((n) => ({ err: document.getElementById(`${n}-error`).textContent, hidden: document.getElementById(`${n}-error`).hidden, focus: document.activeElement?.name, result: document.getElementById('result').hidden }), firstText.name);
-        check(spec.slug, w, '빈 입력 → 오류 문구·포커스·결과 숨김', !empty.hidden && empty.err.length > 0 && empty.focus === firstText.name && empty.result, JSON.stringify(empty));
+        const empty = await p.evaluate((n) => {
+          const errs = [...document.querySelectorAll('form .error:not([hidden])')].length;
+          const sum = document.getElementById('error-summary');
+          return { err: document.getElementById(`${n}-error`).textContent, hidden: document.getElementById(`${n}-error`).hidden, errs,
+            focus: document.activeElement?.id === 'error-summary' ? 'error-summary' : document.activeElement?.name,
+            summaryLinks: sum ? [...sum.querySelectorAll('a')].map((a) => a.getAttribute('href')) : null, result: document.getElementById('result').hidden };
+        }, firstText.name);
+        // 오류 1개: 그 칸으로 포커스 / 2개 이상: 오류 요약 상자로 포커스, 요약에 해당 칸 링크 (칸별 오류 문구 유지)
+        const focusOk = empty.errs >= 2 ? empty.focus === 'error-summary' && empty.summaryLinks?.includes(`#${firstText.name}`) : empty.focus === firstText.name && empty.summaryLinks === null;
+        check(spec.slug, w, '빈 입력 → 칸별 오류 문구·포커스(1개: 칸, 2개 이상: 오류 요약)·결과 숨김', !empty.hidden && empty.err.length > 0 && focusOk && empty.result, JSON.stringify(empty));
+        if (empty.errs >= 2) {
+          await p.click(`#error-summary a[href="#${firstText.name}"]`);
+          const linked = await p.evaluate(() => document.activeElement?.name);
+          check(spec.slug, w, '오류 요약 링크 → 해당 입력칸으로 이동', linked === firstText.name, String(linked));
+        }
 
         // 음수
         if (firstText.type === 'amount') {

@@ -891,3 +891,25 @@ a.calc-card:hover .card-btn { background: #fff; color: var(--tone); }
 .info-fold .fold-body > section + section { margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--border); }
 .info-fold .fold-body h3 { margin: 16px 0 8px; font-size: 1.05rem; }
 .info-fold .fold-body h4 { margin: 14px 0 8px; font-size: 0.98rem; }
+
+/* ===== UI UX Pro Max 점검 반영 (2026-11-21) ===== */
+/* 1) 포커스된 칸이 고정 영역에 가려지지 않게 (WCAG 2.4.11): 고정 헤더·하단 버튼 높이만큼 스크롤 여백 */
+html { scroll-padding-top: 84px; }
+@media (max-width: 899px) {
+  /* 2) 태블릿·모바일에서는 두 줄 머리글(약 98px)을 고정하지 않아 화면을 넓게 쓴다 */
+  .site-header { position: static; }
+  html { scroll-padding-top: 16px; }
+}
+@media (max-width: 599px) {
+  html { scroll-padding-bottom: 96px; } /* 하단 고정 계산하기 버튼 바(약 74px) */
+}
+/* 3) 오류 요약 상자 */
+.error-summary { margin: 0 0 18px; padding: 14px 16px; border: 2px solid var(--error); border-radius: 12px; background: var(--error-soft); }
+.error-summary:focus { outline: 3px solid var(--focus); outline-offset: 2px; }
+.error-summary-title { margin: 0 0 6px; font-weight: 800; color: var(--error); }
+.error-summary ul { margin: 0; padding-left: 20px; }
+.error-summary li { margin: 4px 0; }
+.error-summary a { color: var(--error); font-weight: 700; text-decoration: underline; display: inline-block; min-height: 24px; padding: 2px 0; }
+/* 4) 터치 영역 44px: 로고·이동 경로 링크 */
+.brand { min-height: 44px; }
+.breadcrumb a { display: inline-flex; align-items: center; min-height: 44px; padding: 0; }

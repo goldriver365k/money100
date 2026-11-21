@@ -3,6 +3,7 @@
  * 입력값은 브라우저 안에서만 쓰며 네트워크로 보내지 않는다.
  */
 import { AVAILABLE_YEARS, DEFAULT_YEAR } from './rules/index.js';
+import { showErrorSummary, hideErrorSummary } from './error-summary.js';
 
 const form = document.querySelector('form[data-calc]');
 const $ = (id) => document.getElementById(id);
@@ -62,20 +63,22 @@ function readRaw() {
 }
 
 function clearErrors() {
+  hideErrorSummary(form);
   form.querySelectorAll('.error').forEach((p) => { p.hidden = true; p.textContent = ''; });
   form.querySelectorAll('[aria-invalid]').forEach((i) => i.removeAttribute('aria-invalid'));
 }
 
 function showErrors(errors) {
-  let first = null;
+  const items = [];
   for (const [name, msg] of Object.entries(errors)) {
     const p = $(`${name}-error`);
     if (p) { p.textContent = msg; p.hidden = false; }
     const input = form.elements[name];
     const target = input instanceof RadioNodeList ? input[0] : input;
-    if (target) { target.setAttribute('aria-invalid', 'true'); first ??= target; }
+    if (target) target.setAttribute('aria-invalid', 'true');
+    items.push({ target, message: msg });
   }
-  first?.focus();
+  showErrorSummary(form, items)?.focus();
   status.textContent = `입력값을 확인해 주세요. ${Object.values(errors).join(' ')}`;
 }
 

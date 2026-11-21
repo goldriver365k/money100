@@ -21,6 +21,7 @@ import {
   weekdayName,
 } from './weekly-holiday.js';
 import { formatNumber } from './proration.js';
+import { showErrorSummary, hideErrorSummary } from './error-summary.js';
 
 const $ = (id) => document.getElementById(id);
 const form = $('whp-form');
@@ -381,6 +382,7 @@ function collectRaw() {
 
 function showErrors(errors) {
   let first = null;
+  const items = [];
   for (const [key, msg] of Object.entries(errors)) {
     if (key.startsWith('day:')) {
       const iso = key.slice(4);
@@ -388,6 +390,7 @@ function showErrors(errors) {
       el.textContent = msg;
       el.hidden = false;
       for (const id of [`h-${iso}`, `m-${iso}`]) $(id).setAttribute('aria-invalid', 'true');
+      items.push({ target: $(`h-${iso}`), message: msg });
       if (!first) {
         const n = Number(el.closest('.week-panel').dataset.week);
         showWeek(n, false);
@@ -401,18 +404,17 @@ function showErrors(errors) {
     err.textContent = msg;
     err.hidden = false;
     if (key === 'normalWeekdays') form.querySelector('details.advanced').open = true;
-    if (f[0]) {
-      $(f[0]).setAttribute('aria-invalid', 'true');
-      if (!first) first = $(f[0]);
-    } else if (!first) {
-      first = key === 'status' ? form.querySelector('input[name="status"]') : form.querySelector('input[name="normalWeekday"]');
-    }
+    const target = f[0] ? $(f[0]) : key === 'status' ? form.querySelector('input[name="status"]') : form.querySelector('input[name="normalWeekday"]');
+    if (f[0]) target.setAttribute('aria-invalid', 'true');
+    items.push({ target, message: msg });
+    if (!first) first = target;
   }
-  first?.focus();
+  (showErrorSummary(form, items) ?? first)?.focus();
 }
 
 function onSubmit(e) {
   e.preventDefault();
+  hideErrorSummary(form);
   Object.keys(FIELD_ERRORS).forEach(clearError);
   form.querySelectorAll('.day-error').forEach((el) => { el.hidden = true; el.textContent = ''; });
   const out = evaluate(collectRaw());
@@ -554,6 +556,7 @@ function hasUserInput() {
 /** 모든 입력·근무표를 처음 상태로 되돌린다. 접이식 영역의 열림 상태는 그대로 둔다. */
 function resetAll() {
   if (hasUserInput() && !window.confirm('입력한 근무표와 결과를 모두 지우고 처음 상태로 되돌릴까요?')) return;
+  hideErrorSummary(form);
   dayData.clear();
   noWork.clear();
   activeWeek = null;
