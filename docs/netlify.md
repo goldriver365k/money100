@@ -3,7 +3,12 @@
 - 작성: 2026-11-21 (9차)
 - 운영 도메인(사용자 확정): **급여계산기.site** · ASCII `xn--989a2xnd520fn5f.site`
   - 9차 지시문의 표기는 ‘급여계산서.site’였다. 이 주소는 2026-11-21 12:20 KST 기준 Radix 레지스트리 RDAP에서 “available for registration”이었다. 같은 시각 ‘급여계산기.site’가 가비아를 통해 등록된 것을 확인했고, 사용자가 급여계산기.site로 확정했다.
-- 현재 상태: **Netlify 연결 대기** — Netlify 계정 접근 권한(토큰)이 제공되지 않아 프로젝트 생성·배포·도메인 추가를 하지 않았다. 저장소는 Netlify 연결만 하면 되도록 준비했다.
+- 현재 상태(2026-11-21 12:39 KST 확인): **Netlify 연결·도메인 연결·HTTPS 완료, 공개 전환(PUBLIC_LAUNCH) 대기**
+  - DNS: `@` A `75.2.60.5`(Netlify), `www` → `apex-loadbalancer.netlify.com`(Netlify), 네임서버 가비아
+  - HTTPS: 인증서 유효, `http://` → `https://` 301, `www` → 루트 301, 끝 슬래시 → 슬래시 없는 주소 301, 없는 주소 404
+  - 배포: 커밋 6b23002, 미리보기 모드(noindex 메타·`X-Robots-Tag`·robots `Disallow`), sitemap 없음
+  - 운영 주소 브라우저 검수: 통과 86 · 실패 0 · 미확인 3 (`docs/live-preview-report.md`)
+  - Netlify 사이트 이름은 `jeongsan-note`가 아님(`jeongsan-note.netlify.app` 404). netlify.app → 운영 도메인 이동 규칙은 Netlify가 빌드 때 넣어 주는 `SITE_NAME`으로 자동 생성되므로 이름과 관계없이 동작한다.
 
 ## 1. 확인한 사실
 
