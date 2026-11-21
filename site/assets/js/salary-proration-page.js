@@ -40,7 +40,6 @@ const FIELD_ERROR_TARGETS = {
   startDate: { input: startInput, error: $('start-date-error') },
   endDate: { input: endInput, error: $('end-date-error') },
   workdays: { input: null, error: $('schedule-error') },
-  period: { input: yearSelect, error: $('salary-error') },
 };
 
 /* ---------- 상태 읽기 ---------- */
@@ -116,6 +115,7 @@ function renderCalendar() {
   }
 
   grid.replaceChildren(frag);
+  grid.dataset.period = `${year}-${month}`;
 }
 
 function applyDateBounds() {
@@ -197,7 +197,11 @@ function showErrors(errors) {
 
 /* ---------- 결과 ---------- */
 
+let announceTimer = 0;
+
 function hideResult() {
+  // 결과 알림이 예약된 직후 입력이 바뀌면, 숨긴 결과를 뒤늦게 읽지 않도록 예약을 취소한다.
+  window.clearTimeout(announceTimer);
   if (!resultSection.hidden) {
     resultSection.hidden = true;
     resultStatus.textContent = '';
@@ -243,7 +247,8 @@ function renderResult(r) {
   const announcement = `계산 결과: 달력일 기준 ${formatWon(r.calendar.amount)}, 소정근로일 기준 ${workdayText}. 차액 ${diffText}.`;
   // 같은 결과를 다시 계산해도 읽어 주도록 비운 뒤 다음 프레임에 갱신한다.
   resultStatus.textContent = '';
-  window.setTimeout(() => {
+  window.clearTimeout(announceTimer);
+  announceTimer = window.setTimeout(() => {
     resultStatus.textContent = announcement;
   }, 50);
 }
@@ -306,12 +311,27 @@ function onSubmit(event) {
     workdays: selectedWorkdays(),
   });
   if (!outcome.ok) {
+    window.clearTimeout(announceTimer);
     resultSection.hidden = true;
     resultStatus.textContent = '';
     showErrors(outcome.errors);
     return;
   }
   renderResult(outcome.result);
+}
+
+/**
+ * 뒤로가기 등으로 페이지가 다시 표시될 때, 브라우저가 되살린 정산월과
+ * 스크립트가 그린 달력이 어긋나 있으면 선택된 정산월 기준으로 다시 맞춘다.
+ */
+function resyncAfterRestore() {
+  const { year, month } = selectedPeriod();
+  if (grid.dataset.period !== `${year}-${month}`) {
+    onPeriodChanged();
+  }
+  applyTypeVisibility();
+  updateSalaryPreview();
+  updateScheduleState();
 }
 
 function init() {
@@ -338,6 +358,7 @@ function init() {
   });
   $('clear-workdays').addEventListener('click', () => setAllWorkdays(() => false));
   form.addEventListener('submit', onSubmit);
+  window.addEventListener('pageshow', resyncAfterRestore);
 }
 
 init();
