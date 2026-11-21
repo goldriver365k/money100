@@ -4,3 +4,6 @@ dist/
 
 # Local Netlify folder
 .netlify
+
+# Python 캐시 (스킬 검색 스크립트 실행 시 생성)
+__pycache__/
