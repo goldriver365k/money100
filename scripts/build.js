@@ -21,7 +21,7 @@ import { PAGES } from './pages.js';
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const SRC = path.join(ROOT, 'site');
 const OUT = process.env.BUILD_OUT ? path.resolve(process.env.BUILD_OUT) : path.join(ROOT, 'dist');
-const CONFIG = JSON.parse(fs.readFileSync(path.join(ROOT, 'site.config.json'), 'utf8'));
+const CONFIG = JSON.parse(fs.readFileSync(process.env.BUILD_CONFIG ? path.resolve(process.env.BUILD_CONFIG) : path.join(ROOT, 'site.config.json'), 'utf8'));
 const SEO_BLOCK = /<!-- seo:start -->[\s\S]*?<!-- seo:end -->/;
 
 function fail(message) {

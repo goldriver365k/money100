@@ -1,0 +1,8 @@
+# 정산노트 — Netlify 설정 (GitHub 저장소 연결 시 자동 적용)
+# 공개 전환: Netlify 환경변수 PUBLIC_LAUNCH=true (도메인 HTTPS 확인 후). 자세한 절차는 docs/netlify.md
+[build]
+  command = "node scripts/netlify-build.js"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "22"

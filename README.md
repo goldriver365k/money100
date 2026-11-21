@@ -42,7 +42,7 @@ npm run test:e2e
 
 `SITE_URL`이 없거나 https가 아니면 운영 빌드는 실패한다.
 
-운영 도메인은 `site.config.json`의 `siteUrl` 한 곳에서 지정한다(현재 미지정, 후보는 `docs/domain.md`). 운영 빌드 검수는 `npm run verify:production`, 배포 후 점검은 `node scripts/check-live.js https://운영도메인`. 배포·복구 절차는 `docs/deploy.md`. 페이지 목록은 `scripts/pages.js`에서 관리한다.
+운영 도메인은 `site.config.json`의 `siteUrl` 한 곳에서 지정한다(급여계산기.site). Netlify 배포·도메인 연결은 `netlify.toml`·`scripts/netlify-build.js`·`docs/netlify.md`. 운영 빌드 검수는 `npm run verify:production`, 배포 후 점검은 `node scripts/check-live.js https://운영도메인`. 배포·복구 절차는 `docs/deploy.md`. 페이지 목록은 `scripts/pages.js`에서 관리한다.
 
 배포 시 호스팅에서 확장자 없는 주소(`/salary-proration`)가 `salary-proration/index.html`로 응답하도록
 설정해야 한다 (예: Vercel `cleanUrls`/`trailingSlash: false`, Netlify Pretty URLs, Cloudflare Pages 기본 동작).

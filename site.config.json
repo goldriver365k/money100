@@ -1,4 +1,4 @@
 {
-  "_comment": "운영 도메인은 이 파일의 siteUrl 한 곳에서만 지정한다. 실제로 연결(DNS·HTTPS 확인)되기 전에는 null 로 둔다. 빌드 시 SITE_URL 환경변수가 있으면 그 값이 우선한다. 한글 도메인은 그대로 적어도 canonical·sitemap 에는 ASCII(Punycode) 주소로 들어간다.",
-  "siteUrl": null
+  "_comment": "운영 도메인은 이 파일의 siteUrl 한 곳에서만 지정한다(9차 확정: 급여계산기.site). 빌드 시 SITE_URL 환경변수가 있으면 그 값이 우선한다. 한글 도메인은 canonical·sitemap 에 ASCII(Punycode) 주소로 들어간다. Netlify 운영 빌드는 PUBLIC_LAUNCH=true 일 때만 이 주소로 공개 설정(canonical·sitemap·색인 허용)을 적용한다(scripts/netlify-build.js).",
+  "siteUrl": "https://급여계산기.site"
 }

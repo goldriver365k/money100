@@ -1,6 +1,6 @@
 # 정산노트 검수 결과표
 
-- 실행: 2026-11-21T02:41:14.989Z · 운영용 빌드(dist/, SITE_URL=https://example.com) · `npm run verify:production` · Chromium(Playwright) · 시간대 Pacific/Kiritimati(UTC+14)
+- 실행: 2026-11-21T03:29:07.701Z · 운영용 빌드(dist/, SITE_URL=https://xn--989a2xnd520fn5f.site) · `npm run verify:production` · Chromium(Playwright) · 시간대 Pacific/Kiritimati(UTC+14)
 - 집계: 통과 91 · 실패 0 · 미확인 3
 
 ## 월급 일할계산기 — 필수 검증 사례 5건 (회귀, 브라우저 직접 입력)
@@ -51,7 +51,7 @@
 |---|---|---|---|---|
 | / 직접 접속 후 새로고침 | 새 탭에서 / 주소 입력 → 새로고침 | HTTP 200, 제목 “급여 계산기 모음 \| 정산노트”, 화면 제목 “급여 계산기 모음” | 200/200 · “급여 계산기 모음 \| 정산노트” · “급여 계산기 모음” | 통과 |
 | /salary-proration 직접 접속 후 새로고침 | 새 탭에서 /salary-proration 주소 입력 → 새로고침 | HTTP 200, 제목 “월급 일할계산기 — 중도 입사·퇴사 급여 계산 \| 정산노트”, 화면 제목 “월급 일할계산기” | 200/200 · “월급 일할계산기 — 중도 입사·퇴사 급여 계산 \| 정산노트” · “월급 일할계산기” | 통과 |
-| 끝 슬래시 주소 통일 | /salary-proration/ 접속 | /salary-proration 으로 이동해 계산기 표시 | /salary-proration (200) | 통과 |
+| 끝 슬래시 주소 | /salary-proration/ 접속 | 계산기가 열리고, 슬래시 없는 주소로 이동하거나 canonical 이 슬래시 없는 주소를 가리킴 | /salary-proration (200) · canonical https://xn--989a2xnd520fn5f.site/salary-proration | 통과 |
 | 없는 주소 | /salary-proration-x 접속 | 404 안내 페이지와 홈 링크 | 404 · 페이지를 찾을 수 없습니다 | 통과 |
 | 홈 → 계산기 이동 | 홈에서 “월급 일할계산기” 카드 클릭 | 카드 2개(월급 일할계산기·주휴수당 계산기), /salary-proration 으로 이동 | 카드 2개 → /salary-proration “월급 일할계산기 — 중도 입사·퇴사 급여 계산 \| 정산노트” | 통과 |
 | 계산기 → 홈 이동 | 계산기 상단 “← 계산기 목록(홈)” 클릭 | / 로 이동 | / “급여 계산기 모음 \| 정산노트” | 통과 |
@@ -138,7 +138,7 @@
 | 검수 항목 | 입력 또는 재현 방법 | 기대값 | 실제값 | 상태 |
 |---|---|---|---|---|
 | /weekly-holiday-pay 직접 접속 후 새로고침 | 새 탭에서 주소 입력 → 새로고침 | HTTP 200, 제목 “주휴수당 계산기 — 주 15시간·변동 근무 판독 \| 정산노트”, 화면 제목 “주휴수당 계산기” | 200/200 · “주휴수당 계산기 — 주 15시간·변동 근무 판독 \| 정산노트” · “주휴수당 계산기” | 통과 |
-| /weekly-holiday-pay/ 주소 통일 | 끝 슬래시 주소 접속 | /weekly-holiday-pay 로 이동 | /weekly-holiday-pay (200) | 통과 |
+| /weekly-holiday-pay/ 끝 슬래시 주소 | 끝 슬래시 주소 접속 | 계산기가 열리고, 슬래시 없는 주소로 이동하거나 canonical 이 슬래시 없는 주소를 가리킴 | /weekly-holiday-pay (200) · canonical https://xn--989a2xnd520fn5f.site/weekly-holiday-pay | 통과 |
 | 홈 ↔ 주휴수당 계산기 이동 | 홈 “주휴수당 계산기” 카드 클릭 → “← 계산기 목록(홈)” 클릭 | 계산기로 이동 후 홈으로 복귀 | 계산기 열림 → 급여 계산기 모음 \| 정산노트 | 통과 |
 | 모바일 360px 주휴수당 계산기 | 모바일 360px에서 사례 4 입력·판정 | 가로 스크롤 없음, 입력칸·버튼·판정표가 화면 안, 4주 탭이 스크롤 없이 보임 | 입력 화면 넘침 0px, 화면 밖 요소 0개 , 4주 탭 한 화면=true · 결과 화면 넘침 0px | 통과 |
 | 데스크톱 1280px 주휴수당 계산기 | 데스크톱 1280px에서 사례 4 입력·판정 | 가로 스크롤 없음, 입력칸·버튼·판정표가 화면 안, 4주 탭이 스크롤 없이 보임 | 입력 화면 넘침 0px, 화면 밖 요소 0개 , 4주 탭 한 화면=true · 결과 화면 넘침 0px | 통과 |
@@ -151,13 +151,13 @@
 | 실행 중 요청: 다른 출처로 보낸 요청 | 위 모든 검수를 실행하는 동안 브라우저 요청 기록(공식 출처 새 창 제외) | 다른 출처 요청 0건 | 0건  | 통과 |
 | 실행 중 콘솔 오류 | 위 모든 검수 중 브라우저 콘솔 기록 | 오류 0건 | 0건  | 통과 |
 
-## 운영용 빌드 검색 설정 (SITE_URL=https://example.com)
+## 운영용 빌드 검색 설정 (SITE_URL=https://xn--989a2xnd520fn5f.site)
 
 | 검수 항목 | 입력 또는 재현 방법 | 기대값 | 실제값 | 상태 |
 |---|---|---|---|---|
-| canonical: / | 운영 빌드 /의 link rel=canonical·og:url·meta robots 확인 | canonical·og:url = https://example.com/, noindex 없음 | canonical https://example.com/ · og:url https://example.com/ · robots 없음 | 통과 |
-| canonical: /salary-proration | 운영 빌드 /salary-proration의 link rel=canonical·og:url·meta robots 확인 | canonical·og:url = https://example.com/salary-proration, noindex 없음 | canonical https://example.com/salary-proration · og:url https://example.com/salary-proration · robots 없음 | 통과 |
-| canonical: /weekly-holiday-pay | 운영 빌드 /weekly-holiday-pay의 link rel=canonical·og:url·meta robots 확인 | canonical·og:url = https://example.com/weekly-holiday-pay, noindex 없음 | canonical https://example.com/weekly-holiday-pay · og:url https://example.com/weekly-holiday-pay · robots 없음 | 통과 |
-| sitemap.xml | /sitemap.xml 요청 | 200, <loc> 3개: https://example.com/, https://example.com/salary-proration, https://example.com/weekly-holiday-pay | 200 · https://example.com/, https://example.com/salary-proration, https://example.com/weekly-holiday-pay | 통과 |
-| robots.txt | /robots.txt 요청 | Allow: / · Sitemap: https://example.com/sitemap.xml | User-agent: * / Allow: / / Sitemap: https://example.com/sitemap.xml | 통과 |
+| canonical: / | 운영 빌드 /의 link rel=canonical·og:url·meta robots 확인 | canonical·og:url = https://xn--989a2xnd520fn5f.site/, noindex 없음 | canonical https://xn--989a2xnd520fn5f.site/ · og:url https://xn--989a2xnd520fn5f.site/ · robots 없음 | 통과 |
+| canonical: /salary-proration | 운영 빌드 /salary-proration의 link rel=canonical·og:url·meta robots 확인 | canonical·og:url = https://xn--989a2xnd520fn5f.site/salary-proration, noindex 없음 | canonical https://xn--989a2xnd520fn5f.site/salary-proration · og:url https://xn--989a2xnd520fn5f.site/salary-proration · robots 없음 | 통과 |
+| canonical: /weekly-holiday-pay | 운영 빌드 /weekly-holiday-pay의 link rel=canonical·og:url·meta robots 확인 | canonical·og:url = https://xn--989a2xnd520fn5f.site/weekly-holiday-pay, noindex 없음 | canonical https://xn--989a2xnd520fn5f.site/weekly-holiday-pay · og:url https://xn--989a2xnd520fn5f.site/weekly-holiday-pay · robots 없음 | 통과 |
+| sitemap.xml | /sitemap.xml 요청 | 200, <loc> 3개: https://xn--989a2xnd520fn5f.site/, https://xn--989a2xnd520fn5f.site/salary-proration, https://xn--989a2xnd520fn5f.site/weekly-holiday-pay | 200 · https://xn--989a2xnd520fn5f.site/, https://xn--989a2xnd520fn5f.site/salary-proration, https://xn--989a2xnd520fn5f.site/weekly-holiday-pay | 통과 |
+| robots.txt | /robots.txt 요청 | Allow: / · Sitemap: https://xn--989a2xnd520fn5f.site/sitemap.xml | User-agent: * / Allow: / / Sitemap: https://xn--989a2xnd520fn5f.site/sitemap.xml | 통과 |
 | 없는 주소의 404 페이지는 검색 제외 | /no-such-page 요청 | 404, noindex | 404 · noindex 있음 | 통과 |

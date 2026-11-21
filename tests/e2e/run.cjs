@@ -16,7 +16,8 @@ const { chromium } = require('playwright');
 const ROOT = path.resolve(__dirname, '..', '..');
 const DIR = process.env.E2E_DIR || 'site';
 const PRODUCTION = process.env.E2E_PRODUCTION === '1';
-const SITE_URL = process.env.SITE_URL ? new URL(process.env.SITE_URL).origin : ''; // 한글 도메인 → Punycode
+const CONFIG_SITE = JSON.parse(fs.readFileSync(path.join(ROOT, 'site.config.json'), 'utf8')).siteUrl;
+const SITE_URL = (process.env.SITE_URL || (PRODUCTION && CONFIG_SITE)) ? new URL(process.env.SITE_URL || CONFIG_SITE).origin : ''; // 한글 도메인 → Punycode
 if (PRODUCTION && !SITE_URL) {
   console.error('운영 검수에는 SITE_URL 이 필요합니다.');
   process.exit(1);
@@ -337,8 +338,11 @@ const CASES = [
       await fresh.close();
     }
     let resp = await page.goto('/salary-proration/');
-    T('끝 슬래시 주소 통일', '/salary-proration/ 접속', '/salary-proration 으로 이동해 계산기 표시', `${page.url().replace(baseURL, '')} (${resp.status()})`,
-      page.url() === `${baseURL}/salary-proration` && resp.status() === 200);
+    const slashCanon = await page.evaluate(() => document.querySelector('link[rel=canonical]')?.href ?? null);
+    const slashOk = resp.status() === 200 && (await page.locator('h1').innerText()) === '월급 일할계산기' &&
+      (page.url() === `${baseURL}/salary-proration` || (slashCanon === null ? !PRODUCTION : slashCanon.endsWith('/salary-proration')));
+    T('끝 슬래시 주소', '/salary-proration/ 접속', '계산기가 열리고, 슬래시 없는 주소로 이동하거나 canonical 이 슬래시 없는 주소를 가리킴',
+      `${page.url().replace(baseURL, '')} (${resp.status()}) · canonical ${slashCanon ?? '없음(미리보기)'}`, slashOk);
     // 일부러 404를 내는 검사라 콘솔 기록 대상이 아닌 별도 탭에서 실행
     const p404 = await context.newPage();
     resp = await p404.goto('/salary-proration-x');
@@ -855,7 +859,9 @@ const CASES = [
       T('/weekly-holiday-pay 직접 접속 후 새로고침', '새 탭에서 주소 입력 → 새로고침', 'HTTP 200, 제목 “주휴수당 계산기 — 주 15시간·변동 근무 판독 | 정산노트”, 화면 제목 “주휴수당 계산기”',
         `${r1.status()}/${r2.status()} · “${await fresh.title()}” · “${h1}”`, r1.status() === 200 && r2.status() === 200 && t1x === '주휴수당 계산기 — 주 15시간·변동 근무 판독 | 정산노트' && h1 === '주휴수당 계산기');
       const r3 = await fresh.goto('/weekly-holiday-pay/');
-      T('/weekly-holiday-pay/ 주소 통일', '끝 슬래시 주소 접속', '/weekly-holiday-pay 로 이동', `${fresh.url().replace(baseURL, '')} (${r3.status()})`, fresh.url() === `${baseURL}/weekly-holiday-pay`);
+      const c3 = await fresh.evaluate(() => document.querySelector('link[rel=canonical]')?.href ?? null);
+      T('/weekly-holiday-pay/ 끝 슬래시 주소', '끝 슬래시 주소 접속', '계산기가 열리고, 슬래시 없는 주소로 이동하거나 canonical 이 슬래시 없는 주소를 가리킴', `${fresh.url().replace(baseURL, '')} (${r3.status()}) · canonical ${c3 ?? '없음(미리보기)'}`,
+        r3.status() === 200 && (await fresh.locator('h1').innerText()) === '주휴수당 계산기' && (fresh.url() === `${baseURL}/weekly-holiday-pay` || (c3 === null ? !PRODUCTION : c3.endsWith('/weekly-holiday-pay'))));
       await fresh.goto('/');
       await fresh.click('a.card[href="/weekly-holiday-pay"]');
       await fresh.waitForURL(`${baseURL}/weekly-holiday-pay`);
@@ -906,7 +912,7 @@ const CASES = [
     /* ================= 데이터 전송 ================= */
     section('급여·날짜 외부 전송 여부');
     const src = ['assets/js/proration.js', 'assets/js/salary-proration-page.js', 'assets/js/weekly-holiday.js', 'assets/js/weekly-holiday-page.js'].map((f) => fs.readFileSync(path.join(ROOT, DIR, f), 'utf8')).join('\n');
-    const html = ['index.html', 'salary-proration/index.html', 'weekly-holiday-pay/index.html'].map((f) => fs.readFileSync(path.join(ROOT, DIR, f), 'utf8')).join('\n');
+    const html = ['index.html', 'salary-proration/index.html', 'weekly-holiday-pay/index.html'].map((f) => { const full = path.join(ROOT, DIR, f); return fs.readFileSync(fs.existsSync(full) ? full : full.replace(/\/index\.html$/, '.html'), 'utf8'); }).join('\n');
     const apis = ['fetch(', 'XMLHttpRequest', 'sendBeacon', 'WebSocket', 'EventSource', 'localStorage', 'sessionStorage', 'indexedDB', 'document.cookie', 'import(', 'new Image', 'gtag', 'dataLayer'];
     const found = apis.filter((a) => src.includes(a));
     const externalScripts = (html.match(/<script[^>]+src="(?!\/)[^"]*"/g) || []);
