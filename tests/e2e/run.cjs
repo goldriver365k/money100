@@ -16,7 +16,7 @@ const { chromium } = require('playwright');
 const ROOT = path.resolve(__dirname, '..', '..');
 const DIR = process.env.E2E_DIR || 'site';
 const PRODUCTION = process.env.E2E_PRODUCTION === '1';
-const SITE_URL = (process.env.SITE_URL || '').replace(/\/$/, '');
+const SITE_URL = process.env.SITE_URL ? new URL(process.env.SITE_URL).origin : ''; // 한글 도메인 → Punycode
 if (PRODUCTION && !SITE_URL) {
   console.error('운영 검수에는 SITE_URL 이 필요합니다.');
   process.exit(1);

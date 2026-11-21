@@ -14,8 +14,9 @@ const TITLES = {
   '/weekly-holiday-pay': '주휴수당 계산기 — 주 15시간·변동 근무 판독 | 정산노트',
 };
 
-const base = (process.argv[2] || process.env.SITE_URL || '').replace(/\/$/, '');
-const site = (process.argv[3] || base).replace(/\/$/, '');
+const origin = (u) => { try { return new URL(u).origin; } catch { return ''; } };
+const base = origin(process.argv[2] || process.env.SITE_URL || '');
+const site = origin(process.argv[3] || base); // 한글 도메인 → Punycode
 if (!/^https?:\/\//.test(base)) {
   console.error('사용법: node scripts/check-live.js https://운영도메인');
   process.exit(1);

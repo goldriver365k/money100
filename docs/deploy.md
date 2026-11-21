@@ -8,7 +8,7 @@
 
 | 항목 | 필요한 값 | 쓰이는 곳 |
 |---|---|---|
-| 운영 도메인 | `https://…` (경로 없이 도메인만) | `SITE_URL` → canonical, og:url, sitemap.xml, robots.txt |
+| 운영 도메인 | `https://…` (경로 없이 도메인만). 후보 확인은 `docs/domain.md` | `site.config.json`의 `siteUrl`(또는 `SITE_URL` 환경변수) → canonical, og:url, sitemap.xml, robots.txt |
 | 호스팅과 배포 권한 | 정적 호스팅(예: Cloudflare Pages, Netlify, Vercel, GitHub Pages) 계정·프로젝트 접근 권한 | `dist/` 업로드 |
 | 공개 범위 | 검색 노출 허용 여부 | 허용하면 운영 빌드, 보류하면 미리보기 빌드(noindex 유지) |
 
@@ -18,9 +18,10 @@
 2. 운영 빌드와 전체 검수를 한 번에 실행한다.
 
    ```bash
-   SITE_URL=https://운영도메인 npm run verify:production
+   npm run verify:production
    ```
 
+   - `site.config.json`의 `siteUrl`을 쓴다. 비어 있으면 `SITE_URL=https://운영도메인`을 앞에 붙인다.
    - 결과: `docs/test-report-production.md`(실패 0건이어야 함), 화면 캡처는 `docs/screenshots-production/`
    - 실패가 하나라도 있으면 배포하지 않는다.
 3. `dist/` 폴더 전체를 호스팅에 올린다. 빌드 명령을 호스팅에서 돌린다면 빌드 명령 `node scripts/build.js --production`, 출력 폴더 `dist`, 환경변수 `SITE_URL`을 설정한다.
