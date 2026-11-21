@@ -12,6 +12,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { execSync } from 'node:child_process';
 import { PAGES } from './pages.js';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
@@ -78,4 +79,16 @@ if (production) {
   fs.writeFileSync(path.join(OUT, 'robots.txt'), `User-agent: *\nAllow: /\n\nSitemap: ${siteUrl}/sitemap.xml\n`);
 }
 
-console.log(`빌드 완료 → dist/ (${production ? `운영: ${siteUrl}` : '미리보기: 검색 차단 유지'})`);
+let commit = 'unknown';
+try {
+  commit = execSync('git rev-parse --short HEAD', { cwd: ROOT }).toString().trim();
+  if (execSync('git status --porcelain -- site scripts', { cwd: ROOT }).toString().trim()) commit += '-dirty';
+} catch {
+  /* git 없음 */
+}
+fs.writeFileSync(
+  path.join(OUT, 'build-info.txt'),
+  `commit=${commit}\nbuilt=${new Date().toISOString()}\nmode=${production ? 'production' : 'preview'}\nsite=${siteUrl ?? '-'}\n`,
+);
+
+console.log(`빌드 완료 → dist/ (commit ${commit}, ${production ? `운영: ${siteUrl}` : '미리보기: 검색 차단 유지'})`);

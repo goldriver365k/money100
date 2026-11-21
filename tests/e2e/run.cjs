@@ -4,13 +4,24 @@
  * 미리보기 서버를 임의 포트로 띄워 홈·계산기를 실제로 조작해 검사하고,
  * docs/screenshots/ 에 모바일(360px)·데스크톱 화면 캡처를,
  * docs/test-report.md 에 결과표(검수 항목·재현 방법·기대값·실제값·상태)를 남긴다.
+ *
+ * 운영용 빌드 검수: SITE_URL=https://도메인 npm run verify:production
+ *   (dist/ 를 운영 빌드로 만들고, 검색 차단 대신 canonical·sitemap·robots 를 검사,
+ *    결과는 docs/test-report-production.md)
  */
 const path = require('node:path');
 const fs = require('node:fs');
 const { chromium } = require('playwright');
 
 const ROOT = path.resolve(__dirname, '..', '..');
-const SHOTS = path.join(ROOT, 'docs', 'screenshots');
+const DIR = process.env.E2E_DIR || 'site';
+const PRODUCTION = process.env.E2E_PRODUCTION === '1';
+const SITE_URL = (process.env.SITE_URL || '').replace(/\/$/, '');
+if (PRODUCTION && !SITE_URL) {
+  console.error('운영 검수에는 SITE_URL 이 필요합니다.');
+  process.exit(1);
+}
+const SHOTS = path.join(ROOT, 'docs', process.env.E2E_PRODUCTION === '1' ? 'screenshots-production' : 'screenshots');
 
 const sections = []; // { title, rows: [{ item, method, expected, actual, status }] }
 let failures = 0;
@@ -109,9 +120,14 @@ const CASES = [
 
 (async () => {
   const { createServer } = await import(path.join(ROOT, 'scripts', 'serve.js'));
-  const server = createServer({ dir: 'site' });
-  await new Promise((r) => server.listen(0, '127.0.0.1', r));
-  const baseURL = `http://127.0.0.1:${server.address().port}`;
+  // E2E_BASE_URL 을 주면 로컬 서버 대신 배포된 주소를 검수한다 (배포 후 검증).
+  let server = null;
+  let baseURL = (process.env.E2E_BASE_URL || '').replace(/\/$/, '');
+  if (!baseURL) {
+    server = createServer({ dir: DIR, robotsHeader: !PRODUCTION });
+    await new Promise((r) => server.listen(0, '127.0.0.1', r));
+    baseURL = `http://127.0.0.1:${server.address().port}`;
+  }
   fs.mkdirSync(SHOTS, { recursive: true });
 
   const browser = await chromium.launch();
@@ -581,7 +597,7 @@ const CASES = [
         await pg.click(`#tab-${n}`);
         await pg.fill(`#h-${iso}`, h);
         await pg.fill(`#m-${iso}`, m);
-        const a = (c.att ?? {})[iso] ?? att;
+        const a = c.att && iso in c.att ? c.att[iso] : att;
         if (a) await pg.check(`input[name="att-${iso}"][value="${a}"]`);
       }
       for (const n of c.noWork ?? []) {
@@ -785,6 +801,49 @@ const CASES = [
     T('포커스 표시(주차 탭·출근 여부)', '주차 탭과 출근 여부 선택지로 키보드 이동', '포커스된 요소에 테두리 표시', `탭 ${tabOutline} · 출근 여부 ${radioOutline}`, tabOutline.startsWith('solid') && radioOutline.includes('solid'));
     void radioFocus;
 
+    section('주휴수당 계산기 — 미확정 조건과 자료 누락 표시');
+    {
+      // 자료 누락: 확정 판정·예상액이 나오면 안 된다
+      await fillWhp(page, whpCases[5]);
+      const rows = await judgeWhp(page);
+      const summaryText = await page.locator('#result-summary').innerText();
+      const leaked = rows.filter((r) => r.status !== '정보 부족' || /\d+원/.test(r.amount));
+      T('자료 누락 시 확정 판정·예상액 미표시', '사례 5B(3주차 근무표 누락) 판정', '모든 주 ‘정보 부족’, 예상액 칸에 금액 없음, 합계 미표시',
+        `상태 ${rows.map((r) => r.status).join(', ')} · 금액 표시 ${leaked.length}건 · 요약 “${summaryText}”`, leaked.length === 0 && !summaryText.includes('합계'));
+
+      // 출근 여부 누락
+      await fillWhp(page, { ...whpCases[1], att: { '2026-07-17': null } });
+      const rowsA = await judgeWhp(page);
+      T('출근 여부 누락 주는 정보 부족·예상액 미표시', '사례 2에서 7/17(금) 출근 여부 미선택', '2주차 ‘정보 부족’(7/17 출근 여부 요청), 예상액 없음, 나머지 지급 대상',
+        rowsA.map((r) => `${r.week} ${r.status} ${/\d+원/.test(r.amount) ? r.amount.split(' ')[0] : '금액 없음'}`).join(' / '),
+        rowsA[1].status === '정보 부족' && /7월 17일\(금\)의 출근 여부/.test(rowsA[1].reason) && !/\d+원/.test(rowsA[1].amount) && rowsA[0].status === '지급 대상');
+
+      // 쟁점 B: 5주차 이후 두 후보 기간의 결론이 다름
+      const s16 = (w) => MW(w, '8');
+      const s12 = (w) => MW(w, '6');
+      await fillWhp(page, { weekCount: 8, days: [0, 1, 2, 3].flatMap(s16).concat([4, 5, 6, 7].flatMap(s12)) });
+      const rowsB = await judgeWhp(page);
+      const w5 = rowsB[4];
+      T('미확정 조건(어느 4주 평균) → 별도 확인 필요', '1~4주 주 16시간, 5~8주 주 12시간(월·수), 8주 판정', '5주차만 ‘정보 부족’ + “별도 확인 필요”(2~5주차 평균 15시간 / 5~8주차 평균 12시간), 금액 없음 · 6·7주차는 두 기간 모두 15시간 미만이라 지급 대상 아님 · 4주차 지급 대상 · 8주차 지급 대상 아님',
+        `5주차 ${w5.status}(${w5.reason.includes('별도 확인 필요') ? '별도 확인 필요 표시' : '표시 없음'}) · 6주차 ${rowsB[5].status} · 7주차 ${rowsB[6].status} · 4주차 ${rowsB[3].status} · 8주차 ${rowsB[7].status}`,
+        w5.status === '정보 부족' && w5.reason.includes('별도 확인 필요') && !/\d+원/.test(w5.amount) && rowsB[5].status === '지급 대상 아님' && rowsB[6].status === '지급 대상 아님' &&
+        rowsB[3].status === '지급 대상' && rowsB[7].status === '지급 대상 아님');
+
+      // 쟁점 D: 4주 미만 재직 예상액
+      await fillWhp(page, whpCases[4]);
+      const rowsD = await judgeWhp(page);
+      T('미확정 조건(4주 미만 예상액) → 별도 확인 필요', '사례 5A(재직 17일) 판정', '1·2주차 지급 대상이지만 예상액 대신 “별도 확인 필요”',
+        rowsD.slice(0, 2).map((r) => `${r.status} · ${r.amount.slice(0, 50)}`).join(' / '),
+        rowsD.slice(0, 2).every((r) => r.status === '지급 대상' && r.amount.includes('별도 확인 필요') && !/\d{2},\d{3}원/.test(r.amount)));
+
+      // 모든 행에 적용 기간·시간·이유·근거
+      await fillWhp(page, whpCases[3]);
+      const rowsE = await judgeWhp(page);
+      T('결과 행마다 적용 기간·적용 시간·판정 이유·공식 근거', '사례 4 판정 후 각 행 확인', '모든 행에 평균 기간, 적용 시간, 이유, “근거: … 근로기준법 …”',
+        rowsE.map((r) => `${r.week}: ${r.window.split(' · ')[0]} | ${r.applied.split(' (')[0]} | 근거 ${r.reason.includes('근거:') ? '있음' : '없음'}`).join(' / '),
+        rowsE.every((r) => r.window !== '—' && r.applied.startsWith('평균') && /근거: .*(근로기준법|고용노동부)/.test(r.reason)));
+    }
+
     section('주휴수당 계산기 — 주소·링크·화면');
     {
       const fresh = await context.newPage();
@@ -846,8 +905,8 @@ const CASES = [
 
     /* ================= 데이터 전송 ================= */
     section('급여·날짜 외부 전송 여부');
-    const src = ['assets/js/proration.js', 'assets/js/salary-proration-page.js', 'assets/js/weekly-holiday.js', 'assets/js/weekly-holiday-page.js'].map((f) => fs.readFileSync(path.join(ROOT, 'site', f), 'utf8')).join('\n');
-    const html = ['index.html', 'salary-proration/index.html', 'weekly-holiday-pay/index.html'].map((f) => fs.readFileSync(path.join(ROOT, 'site', f), 'utf8')).join('\n');
+    const src = ['assets/js/proration.js', 'assets/js/salary-proration-page.js', 'assets/js/weekly-holiday.js', 'assets/js/weekly-holiday-page.js'].map((f) => fs.readFileSync(path.join(ROOT, DIR, f), 'utf8')).join('\n');
+    const html = ['index.html', 'salary-proration/index.html', 'weekly-holiday-pay/index.html'].map((f) => fs.readFileSync(path.join(ROOT, DIR, f), 'utf8')).join('\n');
     const apis = ['fetch(', 'XMLHttpRequest', 'sendBeacon', 'WebSocket', 'EventSource', 'localStorage', 'sessionStorage', 'indexedDB', 'document.cookie', 'import(', 'new Image', 'gtag', 'dataLayer'];
     const found = apis.filter((a) => src.includes(a));
     const externalScripts = (html.match(/<script[^>]+src="(?!\/)[^"]*"/g) || []);
@@ -859,23 +918,51 @@ const CASES = [
       '다른 출처 요청 0건', `${externalRequests.length}건 ${externalRequests.slice(0, 3).join(', ')}`, externalRequests.length === 0);
     T('실행 중 콘솔 오류', '위 모든 검수 중 브라우저 콘솔 기록', '오류 0건', `${consoleErrors.length}건 ${consoleErrors.slice(0, 2).join(' | ')}`, consoleErrors.length === 0);
 
-    section('검색 노출 차단 (개발 환경)');
+    const PAGE_LIST = ['/', '/salary-proration', '/weekly-holiday-pay'];
     const metas = [];
-    for (const u of ['/', '/salary-proration', '/weekly-holiday-pay']) {
+    for (const u of PAGE_LIST) {
       const res = await page.goto(u);
-      metas.push({ u, robots: await page.getAttribute('meta[name=robots]', 'content'), header: res.headers()['x-robots-tag'] });
+      metas.push({
+        u,
+        ...(await page.evaluate(() => ({
+          robots: document.querySelector('meta[name=robots]')?.content ?? null,
+          canonical: document.querySelector('link[rel=canonical]')?.href ?? null,
+          ogUrl: document.querySelector('meta[property="og:url"]')?.content ?? null,
+        }))),
+        header: res.headers()['x-robots-tag'] ?? null,
+      });
     }
     const robotsTxt = await (await page.request.get('/robots.txt')).text();
-    T('검색 노출 차단', '두 페이지의 meta robots, X-Robots-Tag 헤더, robots.txt 확인', 'noindex, nofollow · Disallow: /',
-      metas.map((m) => `${m.u} ${m.robots} / ${m.header}`).join(' · ') + ` · robots.txt ${robotsTxt.includes('Disallow: /') ? 'Disallow: /' : '없음'}`,
-      metas.every((m) => m.robots === 'noindex, nofollow' && m.header === 'noindex, nofollow') && robotsTxt.includes('Disallow: /'));
+    if (!PRODUCTION) {
+      section('검색 노출 차단 (개발 환경)');
+      T('검색 노출 차단', '세 페이지의 meta robots, X-Robots-Tag 헤더, robots.txt 확인', 'noindex, nofollow · Disallow: /',
+        metas.map((m) => `${m.u} ${m.robots} / ${m.header}`).join(' · ') + ` · robots.txt ${robotsTxt.includes('Disallow: /') ? 'Disallow: /' : '없음'}`,
+        metas.every((m) => m.robots === 'noindex, nofollow' && m.header === 'noindex, nofollow') && robotsTxt.includes('Disallow: /'));
+    } else {
+      section(`운영용 빌드 검색 설정 (SITE_URL=${SITE_URL})`);
+      for (const m of metas) {
+        const expected = SITE_URL + m.u;
+        T(`canonical: ${m.u}`, `운영 빌드 ${m.u}의 link rel=canonical·og:url·meta robots 확인`, `canonical·og:url = ${expected}, noindex 없음`,
+          `canonical ${m.canonical} · og:url ${m.ogUrl} · robots ${m.robots ?? '없음'}`, m.canonical === expected && m.ogUrl === expected && m.robots === null);
+      }
+      const sitemapRes = await page.request.get('/sitemap.xml');
+      const sitemap = await sitemapRes.text();
+      const locs = [...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].map((x) => x[1]);
+      T('sitemap.xml', '/sitemap.xml 요청', `200, <loc> 3개: ${PAGE_LIST.map((u) => SITE_URL + u).join(', ')}`,
+        `${sitemapRes.status()} · ${locs.join(', ')}`, sitemapRes.status() === 200 && JSON.stringify(locs) === JSON.stringify(PAGE_LIST.map((u) => SITE_URL + u)));
+      T('robots.txt', '/robots.txt 요청', `Allow: / · Sitemap: ${SITE_URL}/sitemap.xml`, robotsTxt.trim().replace(/\n+/g, ' / '),
+        robotsTxt.includes('Allow: /') && !robotsTxt.includes('Disallow: /') && robotsTxt.includes(`Sitemap: ${SITE_URL}/sitemap.xml`));
+      const notFound = await page.request.get('/no-such-page');
+      const nfHtml = await notFound.text();
+      T('없는 주소의 404 페이지는 검색 제외', '/no-such-page 요청', '404, noindex', `${notFound.status()} · ${nfHtml.includes('noindex') ? 'noindex 있음' : '없음'}`, notFound.status() === 404 && nfHtml.includes('noindex'));
+    }
   } catch (err) {
     failures += 1;
     console.error(err);
     if (sections.length) sections[sections.length - 1].rows.push({ item: '검수 스크립트 오류', method: '-', expected: '-', actual: String(err).split('\n')[0], status: '실패' });
   } finally {
     await browser.close();
-    server.close();
+    server?.close();
   }
 
   writeReport();
@@ -890,12 +977,12 @@ function writeReport() {
   const all = sections.flatMap((s) => s.rows);
   const count = (s) => all.filter((r) => r.status === s).length;
   const lines = ['# 정산노트 검수 결과표', ''];
-  lines.push(`- 실행: ${new Date().toISOString()} · \`npm run test:e2e\` · Chromium(Playwright) · 시간대 Pacific/Kiritimati(UTC+14)`);
+  lines.push(`- 실행: ${new Date().toISOString()} · ${PRODUCTION ? `운영용 빌드(dist/, SITE_URL=${SITE_URL}) · \`npm run verify:production\`` : `미리보기(${DIR}/) · \`npm run test:e2e\``} · Chromium(Playwright) · 시간대 Pacific/Kiritimati(UTC+14)`);
   lines.push(`- 집계: 통과 ${count('통과')} · 실패 ${count('실패')} · 미확인 ${count('미확인')}`, '');
   for (const s of sections) {
     lines.push(`## ${s.title}`, '', '| 검수 항목 | 입력 또는 재현 방법 | 기대값 | 실제값 | 상태 |', '|---|---|---|---|---|');
     for (const r of s.rows) lines.push(`| ${esc(r.item)} | ${esc(r.method)} | ${esc(r.expected)} | ${esc(r.actual)} | ${r.status} |`);
     lines.push('');
   }
-  fs.writeFileSync(path.join(ROOT, 'docs', 'test-report.md'), lines.join('\n'));
+  fs.writeFileSync(path.join(ROOT, 'docs', PRODUCTION ? 'test-report-production.md' : 'test-report.md'), lines.join('\n'));
 }

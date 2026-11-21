@@ -40,7 +40,9 @@ npm run test:e2e
 | `SITE_URL=https://운영도메인 npm run build:production` | `noindex` 제거, 페이지별 `canonical`·`og:url`, `sitemap.xml`, 운영용 `robots.txt` 생성 |
 | `npm run preview` | `dist/`를 로컬에서 제공 |
 
-`SITE_URL`이 없거나 https가 아니면 운영 빌드는 실패한다. 페이지 목록은 `scripts/pages.js`에서 관리한다.
+`SITE_URL`이 없거나 https가 아니면 운영 빌드는 실패한다.
+
+운영 빌드 검수는 `SITE_URL=https://운영도메인 npm run verify:production`, 배포 후 점검은 `node scripts/check-live.js https://운영도메인`. 배포·복구 절차는 `docs/deploy.md`. 페이지 목록은 `scripts/pages.js`에서 관리한다.
 
 배포 시 호스팅에서 확장자 없는 주소(`/salary-proration`)가 `salary-proration/index.html`로 응답하도록
 설정해야 한다 (예: Vercel `cleanUrls`/`trailingSlash: false`, Netlify Pretty URLs, Cloudflare Pages 기본 동작).
