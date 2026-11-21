@@ -1,9 +1,10 @@
 # 정산노트
 
-급여 계산기 모음 정적 사이트. 1차 범위: 홈(`/`)과 월급 일할계산기(`/salary-proration`).
+급여 계산기 모음 정적 사이트. 홈(`/`), 월급 일할계산기(`/salary-proration`), 주휴수당 계산기(`/weekly-holiday-pay`).
 
 - 빌드 도구·외부 의존성 없음 (Node.js 18 이상만 필요, 브라우저 검수에는 Playwright 사용)
-- 계산 로직(`site/assets/js/proration.js`)은 화면 코드(`salary-proration-page.js`)와 분리된 순수 함수
+- 계산 로직(`proration.js`, `weekly-holiday.js`)은 화면 코드(`*-page.js`)와 분리된 순수 함수
+- 주휴수당 판정 규칙·근거: `docs/weekly-holiday-pay-spec.md`
 - 급여·날짜는 브라우저 안에서만 계산하며 네트워크로 보내지 않음 (CSP `connect-src 'none'`, 분석 도구 없음)
 
 ## 실행
@@ -12,7 +13,7 @@
 npm start
 ```
 
-→ http://127.0.0.1:4173/ (홈), http://127.0.0.1:4173/salary-proration (계산기)
+→ http://127.0.0.1:4173/ (홈), http://127.0.0.1:4173/salary-proration, http://127.0.0.1:4173/weekly-holiday-pay
 
 미리보기 서버는 `/salary-proration` 직접 접속·새로고침에 `salary-proration/index.html`로 응답하고,
 `/salary-proration/`은 `/salary-proration`으로 301 이동시킨다. 모든 응답에 `X-Robots-Tag: noindex`를 붙인다.
@@ -50,6 +51,9 @@ npm run test:e2e
 site/                       배포되는 정적 파일
   index.html                홈
   salary-proration/index.html
+  weekly-holiday-pay/index.html
+  assets/js/weekly-holiday.js     주휴수당 판정 로직 (순수 함수)
+  assets/js/weekly-holiday-page.js 주휴수당 화면 코드
   assets/js/proration.js    계산 로직 (순수 함수)
   assets/js/salary-proration-page.js  화면 코드
   assets/css/style.css

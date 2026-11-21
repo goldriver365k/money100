@@ -131,7 +131,7 @@ const CASES = [
 
   try {
     /* ================= 필수 사례 5건 ================= */
-    section('필수 검증 사례 5건 (브라우저에 직접 입력)');
+    section('월급 일할계산기 — 필수 검증 사례 5건 (회귀, 브라우저 직접 입력)');
     for (const c of CASES) {
       await fillCase(page, c);
       const r = await calc(page);
@@ -334,8 +334,8 @@ const CASES = [
     const cards = await page.locator('a.card').count();
     await page.click('a.card[href="/salary-proration"]');
     await page.waitForURL(`${baseURL}/salary-proration`);
-    T('홈 → 계산기 이동', '홈에서 “월급 일할계산기” 카드 클릭', '카드 1개, /salary-proration 으로 이동',
-      `카드 ${cards}개 → ${page.url().replace(baseURL, '')} “${await page.title()}”`, cards === 1 && (await page.locator('h1').innerText()) === '월급 일할계산기');
+    T('홈 → 계산기 이동', '홈에서 “월급 일할계산기” 카드 클릭', '카드 2개(월급 일할계산기·주휴수당 계산기), /salary-proration 으로 이동',
+      `카드 ${cards}개 → ${page.url().replace(baseURL, '')} “${await page.title()}”`, cards === 2 && (await page.locator('h1').innerText()) === '월급 일할계산기');
     await page.click('#home-link');
     await page.waitForURL(`${baseURL}/`);
     T('계산기 → 홈 이동', '계산기 상단 “← 계산기 목록(홈)” 클릭', '/ 로 이동', `${page.url().replace(baseURL, '') || '/'} “${await page.title()}”`,
@@ -560,10 +560,294 @@ const CASES = [
     U('iOS Safari·Android 실기기', '실제 휴대폰에서 날짜 선택기·숫자 키패드 확인', '네이티브 날짜 선택기와 숫자 키패드 정상 표시',
       '이 환경에는 Chromium만 있어 Safari(WebKit)·Firefox·실기기 확인 불가 — 360px 화면은 Chromium 모바일 에뮬레이션으로 확인');
 
+    /* ================= 주휴수당 계산기 ================= */
+    const WHP_HIRE = Date.UTC(2026, 6, 6) / 86400000;
+    const isoAt = (i) => new Date(i * 86400000).toISOString().slice(0, 10);
+    const MWF = (w, h, m = '0') => [0, 2, 4].map((k) => [isoAt(WHP_HIRE + 7 * w + k), h, m]);
+    const TT = (w, h, m = '0') => [1, 3].map((k) => [isoAt(WHP_HIRE + 7 * w + k), h, m]);
+    const MW = (w, h, m = '0') => [0, 2].map((k) => [isoAt(WHP_HIRE + 7 * w + k), h, m]);
+    async function fillWhp(pg, c) {
+      await pg.goto('/weekly-holiday-pay');
+      if (c.type) await pg.selectOption('#employment-type', c.type);
+      await pg.fill('#hire-date', c.hire ?? '2026-07-06');
+      if (c.end) {
+        await pg.check('input[name="status"][value="left"]');
+        await pg.fill('#end-date', c.end);
+      }
+      if (c.weekCount) await pg.selectOption('#week-count', String(c.weekCount));
+      await pg.fill('#wage', c.wage ?? '10320');
+      for (const [iso, h, m, att = 'present'] of c.days) {
+        const n = Math.floor((Date.parse(iso) / 86400000 - WHP_HIRE) / 7) + 1;
+        await pg.click(`#tab-${n}`);
+        await pg.fill(`#h-${iso}`, h);
+        await pg.fill(`#m-${iso}`, m);
+        const a = (c.att ?? {})[iso] ?? att;
+        if (a) await pg.check(`input[name="att-${iso}"][value="${a}"]`);
+      }
+      for (const n of c.noWork ?? []) {
+        await pg.click(`#tab-${n}`);
+        await pg.click(`#nowork-${n}`);
+      }
+    }
+    async function judgeWhp(pg) {
+      await pg.click('#submit');
+      await pg.waitForSelector('#result:not([hidden])', { timeout: 3000 });
+      return pg.$$eval('#whp-rows tr', (trs) => trs.map((tr) => {
+        const t = (c) => tr.querySelector(`[data-col="${c}"]`).innerText.replace(/\s+/g, ' ').trim();
+        return { week: tr.querySelector('th').innerText, range: t('range'), window: t('window'), applied: t('applied'), status: t('status'), reason: t('reason'), amount: t('amount') };
+      }));
+    }
+    const rowText = (r) => `${r.week} ${r.status} · ${r.window} · ${r.applied} · ${r.reason.split(' 근거:')[0]} · ${r.amount}`;
+    function checkRows(rows, exp) {
+      return rows.length === exp.length && rows.every((r, i) => {
+        const e = exp[i];
+        return r.status === e.status && (!e.window || r.window.startsWith(e.window)) && (!e.applied || r.applied.startsWith(e.applied)) &&
+          (!e.reason || e.reason.test(r.reason)) && (!e.amount || r.amount.startsWith(e.amount)) && r.reason.includes('근거:');
+      });
+    }
+
+    section('주휴수당 계산기 — 검증 사례 (명세 7장, 브라우저 직접 입력)');
+    const W4 = '7/6(월)~8/2(일) · 1~4주차';
+    const whpCases = [
+      {
+        name: '사례 1: 주 평균 14시간 59분',
+        method: '재직 시작 2026-07-06(월), 재직 중, 시급 10,320원 · 1주 월·수 8:00 / 2주 화·목 7:00 / 3주 월·수·금 5:00 / 4주 화·목 7:28 · 모두 출근',
+        days: [...MW(0, '8'), ...TT(1, '7'), ...MWF(2, '5'), ...TT(3, '7', '28')],
+        expect: [0, 1, 2, 3].map(() => ({ status: '지급 대상 아님', window: W4, applied: '평균 14시간 59분', reason: /14시간 59분으로 15시간 미만/ })),
+        expectText: '1~4주차 모두 지급 대상 아님 · 평균 기간 7/6~8/2(1~4주차) · 적용 시간 평균 14시간 59분 · 이유 “15시간 미만”',
+      },
+      {
+        name: '사례 2: 주 평균 정확히 15시간',
+        method: '매주 월·수·금 5:00 (4주) · 모두 출근 · 시급 10,320원',
+        days: [0, 1, 2, 3].flatMap((w) => MWF(w, '5')),
+        expect: [0, 1, 2, 3].map(() => ({ status: '지급 대상', window: W4, applied: '평균 15시간 0분', reason: /15시간 이상/, amount: '30,960원' })),
+        expectText: '1~4주차 지급 대상 · 평균 15시간 0분 · 주당 30,960원(1일 3시간 0분 × 10,320원)',
+      },
+      {
+        name: '사례 3: 주별 시간은 다르지만 평균 15시간',
+        method: '1주 화·목 6:00 / 2주 월·수·금 6:00 / 3주 화·목 5:15 / 4주 월·수·금 6:30 · 모두 출근',
+        days: [...TT(0, '6'), ...MWF(1, '6'), ...TT(2, '5', '15'), ...MWF(3, '6', '30')],
+        expect: [['12시간 0분'], ['18시간 0분'], ['10시간 30분'], ['19시간 30분']].map(([t]) => ({ status: '지급 대상', window: W4, applied: `평균 15시간 0분 (이 주 ${t})`, amount: '30,960원' })),
+        expectText: '1~4주차 지급 대상 · 평균 15시간 0분(이 주 12:00·18:00·10:30·19:30) · 주당 30,960원',
+      },
+      {
+        name: '사례 4: 시간 충족·소정근로일 결근',
+        method: '매주 월·수·금 6:00 · 2주차 7/15(수) ‘결근’, 나머지 출근',
+        days: [0, 1, 2, 3].flatMap((w) => MWF(w, '6')),
+        att: { '2026-07-15': 'absent' },
+        expect: [
+          { status: '지급 대상', window: W4, applied: '평균 18시간 0분', amount: '37,152원' },
+          { status: '지급 대상 아님', window: W4, applied: '평균 18시간 0분', reason: /7월 15일\(수\)에 결근해 개근 요건을 충족하지 않습니다/ },
+          { status: '지급 대상', amount: '37,152원' },
+          { status: '지급 대상', amount: '37,152원' },
+        ],
+        expectText: '2주차만 지급 대상 아님(7/15 결근) · 1·3·4주차 지급 대상 37,152원 · 평균 18시간 0분',
+      },
+      {
+        name: '사례 5A: 실제 근로기간 4주 미만 (7/22 퇴사)',
+        method: '퇴사함, 마지막 재직일 2026-07-22(수) · 1·2주 월·수·금 6:00, 3주 7/20(월)·7/22(수) 6:00 · 모두 출근',
+        end: '2026-07-22',
+        days: [...MWF(0, '6'), ...MWF(1, '6'), ...MW(2, '6')],
+        expect: [
+          { status: '지급 대상', window: '7/6(월)~7/22(수) · 재직 17일 전체', applied: '평균 19시간 45분', amount: '재직 기간이 4주 미만일 때' },
+          { status: '지급 대상', window: '7/6(월)~7/22(수) · 재직 17일 전체', applied: '평균 19시간 45분', amount: '재직 기간이 4주 미만일 때' },
+          { status: '지급 대상 아님', reason: /7월 22일\(수\)까지 재직해 이 주의 7일째\(7월 26일\(일\)\)/ },
+        ],
+        expectText: '1·2주차 지급 대상(평균 기간 재직 17일 전체, 평균 19시간 45분, 예상액은 별도 확인 필요로 보류) · 3주차 지급 대상 아님(7일째 전 퇴사)',
+      },
+      {
+        name: '사례 5B: 입력 자료 일부 누락 (3주차 근무표 비어 있음)',
+        method: '재직 중 · 1·2·4주 월·수·금 6:00 입력, 3주차는 아무것도 입력하지 않음',
+        days: [...MWF(0, '6'), ...MWF(1, '6'), ...MWF(3, '6')],
+        expect: [0, 1, 2, 3].map(() => ({ status: '정보 부족', reason: /3주차 7\/20\(월\)~7\/26\(일\) 근무표가 비어 있습니다/ })),
+        expectText: '1~4주차 모두 정보 부족 · 이유 “3주차 7/20~7/26 근무표가 비어 있습니다” · 추가 입력 목록에 3주차 표시',
+        extra: async (pg) => (await pg.locator('#needs-list').innerText()).includes('3주차 7/20(월)~7/26(일) 근무표'),
+      },
+      {
+        name: '사례 5B-1: 3주차를 ‘이 주는 근무 없음’으로 확정',
+        method: '사례 5B 입력 + 3주차 [이 주는 근무 없음]',
+        days: [...MWF(0, '6'), ...MWF(1, '6'), ...MWF(3, '6')],
+        noWork: [3],
+        expect: [0, 1, 2, 3].map(() => ({ status: '지급 대상 아님', window: W4, applied: '평균 13시간 30분', reason: /13시간 30분으로 15시간 미만/ })),
+        expectText: '1~4주차 지급 대상 아님 · 평균 13시간 30분 (빈칸과 0시간을 구별)',
+      },
+    ];
+    for (const c of whpCases) {
+      await fillWhp(page, c);
+      const rows = await judgeWhp(page);
+      const ok = checkRows(rows, c.expect) && (!c.extra || (await c.extra(page)));
+      T(c.name, c.method, c.expectText, rows.map(rowText).join(' / '), ok);
+    }
+
+    section('주휴수당 계산기 — 입력·화면 동작');
+    // 결과 숨김과 재판정
+    await fillWhp(page, whpCases[3]);
+    await judgeWhp(page);
+    await page.click('#tab-2');
+    await page.check('input[name="att-2026-07-15"][value="excused"]');
+    const hiddenAfter = await page.locator('#result').isHidden();
+    const rows4 = await judgeWhp(page);
+    T('입력 변경 시 결과 숨김 → 재판정', '사례 4 판정 → 7/15 출근 여부를 ‘휴가·휴업’으로 변경 → [판정하기]', '변경 즉시 결과 숨김, 재판정 시 2주차 지급 대상(휴가는 결근 아님)',
+      `숨김=${hiddenAfter} · 2주차 ${rows4[1].status} · ${rows4[1].reason.split(' 근거:')[0]}`, hiddenAfter && rows4[1].status === '지급 대상' && /휴가·휴업 1일은 결근으로 보지 않습니다/.test(rows4[1].reason));
+
+    // 시간 입력 오류
+    await fillWhp(page, { days: [['2026-07-06', '25', '0']] });
+    await page.click('#submit');
+    const tErr = (await page.locator('#err-2026-07-06').isVisible()) ? await page.locator('#err-2026-07-06').innerText() : '';
+    T('잘못된 시간 입력 → 해당 칸 옆 오류', '7/6 근무시간 25시간 입력 후 [판정하기]', '7/6 아래 “시간은 0~24 사이로 입력하세요.”, 포커스 이동, 결과 미표시',
+      `${tErr} · aria-invalid=${await page.getAttribute('#h-2026-07-06', 'aria-invalid')} · 포커스=${await page.evaluate(() => document.activeElement.id)}`,
+      tErr.includes('0~24') && (await page.evaluate(() => document.activeElement.id)) === 'h-2026-07-06' && (await page.locator('#result').isHidden()));
+    await fillWhp(page, { days: [['2026-07-06', '3', '75']] });
+    await page.click('#submit');
+    T('잘못된 분 입력', '7/6 3시간 75분 입력', '“분은 0~59 사이로 입력하세요.”', await page.locator('#err-2026-07-06').innerText(), (await page.locator('#err-2026-07-06').innerText()).includes('0~59'));
+
+    await page.goto('/weekly-holiday-pay');
+    await page.click('#submit');
+    T('재직 시작일 누락', '아무것도 입력하지 않고 [판정하기]', '재직 시작일 아래 “재직 시작일을 입력하세요.”', await page.locator('#hire-date-error').innerText(), (await page.locator('#hire-date-error').innerText()).includes('재직 시작일을 입력'));
+    await page.fill('#hire-date', '2026-07-10');
+    await page.check('input[name="status"][value="left"]');
+    await page.fill('#end-date', '2026-07-09');
+    await page.fill('#wage', '10.5');
+    await page.click('#submit');
+    const e1 = await page.locator('#end-date-error').innerText();
+    const e2 = await page.locator('#wage-error').innerText();
+    T('마지막 재직일이 재직 시작일보다 빠름 · 소수 시급', '재직 시작 7/10, 마지막 재직일 7/9, 시급 10.5 → [판정하기]', '각 입력 아래 오류 표시', `${e1} / ${e2}`, e1.includes('같거나 그 이후') && e2.includes('정수'));
+
+    // 0시간과 빈칸
+    await fillWhp(page, { days: [...MWF(0, '6'), ...MWF(1, '6'), ['2026-07-20', '0', '0'], ...MWF(3, '6')] });
+    const z = await judgeWhp(page);
+    const tab3 = await page.locator('#tab-3').innerText();
+    T('명시한 0시간과 빈칸 구별', '사례 5B에서 3주차 7/20에 0시간 0분만 입력', '3주차는 ‘입력됨’(근무 없음)으로 보고 평균 13시간 30분으로 판정(정보 부족 아님)',
+      `${z[0].status} · ${z[0].applied} · 3주차 탭 “${tab3.replace(/\s+/g, ' ')}”`, z[0].status === '지급 대상 아님' && z[0].applied.startsWith('평균 13시간 30분'));
+
+    // 주 시작 요일·날짜 범위 표시
+    await page.goto('/weekly-holiday-pay');
+    await page.fill('#hire-date', '2026-07-08');
+    const rule = await page.locator('#week-rule').innerText();
+    const t1 = await page.locator('#panel-title-1').innerText();
+    T('주의 시작 요일과 주별 날짜 범위 표시', '재직 시작일 2026-07-08(수) 입력', '“1주 = 수요일~화요일”, 1주차 7/8(수)~7/14(화)', `${rule.split('.')[0]} · ${t1}`, rule.includes('1주 = 수요일~화요일') && t1.includes('7/8(수)~7/14(화)'));
+    const guide = await page.locator('#time-guide').innerText();
+    T('소정근로시간 입력 안내', '주별 근무표 위 안내문', '실제 근로시간이 아닌 미리 정한 근무시간(소정근로시간)을 입력하라는 안내', guide.split('\n')[0], guide.includes('소정근로시간') && guide.includes('실제로 더 일하거나'));
+
+    // 범위 밖 근무 형태
+    await fillWhp(page, { ...whpCases[1], type: 'monthly' });
+    const mrows = await judgeWhp(page);
+    T('월급제: 판정은 하되 예상액은 별도 확인 필요', '사례 2 입력 + 근무 형태 ‘월급제’', '지급 대상, 예상액 대신 “별도 확인 필요” 안내',
+      `${mrows[0].status} · ${mrows[0].amount} · 상단 안내 ${await page.locator('#scope-note').isVisible()}`, mrows[0].status === '지급 대상' && mrows[0].amount.includes('월급제'));
+    await fillWhp(page, { days: MWF(0, '6'), type: 'daily' });
+    await page.click('#submit');
+    await page.waitForSelector('#result:not([hidden])');
+    const bn = await page.locator('#blocked-note').innerText();
+    T('일용직·감시단속적 근로: 별도 확인 필요', '근무 형태 ‘일 단위 계약(일용직)’으로 판정', '판정표 대신 “별도 확인 필요” 안내', bn, bn.includes('별도 확인 필요') && (await page.locator('#whp-table').isHidden()));
+
+    // 결과 아래 문구·근거
+    await fillWhp(page, whpCases[1]);
+    await judgeWhp(page);
+    const disc = await page.locator('.result-disclaimer').innerText();
+    await page.click('#basis summary');
+    const basis = await page.locator('#basis-body').innerText();
+    T('결과표 하단 면책 문구', '사례 2 판정 후 결과표 아래 확인', '“본 계산 결과는 단순 모의 계산이며, 법적 효력을 갖는 증빙자료가 아닙니다.”', disc, disc === '본 계산 결과는 단순 모의 계산이며, 법적 효력을 갖는 증빙자료가 아닙니다.');
+    T('적용한 공식 근거와 확인일', '결과 아래 “적용한 판정 규칙과 공식 근거 보기” 펼침', '적용 규칙(S9·예상액)과 근로기준법 제18조제3항·시행령 별표 2 링크, 확인일 2026년 11월 21일',
+      basis.replace(/\s+/g, ' ').slice(0, 160) + '…', basis.includes('근로기준법 제18조제3항') && basis.includes('별표 2') && basis.includes('2026년 11월 21일') && (await page.locator('#basis-body a').count()) >= 3);
+
+    // 키보드만으로 사례 2 입력
+    await page.goto('/weekly-holiday-pay');
+    await page.focus('#home-link');
+    await tabTo('hire-date');
+    await typeDate('2026', '07', '06');
+    await tabTo('wage');
+    await page.keyboard.type('10320');
+    for (let w = 0; w < 4; w += 1) {
+      for (const [iso] of MWF(w, '5')) {
+        await tabTo(`h-${iso}`);
+        await page.keyboard.type('5');
+        await page.keyboard.press('Tab'); // 분
+        await page.keyboard.press('Tab'); // 출근 여부(첫 선택지 ‘출근’)
+        await page.keyboard.press('Space');
+      }
+      if (w < 3) {
+        await tabTo('next-week');
+        await page.keyboard.press('Enter');
+      }
+    }
+    const radioFocus = await page.evaluate(() => getComputedStyle(document.querySelector('#week-tabs .week-tab')).outlineStyle);
+    await tabTo('submit');
+    await page.keyboard.press('Enter');
+    await page.waitForSelector('#result:not([hidden])', { timeout: 3000 }).catch(() => {});
+    const kbRows = (await page.locator('#result').isVisible()) ? await page.$$eval('#whp-rows tr [data-col="status"]', (x) => x.map((e) => e.innerText)) : [];
+    T('키보드만으로 입력·출근 선택·판정', 'Tab 이동 → 재직 시작일·시급 입력 → 주마다 근무시간 입력, 출근 여부 Space, [다음 주] Enter → [판정하기] Enter', '사례 2와 같은 결과(4주 지급 대상)',
+      kbRows.join(', ') || '결과 없음', kbRows.length === 4 && kbRows.every((s) => s === '지급 대상'));
+    await page.focus('#tab-1');
+    const tabOutline = await page.evaluate(() => { const s = getComputedStyle(document.activeElement); return `${s.outlineStyle} ${s.outlineWidth}`; });
+    await page.focus('input[name="att-2026-07-06"][value="present"]');
+    await page.keyboard.press('ArrowRight');
+    const radioOutline = await page.evaluate(() => { const s = getComputedStyle(document.activeElement); return `${document.activeElement.value} ${s.outlineStyle} ${s.outlineWidth}`; });
+    T('포커스 표시(주차 탭·출근 여부)', '주차 탭과 출근 여부 선택지로 키보드 이동', '포커스된 요소에 테두리 표시', `탭 ${tabOutline} · 출근 여부 ${radioOutline}`, tabOutline.startsWith('solid') && radioOutline.includes('solid'));
+    void radioFocus;
+
+    section('주휴수당 계산기 — 주소·링크·화면');
+    {
+      const fresh = await context.newPage();
+      watch(fresh);
+      const r1 = await fresh.goto('/weekly-holiday-pay');
+      const t1x = await fresh.title();
+      const r2 = await fresh.reload();
+      const h1 = await fresh.locator('h1').innerText();
+      T('/weekly-holiday-pay 직접 접속 후 새로고침', '새 탭에서 주소 입력 → 새로고침', 'HTTP 200, 제목 “주휴수당 계산기 — 주 15시간·변동 근무 판독 | 정산노트”, 화면 제목 “주휴수당 계산기”',
+        `${r1.status()}/${r2.status()} · “${await fresh.title()}” · “${h1}”`, r1.status() === 200 && r2.status() === 200 && t1x === '주휴수당 계산기 — 주 15시간·변동 근무 판독 | 정산노트' && h1 === '주휴수당 계산기');
+      const r3 = await fresh.goto('/weekly-holiday-pay/');
+      T('/weekly-holiday-pay/ 주소 통일', '끝 슬래시 주소 접속', '/weekly-holiday-pay 로 이동', `${fresh.url().replace(baseURL, '')} (${r3.status()})`, fresh.url() === `${baseURL}/weekly-holiday-pay`);
+      await fresh.goto('/');
+      await fresh.click('a.card[href="/weekly-holiday-pay"]');
+      await fresh.waitForURL(`${baseURL}/weekly-holiday-pay`);
+      const okNav = (await fresh.locator('h1').innerText()) === '주휴수당 계산기';
+      await fresh.click('#home-link');
+      await fresh.waitForURL(`${baseURL}/`);
+      T('홈 ↔ 주휴수당 계산기 이동', '홈 “주휴수당 계산기” 카드 클릭 → “← 계산기 목록(홈)” 클릭', '계산기로 이동 후 홈으로 복귀', `${okNav ? '계산기 열림' : '실패'} → ${await fresh.title()}`, okNav && (await fresh.title()) === '급여 계산기 모음 | 정산노트');
+      await fresh.close();
+    }
+    for (const [label, opts, tag] of [
+      ['모바일 360px', { viewport: { width: 360, height: 780 }, deviceScaleFactor: 2, isMobile: true, hasTouch: true }, '360'],
+      ['데스크톱 1280px', { viewport: { width: 1280, height: 900 }, deviceScaleFactor: 2 }, 'desktop'],
+    ]) {
+      const ctx = await browser.newContext({ baseURL, locale: 'ko-KR', ...opts });
+      const p = await ctx.newPage();
+      watch(p);
+      await fillWhp(p, whpCases[3]);
+      await p.click('#tab-2');
+      const formCheck = await p.evaluate(() => {
+        const over = document.documentElement.scrollWidth - innerWidth;
+        const bad = [...document.querySelectorAll('#whp-form input:not([type=radio]):not([type=checkbox]), #whp-form select, #whp-form button, .att-opt, .week-tab')]
+          .filter((el) => !el.closest('[hidden]') && el.getBoundingClientRect().width > 0)
+          .filter((el) => { const r = el.getBoundingClientRect(); return !el.closest('.week-tabs') && (r.left < -0.5 || r.right > innerWidth + 0.5); });
+        const strip = document.querySelector('.week-tabs');
+        const tabsFit = [...strip.children].slice(0, 4).every((t) => t.getBoundingClientRect().right <= strip.getBoundingClientRect().right + 0.5);
+        return { over, bad: bad.map((b) => b.id || b.className), tabsFit };
+      });
+      await p.screenshot({ path: path.join(SHOTS, `whp-${tag}-form.png`), fullPage: true });
+      await p.click('#submit');
+      await p.waitForSelector('#result:not([hidden])');
+      const resCheck = await p.evaluate(() => ({ over: document.documentElement.scrollWidth - innerWidth }));
+      await p.locator('#result').screenshot({ path: path.join(SHOTS, `whp-${tag}-result.png`) });
+      T(`${label} 주휴수당 계산기`, `${label}에서 사례 4 입력·판정`, '가로 스크롤 없음, 입력칸·버튼·판정표가 화면 안, 4주 탭이 스크롤 없이 보임',
+        `입력 화면 넘침 ${formCheck.over}px, 화면 밖 요소 ${formCheck.bad.length}개 ${formCheck.bad.join(',')}, 4주 탭 한 화면=${formCheck.tabsFit} · 결과 화면 넘침 ${resCheck.over}px`, formCheck.over <= 0 && formCheck.bad.length === 0 && formCheck.tabsFit && resCheck.over <= 0);
+      if (tag === '360') {
+        await fillWhp(p, whpCases[5]);
+        await judgeWhp(p);
+        await p.locator('#result').screenshot({ path: path.join(SHOTS, 'whp-360-insufficient.png') });
+        await p.goto('/');
+        await p.screenshot({ path: path.join(SHOTS, 'home-360.png'), fullPage: true });
+      } else {
+        await p.goto('/');
+        await p.screenshot({ path: path.join(SHOTS, 'home-desktop.png'), fullPage: true });
+      }
+      await ctx.close();
+    }
+
     /* ================= 데이터 전송 ================= */
     section('급여·날짜 외부 전송 여부');
-    const src = ['assets/js/proration.js', 'assets/js/salary-proration-page.js'].map((f) => fs.readFileSync(path.join(ROOT, 'site', f), 'utf8')).join('\n');
-    const html = ['index.html', 'salary-proration/index.html'].map((f) => fs.readFileSync(path.join(ROOT, 'site', f), 'utf8')).join('\n');
+    const src = ['assets/js/proration.js', 'assets/js/salary-proration-page.js', 'assets/js/weekly-holiday.js', 'assets/js/weekly-holiday-page.js'].map((f) => fs.readFileSync(path.join(ROOT, 'site', f), 'utf8')).join('\n');
+    const html = ['index.html', 'salary-proration/index.html', 'weekly-holiday-pay/index.html'].map((f) => fs.readFileSync(path.join(ROOT, 'site', f), 'utf8')).join('\n');
     const apis = ['fetch(', 'XMLHttpRequest', 'sendBeacon', 'WebSocket', 'EventSource', 'localStorage', 'sessionStorage', 'indexedDB', 'document.cookie', 'import(', 'new Image', 'gtag', 'dataLayer'];
     const found = apis.filter((a) => src.includes(a));
     const externalScripts = (html.match(/<script[^>]+src="(?!\/)[^"]*"/g) || []);
@@ -577,7 +861,7 @@ const CASES = [
 
     section('검색 노출 차단 (개발 환경)');
     const metas = [];
-    for (const u of ['/', '/salary-proration']) {
+    for (const u of ['/', '/salary-proration', '/weekly-holiday-pay']) {
       const res = await page.goto(u);
       metas.push({ u, robots: await page.getAttribute('meta[name=robots]', 'content'), header: res.headers()['x-robots-tag'] });
     }

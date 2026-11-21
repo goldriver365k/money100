@@ -2,4 +2,5 @@
 export const PAGES = [
   { path: '/', file: 'index.html', priority: '1.0' },
   { path: '/salary-proration', file: 'salary-proration/index.html', priority: '0.9' },
+  { path: '/weekly-holiday-pay', file: 'weekly-holiday-pay/index.html', priority: '0.9' },
 ];
