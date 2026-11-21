@@ -1317,3 +1317,6 @@ a.calc-card:hover .card-go, a.calc-card:focus-visible .card-go { background: var
 /* 상단 메뉴 '홈' 최소 폭, 비전송 안내 줄바꿈 균형 */
 .site-header .nav-list > li > a { min-width: 44px; justify-content: center; }
 .search-privacy { text-wrap: balance; text-align: center; }
+
+/* 로고: 그라데이션 육각형 (사용자 제공 이미지) */
+.brand-mark { background: url("/assets/icons/logo-mark.png") center / contain no-repeat; border-radius: 0; box-shadow: none; width: 36px; height: 36px; }
