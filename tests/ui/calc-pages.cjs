@@ -21,6 +21,8 @@ const { chromium } = require('playwright');
 const ROOT = path.resolve(__dirname, '..', '..');
 const WIDTHS = [360, 390, 768, 1440];
 const results = [];
+// 운영 주소 점검 시 일시적인 네트워크 지연(30초 초과)으로 전체 점검이 끊기지 않도록 페이지 이동만 한 번 다시 시도한다 (판정 기준은 그대로)
+const gotoRetry = async (p, url) => { try { return await p.goto(url); } catch (e) { if (!/Timeout/.test(String(e))) throw e; return p.goto(url); } };
 const check = (slug, w, item, ok, actual = '') => {
   const where = `[${slug} @ ${w}px]`;
   results.push({ where, item, ok: Boolean(ok), actual: String(actual) });
@@ -47,7 +49,7 @@ const check = (slug, w, item, ok, actual = '') => {
         const errors = [];
         p.on('pageerror', (e) => errors.push(String(e)));
         const mod = await import(pathToFileURL(path.join(ROOT, 'site/assets/js/calc', `${spec.module}.js`)).href);
-        const res = await p.goto(`/${spec.slug}`);
+        const res = await gotoRetry(p, `/${spec.slug}`);
         await p.waitForSelector('form[data-ready="true"]');
         const info = await p.evaluate(() => ({
           title: document.title, h1: document.querySelector('h1').textContent,
@@ -140,7 +142,7 @@ const check = (slug, w, item, ok, actual = '') => {
       // 공통 아코디언 (이용 가능한 모든 계산기)
       for (const slug of liveSlugs) {
         const p = await ctx.newPage();
-        await p.goto(slug);
+        await gotoRetry(p, slug);
         const fold = p.locator('details.info-fold');
         const sum = fold.locator('> summary');
         const state = () => p.evaluate(() => {
