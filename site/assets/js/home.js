@@ -47,4 +47,15 @@ for (const chip of chips) {
 search.addEventListener('input', apply);
 // 브라우저가 검색어를 되살린 경우(뒤로가기)에도 목록을 맞춘다
 window.addEventListener('pageshow', apply);
+
+/** 머리글 메뉴(#labor·#tax·#realty·#calculators)로 들어오면 해당 분야를 골라 목록으로 이동 */
+function applyHash() {
+  const key = location.hash.slice(1);
+  const chip = chips.find((c) => c.dataset.filter === key) || (key === 'calculators' ? chips.find((c) => c.dataset.filter === 'all') : null);
+  if (!chip) return;
+  chip.click();
+  document.getElementById('calculators').scrollIntoView({ block: 'start' });
+}
+window.addEventListener('hashchange', applyHash);
 apply();
+applyHash();

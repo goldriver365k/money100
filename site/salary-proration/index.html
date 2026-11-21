@@ -15,9 +15,10 @@
   <meta property="og:title" content="월급 일할계산기 — 중도 입사·퇴사 급여 계산 | 정산노트">
   <meta property="og:description" content="중도 입사·퇴사한 달의 세전 예상 급여를 두 가지 방식으로 비교하세요.">
   <meta property="og:locale" content="ko_KR">
-  <meta name="theme-color" content="#1f5f4a">
+  <meta name="theme-color" content="#2563e2">
   <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="/assets/css/style.css">
+  <script type="module" src="/assets/js/nav.js"></script>
   <script type="module" src="/assets/js/salary-proration-page.js"></script>
   <script type="application/ld+json">
   {
@@ -46,8 +47,10 @@
 <body>
   <a class="skip-link" href="#main">본문 바로가기</a>
   <header class="site-header">
-    <div class="container container-wide">
-      <a class="brand" href="/">정산노트</a>
+    <div class="container container-wide header-inner">
+      <a class="brand" href="/">정산노트<span class="brand-dot" aria-hidden="true">.</span></a>
+      <nav class="main-nav" aria-label="주요 메뉴"><ul><li><a href="/#calculators">전체 계산기</a></li><li><a href="/#labor">노동·급여</a></li><li><a href="/#tax">세금·보험</a></li><li><a href="/#realty">주거·부동산</a></li><li><a href="#basis-fold" data-open-fold>적용 기준</a></li></ul></nav>
+      <a class="btn btn-primary header-cta" href="/salary-proration">계산 시작</a>
     </div>
   </header>
 
@@ -228,7 +231,8 @@
   </main>
 
   <footer class="site-footer">
-    <div class="container">
+    <div class="container container-wide">
+      <p class="footer-brand">정산노트<span aria-hidden="true">.</span></p>
       <p>입력한 급여와 날짜는 브라우저 안에서만 계산되며 서버나 분석 도구로 전송되지 않습니다.</p>
       <p><a href="/">정산노트 홈</a></p>
     </div>

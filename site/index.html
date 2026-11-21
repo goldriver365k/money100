@@ -15,152 +15,203 @@
   <meta property="og:title" content="급여 계산기 모음 | 정산노트">
   <meta property="og:description" content="중도 입사·퇴사 급여 일할계산 등 급여 정산 계산기 모음">
   <meta property="og:locale" content="ko_KR">
-  <meta name="theme-color" content="#1f5f4a">
+  <meta name="theme-color" content="#2563e2">
   <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="/assets/css/style.css">
   <script type="module" src="/assets/js/home.js"></script>
+  <script type="module" src="/assets/js/nav.js"></script>
 </head>
 <body>
   <a class="skip-link" href="#main">본문 바로가기</a>
   <header class="site-header">
-    <div class="container container-wide">
-      <a class="brand" href="/" aria-current="page">정산노트</a>
+    <div class="container container-wide header-inner">
+      <a class="brand" href="/" aria-current="page">정산노트<span class="brand-dot" aria-hidden="true">.</span></a>
+      <nav class="main-nav" aria-label="주요 메뉴"><ul><li><a href="#calculators">전체 계산기</a></li><li><a href="#labor">노동·급여</a></li><li><a href="#tax">세금·보험</a></li><li><a href="#realty">주거·부동산</a></li><li><a href="#basis-fold" data-open-fold>적용 기준</a></li></ul></nav>
+      <a class="btn btn-primary header-cta" href="/salary-proration">계산 시작</a>
     </div>
   </header>
 
   <main id="main" class="container container-wide">
-    <section class="hero" aria-labelledby="page-title">
-      <h1 id="page-title">급여 계산기 모음</h1>
-      <p class="lead">급여·노무 계산을 브라우저에서 바로 확인하세요. 입력한 급여와 날짜는 이 기기 안에서만 계산되고 어디에도 전송되지 않습니다.</p>
+    <section class="home-hero" aria-labelledby="page-title">
+      <div class="hero-copy">
+        <p class="eyebrow">필요한 계산을 한곳에서</p>
+        <h1 id="page-title">복잡한 계산, <span class="hl">쉽고</span> 정확하게</h1>
+        <p class="lead">급여부터 세금·주거까지 필요한 계산을 한곳에서 확인하세요. 입력한 값은 이 기기 안에서만 계산되고 어디에도 전송되지 않습니다.</p>
+        <div class="search-hero">
+          <label for="calc-search" class="sr-only">계산기 검색</label>
+          <svg class="search-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M20 20l-3.6-3.6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
+          <input id="calc-search" type="search" placeholder="어떤 계산이 필요하세요?" autocomplete="off" aria-describedby="calc-count">
+        </div>
+        <p class="hero-stat"><span class="stat-label-sm">전체</span> <strong class="stat-num">10</strong> <span>가지 계산기</span> <span class="stat-sub">이용 가능 2 · 준비 중 8</span></p>
+      </div>
+      <aside class="hero-preview" aria-label="대표 계산기 미리보기">
+        <div class="preview-card">
+          <p class="preview-title">1. 중도 입·퇴사자 월급 일할계산기 <span class="card-cat">노동·급여</span></p>
+          <div class="preview-grid">
+            <div>
+              <p class="preview-sub">입력 정보</p>
+              <ul class="preview-fields">
+                <li><span>입사일 · 마지막 재직일</span></li>
+                <li><span>일할 대상 세전 월급</span></li>
+                <li><span>월 전체 근무 일정</span></li>
+              </ul>
+            </div>
+            <div class="preview-result">
+              <p class="preview-sub">결과 미리보기</p>
+              <p class="preview-amount">예상 금액<br><strong>달력일 기준 · 근무일 기준</strong></p>
+              <p class="preview-note">두 기준의 세전 예상액과 차액을 비교합니다</p>
+            </div>
+          </div>
+          <a class="btn btn-primary preview-btn" href="/salary-proration">먼저 사용해 보세요</a>
+        </div>
+      </aside>
     </section>
 
-    <section class="catalog" aria-labelledby="calculators-title">
-      <h2 id="calculators-title" class="section-title">계산기</h2>
-      <div class="catalog-tools">
-        <div class="field search-field">
-          <label for="calc-search">계산기 검색</label>
-          <input id="calc-search" type="search" placeholder="예: 주휴수당, 퇴직금, 양도세" autocomplete="off" aria-describedby="calc-count">
-        </div>
-        <div class="chips" role="group" aria-label="분야별 보기">
-          <button type="button" class="chip" data-filter="all" aria-pressed="true">전체</button>
-          <button type="button" class="chip" data-filter="pay" aria-pressed="false">급여·수당</button>
-          <button type="button" class="chip" data-filter="retire" aria-pressed="false">퇴직·실업</button>
-          <button type="button" class="chip" data-filter="tax" aria-pressed="false">4대보험·세금</button>
-          <button type="button" class="chip" data-filter="realty" aria-pressed="false">부동산</button>
-        </div>
-        <p class="calc-count" id="calc-count" role="status" aria-live="polite">계산기 10개 · 이용 가능 2개 · 준비 중 8개</p>
+    <section class="catalog" id="calculators" aria-labelledby="calculators-title">
+      <h2 id="calculators-title" class="section-title">상황에 맞는 계산기를 찾아보세요</h2>
+      <p class="section-desc">필요한 순간에 바로 확인할 수 있도록 자주 찾는 계산을 한곳에 모았습니다.</p>
+      <div class="chips" role="group" aria-label="분야별 보기">
+        <button type="button" class="chip" data-filter="all" aria-pressed="true">전체</button>
+          <button type="button" class="chip" data-filter="labor" aria-pressed="false">노동·급여</button>
+          <button type="button" class="chip" data-filter="tax" aria-pressed="false">세금·보험</button>
+          <button type="button" class="chip" data-filter="realty" aria-pressed="false">주거·부동산</button>
       </div>
+      <p class="calc-count" id="calc-count" role="status" aria-live="polite">계산기 10개 · 이용 가능 2개 · 준비 중 8개</p>
       <ul class="calc-grid" id="calc-grid">
-          <li class="calc-item is-featured" data-category="pay" data-status="live" data-keywords="월급 일할 중도 입사 퇴사 급여 일할계산 달력일 소정근로일 중도 입·퇴사자 월급 일할계산기 급여·수당">
+          <li class="calc-item is-featured" data-category="labor" data-status="live" data-keywords="월급 일할 중도 입사 퇴사 급여 일할계산 달력일 소정근로일 중도 입·퇴사자 월급 일할계산기 노동·급여">
             <a class="card card-featured" href="/salary-proration">
-              <span class="card-badges"><span class="card-tag">대표 계산기</span><span class="card-cat">급여·수당</span><span class="status status-live">이용 가능</span></span>
+              <span class="card-badges"><span class="card-no" aria-label="1번">1</span><span class="card-cat">노동·급여</span><span class="status status-live">이용 가능</span><span class="card-tag">대표 계산기</span></span>
               <h3 class="card-title">중도 입·퇴사자 월급 일할계산기</h3>
               <span class="card-desc">중도 입사·퇴사한 달의 세전 예상 급여를 달력일 기준과 소정근로일 기준으로 비교합니다.</span>
-              <ul class="card-situation" aria-label="이럴 때 쓰세요"><li>월 중간에 입사하거나 퇴사한 달의 월급</li><li>공휴일·교대근무를 반영한 근무일 기준 비교</li></ul>
-              <span class="card-cta" aria-hidden="true">계산하러 가기 →</span>
+              <span class="card-cta" aria-hidden="true">먼저 사용해 보세요</span>
             </a>
           </li>
-          <li class="calc-item" data-category="pay" data-status="live" data-keywords="주휴수당 주휴 15시간 초단시간 아르바이트 알바 개근 주 15시간 전후 초단시간 근로자 주휴수당 판독기 급여·수당">
+          <li class="calc-item" data-category="labor" data-status="live" data-keywords="주휴수당 주휴 15시간 초단시간 아르바이트 알바 개근 주 15시간 전후 초단시간 근로자 주휴수당 판독기 노동·급여">
             <a class="card" href="/weekly-holiday-pay">
-              <span class="card-badges"><span class="card-cat">급여·수당</span><span class="status status-live">이용 가능</span></span>
+              <span class="card-badges"><span class="card-no" aria-label="2번">2</span><span class="card-cat">노동·급여</span><span class="status status-live">이용 가능</span></span>
               <h3 class="card-title">주 15시간 전후 초단시간 근로자 주휴수당 판독기</h3>
-              <span class="card-desc">주마다 근무시간이 달라도 4주 평균 소정근로시간과 개근 여부로 주차별 주휴수당 지급 대상인지 판정합니다.</span>
-              <ul class="card-situation" aria-label="이럴 때 쓰세요"><li>주마다 근무시간이 다른 아르바이트</li><li>결근·퇴사·근무표 누락이 있는 주의 판정</li></ul>
-              <span class="card-cta" aria-hidden="true">판정하러 가기 →</span>
+              <span class="card-desc">4주 평균 소정근로시간과 개근 여부로 주차별 주휴수당 지급 대상인지 판정합니다.</span>
+              <span class="card-cta" aria-hidden="true">계산하기 →</span>
             </a>
           </li>
-          <li class="calc-item" data-category="retire" data-status="soon" data-keywords="퇴직금 육아휴직 단축근무 복직 평균임금 육아휴직·단축근무 복직자 퇴직금 계산기 퇴직·실업">
+          <li class="calc-item" data-category="labor" data-status="soon" data-keywords="퇴직금 육아휴직 단축근무 복직 평균임금 육아휴직·단축근무 복직자 퇴직금 계산기 노동·급여">
             <div class="card card-soon">
-              <span class="card-badges"><span class="card-cat">퇴직·실업</span><span class="status status-soon">준비 중</span></span>
+              <span class="card-badges"><span class="card-no" aria-label="3번">3</span><span class="card-cat">노동·급여</span><span class="status status-soon">준비 중</span></span>
               <h3 class="card-title">육아휴직·단축근무 복직자 퇴직금 계산기</h3>
               <span class="card-desc">육아휴직이나 근로시간 단축 기간이 있는 근로자의 퇴직금을 확인하는 계산기입니다.</span>
-              <span class="card-soon-note">계산 기준과 공식 출처를 확인한 뒤 공개합니다. 지금은 계산할 수 없습니다.</span>
+              <span class="card-soon-note">공식 출처를 확인한 뒤 공개합니다 · 지금은 계산할 수 없습니다</span>
             </div>
           </li>
-          <li class="calc-item" data-category="pay" data-status="soon" data-keywords="야간수당 연장수당 교대근무 자정 가산 자정 경과 교대근무 야간·연장수당 계산기 급여·수당">
+          <li class="calc-item" data-category="labor" data-status="soon" data-keywords="야간수당 연장수당 교대근무 자정 가산 자정 경과 교대근무 야간·연장수당 계산기 노동·급여">
             <div class="card card-soon">
-              <span class="card-badges"><span class="card-cat">급여·수당</span><span class="status status-soon">준비 중</span></span>
+              <span class="card-badges"><span class="card-no" aria-label="4번">4</span><span class="card-cat">노동·급여</span><span class="status status-soon">준비 중</span></span>
               <h3 class="card-title">자정 경과 교대근무 야간·연장수당 계산기</h3>
               <span class="card-desc">자정을 넘기는 교대근무의 야간·연장근로 수당을 확인하는 계산기입니다.</span>
-              <span class="card-soon-note">계산 기준과 공식 출처를 확인한 뒤 공개합니다. 지금은 계산할 수 없습니다.</span>
+              <span class="card-soon-note">공식 출처를 확인한 뒤 공개합니다 · 지금은 계산할 수 없습니다</span>
             </div>
           </li>
-          <li class="calc-item" data-category="pay" data-status="soon" data-keywords="연차수당 연차 유급휴가 5인 미만 소규모 소규모 사업장 연차수당 계산기 급여·수당">
+          <li class="calc-item" data-category="labor" data-status="soon" data-keywords="연차수당 연차 유급휴가 5인 미만 소규모 소규모 사업장 연차수당 계산기 노동·급여">
             <div class="card card-soon">
-              <span class="card-badges"><span class="card-cat">급여·수당</span><span class="status status-soon">준비 중</span></span>
+              <span class="card-badges"><span class="card-no" aria-label="5번">5</span><span class="card-cat">노동·급여</span><span class="status status-soon">준비 중</span></span>
               <h3 class="card-title">소규모 사업장 연차수당 계산기</h3>
               <span class="card-desc">소규모 사업장 근로자의 연차유급휴가와 연차수당을 확인하는 계산기입니다.</span>
-              <span class="card-soon-note">계산 기준과 공식 출처를 확인한 뒤 공개합니다. 지금은 계산할 수 없습니다.</span>
+              <span class="card-soon-note">공식 출처를 확인한 뒤 공개합니다 · 지금은 계산할 수 없습니다</span>
             </div>
           </li>
-          <li class="calc-item" data-category="tax" data-status="soon" data-keywords="4대보험 국민연금 건강보험 고용보험 산재 일용직 건설 아르바이트 건설일용직·아르바이트 4대보험 계산기 4대보험·세금">
+          <li class="calc-item" data-category="tax" data-status="soon" data-keywords="4대보험 국민연금 건강보험 고용보험 산재 일용직 건설 아르바이트 건설일용직·아르바이트 4대보험 계산기 세금·보험">
             <div class="card card-soon">
-              <span class="card-badges"><span class="card-cat">4대보험·세금</span><span class="status status-soon">준비 중</span></span>
+              <span class="card-badges"><span class="card-no" aria-label="6번">6</span><span class="card-cat">세금·보험</span><span class="status status-soon">준비 중</span></span>
               <h3 class="card-title">건설일용직·아르바이트 4대보험 계산기</h3>
               <span class="card-desc">건설일용직과 아르바이트의 4대보험 적용 여부와 보험료를 확인하는 계산기입니다.</span>
-              <span class="card-soon-note">계산 기준과 공식 출처를 확인한 뒤 공개합니다. 지금은 계산할 수 없습니다.</span>
+              <span class="card-soon-note">공식 출처를 확인한 뒤 공개합니다 · 지금은 계산할 수 없습니다</span>
             </div>
           </li>
-          <li class="calc-item" data-category="tax" data-status="soon" data-keywords="3.3% 프리랜서 경비율 종합소득세 원천징수 플랫폼 플랫폼 3.3% 프리랜서 경비율 세액 계산기 4대보험·세금">
+          <li class="calc-item" data-category="tax" data-status="soon" data-keywords="3.3% 프리랜서 경비율 종합소득세 원천징수 플랫폼 플랫폼 3.3% 프리랜서 경비율 세액 계산기 세금·보험">
             <div class="card card-soon">
-              <span class="card-badges"><span class="card-cat">4대보험·세금</span><span class="status status-soon">준비 중</span></span>
+              <span class="card-badges"><span class="card-no" aria-label="7번">7</span><span class="card-cat">세금·보험</span><span class="status status-soon">준비 중</span></span>
               <h3 class="card-title">플랫폼 3.3% 프리랜서 경비율 세액 계산기</h3>
               <span class="card-desc">3.3% 원천징수 프리랜서의 경비율에 따른 세액을 확인하는 계산기입니다.</span>
-              <span class="card-soon-note">계산 기준과 공식 출처를 확인한 뒤 공개합니다. 지금은 계산할 수 없습니다.</span>
+              <span class="card-soon-note">공식 출처를 확인한 뒤 공개합니다 · 지금은 계산할 수 없습니다</span>
             </div>
           </li>
-          <li class="calc-item" data-category="retire" data-status="soon" data-keywords="실업급여 조기재취업수당 구직급여 잔여 재취업 실업급여 조기재취업수당·잔여급여 계산기 퇴직·실업">
+          <li class="calc-item" data-category="tax" data-status="soon" data-keywords="실업급여 조기재취업수당 구직급여 잔여 재취업 실업급여 조기재취업수당·잔여급여 계산기 세금·보험">
             <div class="card card-soon">
-              <span class="card-badges"><span class="card-cat">퇴직·실업</span><span class="status status-soon">준비 중</span></span>
+              <span class="card-badges"><span class="card-no" aria-label="8번">8</span><span class="card-cat">세금·보험</span><span class="status status-soon">준비 중</span></span>
               <h3 class="card-title">실업급여 조기재취업수당·잔여급여 계산기</h3>
               <span class="card-desc">실업급여 수급 중 재취업한 경우의 조기재취업수당과 잔여 급여를 확인하는 계산기입니다.</span>
-              <span class="card-soon-note">계산 기준과 공식 출처를 확인한 뒤 공개합니다. 지금은 계산할 수 없습니다.</span>
+              <span class="card-soon-note">공식 출처를 확인한 뒤 공개합니다 · 지금은 계산할 수 없습니다</span>
             </div>
           </li>
-          <li class="calc-item" data-category="realty" data-status="soon" data-keywords="최우선변제금 소액임차인 보증금 전세 월세 경매 소액임차인 최우선변제금 계산기 부동산">
+          <li class="calc-item" data-category="realty" data-status="soon" data-keywords="최우선변제금 소액임차인 보증금 전세 월세 경매 소액임차인 최우선변제금 계산기 주거·부동산">
             <div class="card card-soon">
-              <span class="card-badges"><span class="card-cat">부동산</span><span class="status status-soon">준비 중</span></span>
+              <span class="card-badges"><span class="card-no" aria-label="9번">9</span><span class="card-cat">주거·부동산</span><span class="status status-soon">준비 중</span></span>
               <h3 class="card-title">소액임차인 최우선변제금 계산기</h3>
               <span class="card-desc">주택 소액임차인이 최우선으로 돌려받을 수 있는 보증금을 확인하는 계산기입니다.</span>
-              <span class="card-soon-note">계산 기준과 공식 출처를 확인한 뒤 공개합니다. 지금은 계산할 수 없습니다.</span>
+              <span class="card-soon-note">공식 출처를 확인한 뒤 공개합니다 · 지금은 계산할 수 없습니다</span>
             </div>
           </li>
-          <li class="calc-item" data-category="realty" data-status="soon" data-keywords="양도세 양도소득세 장기보유특별공제 1세대 1주택 부동산 1세대 1주택 장기보유특별공제 양도세 계산기 부동산">
+          <li class="calc-item" data-category="realty" data-status="soon" data-keywords="양도세 양도소득세 장기보유특별공제 1세대 1주택 부동산 1세대 1주택 장기보유특별공제 양도세 계산기 주거·부동산">
             <div class="card card-soon">
-              <span class="card-badges"><span class="card-cat">부동산</span><span class="status status-soon">준비 중</span></span>
+              <span class="card-badges"><span class="card-no" aria-label="10번">10</span><span class="card-cat">주거·부동산</span><span class="status status-soon">준비 중</span></span>
               <h3 class="card-title">1세대 1주택 장기보유특별공제 양도세 계산기</h3>
               <span class="card-desc">1세대 1주택 양도 시 장기보유특별공제와 양도소득세를 확인하는 계산기입니다.</span>
-              <span class="card-soon-note">계산 기준과 공식 출처를 확인한 뒤 공개합니다. 지금은 계산할 수 없습니다.</span>
+              <span class="card-soon-note">공식 출처를 확인한 뒤 공개합니다 · 지금은 계산할 수 없습니다</span>
             </div>
           </li>
       </ul>
       <p class="no-results" id="no-results" hidden>검색 결과가 없습니다. 다른 낱말로 찾거나 ‘전체’를 눌러 주세요.</p>
     </section>
 
-    <details class="content basis-fold" id="basis-fold">
-      <summary class="fold-summary"><h2 id="basis-title">적용 기준 및 공식 출처</h2></summary>
-      <div class="fold-body">
-        <p>정산노트는 공식 자료로 계산 기준을 확인한 계산기만 공개합니다. 각 계산기의 자세한 기준은 해당 계산기 페이지의 ‘적용 기준 및 공식 출처’에서 볼 수 있습니다.</p>
-        <h3>월급 일할계산기</h3>
-        <ul>
-          <li>달력일 기준과 소정근로일 기준 두 가지로 배분해 비교합니다(법정 산식이 아닌 비교용 계산).</li>
-          <li><a href="https://www.law.go.kr/lsLinkCommonInfo.do?chrClsCd=010202&amp;lsJoLnkSeq=1027161983" target="_blank" rel="noopener noreferrer">근로기준법 제43조 (임금 지급)<span class="sr-only"> — 새 창에서 열림</span></a> · <a href="https://www.law.go.kr/lsLinkCommonInfo.do?chrClsCd=010202&amp;lsJoLnkSeq=1029728419" target="_blank" rel="noopener noreferrer">근로기준법 제48조 (임금대장 및 임금명세서)<span class="sr-only"> — 새 창에서 열림</span></a></li>
-        </ul>
-        <h3>주휴수당 판독기</h3>
-        <ul>
-          <li>4주(4주 미만 근로 시 그 기간) 평균 1주 소정근로시간 15시간 이상, 소정근로일 개근 여부로 주차별 판정합니다.</li>
-          <li><a href="https://www.law.go.kr/법령/근로기준법/제18조" target="_blank" rel="noopener noreferrer">근로기준법 제18조제3항<span class="sr-only"> — 새 창에서 열림</span></a> · <a href="https://www.law.go.kr/법령/근로기준법/제55조" target="_blank" rel="noopener noreferrer">근로기준법 제55조제1항<span class="sr-only"> — 새 창에서 열림</span></a> · <a href="https://www.law.go.kr/법령/근로기준법시행령/제30조" target="_blank" rel="noopener noreferrer">근로기준법 시행령 제30조제1항<span class="sr-only"> — 새 창에서 열림</span></a></li>
-        </ul>
-        <h3>준비 중인 계산기 (8종)</h3>
-        <p>퇴직금, 야간·연장수당, 연차수당, 4대보험, 3.3% 프리랜서 세액, 실업급여, 최우선변제금, 양도세 계산기는 법령·세율·기준일을 공식 자료로 확인하기 전이라 계산 기능과 출처를 공개하지 않습니다.</p>
-        <p class="checked-date">공식 자료 확인일: <time datetime="2026-11-21">2026년 11월 21일</time></p>
-      </div>
-    </details>
+    <div class="home-bottom">
+      <section class="bottom-col" aria-labelledby="basis-title">
+        <details class="content basis-fold" id="basis-fold">
+          <summary class="fold-summary"><h2 id="basis-title">적용 기준 및 공식 출처</h2></summary>
+          <div class="fold-body">
+            <h3>적용기준 안내</h3>
+            <p>정산노트는 공식 자료로 계산 기준을 확인한 계산기만 공개합니다. 자세한 기준은 각 계산기 페이지의 ‘적용 기준 및 공식 출처’에서 볼 수 있습니다.</p>
+            <ul>
+              <li>월급 일할계산기: 달력일 기준과 소정근로일 기준 두 가지로 배분해 비교합니다(법정 산식이 아닌 비교용 계산).</li>
+              <li>주휴수당 판독기: 4주(4주 미만 근로 시 그 기간) 평균 1주 소정근로시간 15시간 이상, 소정근로일 개근 여부로 주차별 판정합니다.</li>
+            </ul>
+            <h3>공식출처 확인</h3>
+            <ul>
+              <li><a href="https://www.law.go.kr/lsLinkCommonInfo.do?chrClsCd=010202&amp;lsJoLnkSeq=1027161983" target="_blank" rel="noopener noreferrer">근로기준법 제43조 (임금 지급)<span class="sr-only"> — 새 창에서 열림</span></a> · <a href="https://www.law.go.kr/lsLinkCommonInfo.do?chrClsCd=010202&amp;lsJoLnkSeq=1029728419" target="_blank" rel="noopener noreferrer">근로기준법 제48조 (임금대장 및 임금명세서)<span class="sr-only"> — 새 창에서 열림</span></a></li>
+              <li><a href="https://www.law.go.kr/법령/근로기준법/제18조" target="_blank" rel="noopener noreferrer">근로기준법 제18조제3항<span class="sr-only"> — 새 창에서 열림</span></a> · <a href="https://www.law.go.kr/법령/근로기준법/제55조" target="_blank" rel="noopener noreferrer">근로기준법 제55조제1항<span class="sr-only"> — 새 창에서 열림</span></a> · <a href="https://www.law.go.kr/법령/근로기준법시행령/제30조" target="_blank" rel="noopener noreferrer">근로기준법 시행령 제30조제1항<span class="sr-only"> — 새 창에서 열림</span></a></li>
+            </ul>
+            <h3>업데이트 안내</h3>
+            <p>준비 중인 8종(퇴직금, 야간·연장수당, 연차수당, 4대보험, 3.3% 프리랜서 세액, 실업급여, 최우선변제금, 양도세)은 법령·세율·기준일을 공식 자료로 확인한 뒤 순서대로 공개합니다.</p>
+            <p class="checked-date">공식 자료 확인일: <time datetime="2026-11-21">2026년 11월 21일</time></p>
+          </div>
+        </details>
+      </section>
+      <section class="bottom-col home-faq" aria-labelledby="home-faq-title">
+        <h2 id="home-faq-title">자주 묻는 질문</h2>
+        <p class="section-desc">계산기를 이용하기 전에 확인해 보세요.</p>
+          <details class="faq-item">
+            <summary>어떤 계산기부터 사용하면 되나요?</summary>
+            <p>상황에 맞는 분야를 고르거나 검색창에 ‘주휴수당’, ‘퇴직금’처럼 찾는 계산을 입력하세요. 지금 바로 쓸 수 있는 계산기는 ‘이용 가능’으로 표시된 2종입니다.</p>
+          </details>
+          <details class="faq-item">
+            <summary>입력한 정보는 어떻게 활용되나요?</summary>
+            <p>입력한 급여·날짜·근무시간은 이 기기의 브라우저 안에서만 계산에 쓰이고, 서버나 분석 도구로 전송되지 않습니다.</p>
+          </details>
+          <details class="faq-item">
+            <summary>적용기준과 공식출처는 어디서 확인하나요?</summary>
+            <p>이 페이지 아래 ‘적용 기준 및 공식 출처’와 각 계산기 페이지의 같은 영역에서 법령 조문과 공식 자료 확인일을 볼 수 있습니다.</p>
+          </details>
+          <details class="faq-item">
+            <summary>계산 결과를 법적 판단에 바로 사용할 수 있나요?</summary>
+            <p>아닙니다. 계산 결과는 단순 모의 계산이며 법적 효력을 갖는 증빙자료가 아닙니다. 실제 지급액은 근로계약서·취업규칙·급여명세서 또는 관할 기관에서 확인하세요.</p>
+          </details>
+      </section>
+    </div>
   </main>
 
   <footer class="site-footer">
     <div class="container container-wide">
+      <p class="footer-brand">정산노트<span aria-hidden="true">.</span></p>
       <p>정산노트의 계산 결과는 단순 모의 계산이며, 법적 효력을 갖는 증빙자료가 아닙니다.</p>
+      <p>입력한 급여와 날짜는 브라우저 안에서만 계산되며 서버나 분석 도구로 전송되지 않습니다.</p>
     </div>
   </footer>
 </body>
