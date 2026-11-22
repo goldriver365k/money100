@@ -46,6 +46,16 @@ function escapeAttr(value) {
   return value.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;');
 }
 
+/** site.config.json 의 siteVerification → meta 태그. 값 형식이 이상하면(공백·따옴표 등) 빌드를 멈춘다 */
+function verificationTags() {
+  const v = CONFIG.siteVerification ?? {};
+  const names = { naver: 'naver-site-verification', google: 'google-site-verification' };
+  return Object.entries(names).filter(([k]) => v[k]).map(([k, name]) => {
+    if (!/^[A-Za-z0-9_-]{8,128}$/.test(v[k])) fail(`siteVerification.${k} 값 형식이 올바르지 않습니다(영문·숫자·-·_ 만): ${v[k]}`);
+    return `<meta name="${name}" content="${v[k]}">`;
+  });
+}
+
 const production = process.argv.includes('--production');
 const siteUrl = production ? normalizeSiteUrl(process.env.SITE_URL || CONFIG.siteUrl) : null;
 
@@ -69,6 +79,13 @@ for (const page of PAGES) {
     block = '<!-- seo:start -->\n  <meta name="robots" content="noindex, nofollow">\n  <!-- seo:end -->';
   }
   let out = html.replace(SEO_BLOCK, block);
+  // 검색엔진 소유확인(네이버·구글): 운영 빌드의 홈에만, site.config.json 에 값이 있을 때만 넣는다
+  if (page.path === '/') {
+    const VERIFY = /<!-- verify:start -->[\s\S]*?<!-- verify:end -->/;
+    if (!VERIFY.test(out)) fail('index.html 에 <!-- verify:start --> 자리가 없습니다.');
+    const tags = production ? verificationTags() : [];
+    out = out.replace(VERIFY, `<!-- verify:start -->${tags.map((t) => `\n  ${t}`).join('')}${tags.length ? '\n  ' : ''}<!-- verify:end -->`);
+  }
   // 공유 이미지(og:image)는 메신저·SNS가 읽을 수 있도록 운영 빌드에서 절대 주소로 바꾼다
   if (production) out = out.replaceAll('content="/assets/og-image.png"', `content="${escapeAttr(siteUrl)}/assets/og-image.png"`);
   fs.writeFileSync(file, out);

@@ -1,4 +1,9 @@
 {
   "_comment": "운영 도메인은 이 파일의 siteUrl 한 곳에서만 지정한다(9차 확정: 급여계산기.site). 빌드 시 SITE_URL 환경변수가 있으면 그 값이 우선한다. 한글 도메인은 canonical·sitemap 에 ASCII(Punycode) 주소로 들어간다. Netlify 운영 빌드는 PUBLIC_LAUNCH=true 일 때만 이 주소로 공개 설정(canonical·sitemap·색인 허용)을 적용한다(scripts/netlify-build.js).",
-  "siteUrl": "https://급여계산기.site"
+  "siteUrl": "https://급여계산기.site",
+  "_verification_comment": "검색엔진 소유확인 값. 각 서비스가 발급한 content 값만 넣는다(임의 생성 금지). 비어 있으면 태그를 넣지 않는다. 운영 빌드에서 홈(index.html) <head>의 <!-- verify:start --> 자리에 meta 태그로 들어간다. 구글: Search Console → URL 접두어 → HTML 태그의 content 값.",
+  "siteVerification": {
+    "naver": "49a1654bb2d844c356705f96722228af2d2d4d3e",
+    "google": ""
+  }
 }

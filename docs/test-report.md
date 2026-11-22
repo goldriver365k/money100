@@ -1,6 +1,6 @@
 # 생활계산서 검수 결과표
 
-- 실행: 2026-11-21T23:21:58.331Z · 미리보기(site/) · `npm run test:e2e` · Chromium(Playwright) · 시간대 Pacific/Kiritimati(UTC+14)
+- 실행: 2026-11-22T00:12:45.391Z · 미리보기(site/) · `npm run test:e2e` · Chromium(Playwright) · 시간대 Pacific/Kiritimati(UTC+14)
 - 집계: 통과 101 · 실패 0 · 미확인 3
 
 ## 월급 일할계산기 — 필수 검증 사례 5건 (회귀, 브라우저 직접 입력)

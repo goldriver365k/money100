@@ -101,6 +101,21 @@ describe('운영 도메인 설정', () => {
     }
   });
 
+  test('검색엔진 소유확인: 운영 빌드 홈에 설정값(네이버)만 들어가고, 비어 있는 구글은 태그 없음, 미리보기·다른 페이지에는 없음', () => {
+    const cfg = JSON.parse(fs.readFileSync(path.join(ROOT, 'site.config.json'), 'utf8'));
+    const p = build(['--production']); p.run();
+    const home = p.read('index.html');
+    assert.ok(home.includes(`<meta name="naver-site-verification" content="${cfg.siteVerification.naver}">`));
+    assert.equal(home.includes('google-site-verification'), Boolean(cfg.siteVerification.google));
+    assert.ok(!p.read('vat/index.html').includes('site-verification'));
+    const pv = build([]); pv.run();
+    assert.ok(!pv.read('index.html').includes('site-verification'));
+    // 잘못된 값이면 빌드 실패
+    const bad = path.join(fs.mkdtempSync(path.join(os.tmpdir(), 'jn-cfg-')), 'c.json');
+    fs.writeFileSync(bad, JSON.stringify({ ...cfg, siteVerification: { google: 'abc" onload="x' } }));
+    assert.throws(() => build(['--production'], { BUILD_CONFIG: bad }).run());
+  });
+
   test('운영 도메인에 경로·http 를 넣으면 실패한다', () => {
     assert.throws(build(['--production'], { SITE_URL: 'http://example.com' }).run, /https/);
     assert.throws(build(['--production'], { SITE_URL: 'https://example.com/app' }).run, /도메인만/);
