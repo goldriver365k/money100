@@ -100,7 +100,8 @@ if (production) {
     path.join(OUT, 'sitemap.xml'),
     `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls}\n</urlset>\n`,
   );
-  fs.writeFileSync(path.join(OUT, 'robots.txt'), `User-agent: *\nAllow: /\n\nSitemap: ${siteUrl}/sitemap.xml\n`);
+  // 모든 검색 로봇 허용 + 네이버(Yeti)·구글(Googlebot) 명시. 관리용 페이지는 없음(정적 사이트)
+  fs.writeFileSync(path.join(OUT, 'robots.txt'), `User-agent: *\nAllow: /\n\nUser-agent: Yeti\nAllow: /\n\nUser-agent: Googlebot\nAllow: /\n\nSitemap: ${siteUrl}/sitemap.xml\n`);
 }
 
 let commit = 'unknown';

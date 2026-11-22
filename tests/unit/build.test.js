@@ -116,6 +116,17 @@ describe('운영 도메인 설정', () => {
     assert.throws(() => build(['--production'], { BUILD_CONFIG: bad }).run());
   });
 
+  test('네이버 진단 반영: 운영 robots.txt(전체·Yeti·Googlebot 허용, 차단 없음, 정확한 Sitemap)와 홈 검색 설명·og:description', () => {
+    const p = build(['--production']); p.run();
+    assert.equal(p.read('robots.txt'), `User-agent: *\nAllow: /\n\nUser-agent: Yeti\nAllow: /\n\nUser-agent: Googlebot\nAllow: /\n\nSitemap: ${SITE}/sitemap.xml\n`);
+    const home = p.read('index.html');
+    const D = '급여 실수령액, 퇴직금, 4대보험, 부가세, 대출이자, 부동산 세금까지! 생활에 필요한 계산기 30종을 무료로 이용하세요.';
+    assert.ok(home.includes(`<meta name="description" content="${D}">`));
+    assert.ok(home.includes(`<meta property="og:description" content="${D}">`));
+    assert.ok(home.includes('<title>급여·세금·부동산 계산기 30종 | 생활계산서</title>'));
+    assert.ok(home.includes(`<link rel="canonical" href="${SITE}/">`));
+  });
+
   test('운영 도메인에 경로·http 를 넣으면 실패한다', () => {
     assert.throws(build(['--production'], { SITE_URL: 'http://example.com' }).run, /https/);
     assert.throws(build(['--production'], { SITE_URL: 'https://example.com/app' }).run, /도메인만/);
