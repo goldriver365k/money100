@@ -20,4 +20,4 @@
 
 ## 등록 절차
 1. 네이버 서치어드바이저: 사이트 `https://급여계산기.site` → 소유확인(HTML 태그) → 요청 → 사이트맵 제출 `https://xn--989a2xnd520fn5f.site/sitemap.xml`
-2. 구글 Search Console: 속성 추가 → **도메인**(가비아 DNS TXT, 권장) 또는 **URL 접두어** `https://xn--989a2xnd520fn5f.site/`(HTML 태그) → Sitemaps에 `sitemap.xml` 제출
+2. 구글 Search Console: URL 접두어 `https://xn--989a2xnd520fn5f.site/` → HTML 파일 방식 — `site/google02cbf226a5d76f54.html`(발급 파일 그대로) 배포됨 → 확인 → Sitemaps에 `sitemap.xml` 제출. (도메인 속성은 가비아 DNS TXT로 따로 가능)
