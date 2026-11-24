@@ -3,8 +3,9 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'none'; form-action 'none'; base-uri 'none'">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://www.googletagmanager.com; style-src 'self'; img-src 'self' data: https://www.googletagmanager.com https://*.google-analytics.com https://*.analytics.google.com; connect-src https://www.googletagmanager.com https://*.google-analytics.com https://*.analytics.google.com; form-action 'none'; base-uri 'none'">
   <meta name="referrer" content="strict-origin-when-cross-origin">
+  <script src="/assets/js/analytics.js" async></script>
   <title>연차수당 계산기 — 발생 연차·미사용 연차수당 계산 | 생활계산서</title>
   <meta name="description" content="입사일과 기준일(퇴사일)로 근로기준법상 발생 연차(1년 미만 월 1일, 1년 이상 15일~최대 25일)와 미사용 연차수당을 계산합니다. 단시간근로자 비례, 5명 미만 사업장 적용 제외를 반영합니다.">
   <!-- seo:start -->

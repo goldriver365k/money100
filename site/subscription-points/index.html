@@ -3,8 +3,9 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'none'; form-action 'none'; base-uri 'none'">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://www.googletagmanager.com; style-src 'self'; img-src 'self' data: https://www.googletagmanager.com https://*.google-analytics.com https://*.analytics.google.com; connect-src https://www.googletagmanager.com https://*.google-analytics.com https://*.analytics.google.com; form-action 'none'; base-uri 'none'">
   <meta name="referrer" content="strict-origin-when-cross-origin">
+  <script src="/assets/js/analytics.js" async></script>
   <title>청약가점 계산기 — 무주택기간·부양가족·통장 가입기간 84점 | 생활계산서</title>
   <meta name="description" content="생년월일, 혼인신고일, 주택 처분일, 부양가족 수, 청약통장 가입일(배우자 포함)로 민영주택 청약 가점(무주택기간 32점·부양가족 35점·통장 17점, 총 84점)을 계산합니다. 국민주택 순차제와의 차이도 안내합니다.">
   <!-- seo:start -->

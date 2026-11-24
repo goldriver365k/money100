@@ -3,8 +3,9 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'none'; form-action 'none'; base-uri 'none'">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://www.googletagmanager.com; style-src 'self'; img-src 'self' data: https://www.googletagmanager.com https://*.google-analytics.com https://*.analytics.google.com; connect-src https://www.googletagmanager.com https://*.google-analytics.com https://*.analytics.google.com; form-action 'none'; base-uri 'none'">
   <meta name="referrer" content="strict-origin-when-cross-origin">
+  <script src="/assets/js/analytics.js" async></script>
   <title>전월세 전환 계산기 — 전환율 법정 상한(기준금리+2%) 반영 | 생활계산서</title>
   <meta name="description" content="전세보증금을 월세로, 월세를 전세보증금으로 환산합니다. 주택임대차보호법의 전환율 상한(min(10%, 한국은행 기준금리 + 2%), 현재 5.0%)을 자동 적용하거나 직접 입력한 전환율과 비교합니다.">
   <!-- seo:start -->

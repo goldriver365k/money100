@@ -3,8 +3,9 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'none'; form-action 'none'; base-uri 'none'">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://www.googletagmanager.com; style-src 'self'; img-src 'self' data: https://www.googletagmanager.com https://*.google-analytics.com https://*.analytics.google.com; connect-src https://www.googletagmanager.com https://*.google-analytics.com https://*.analytics.google.com; form-action 'none'; base-uri 'none'">
   <meta name="referrer" content="strict-origin-when-cross-origin">
+  <script src="/assets/js/analytics.js" async></script>
   <title>중개수수료 계산기 — 부동산 복비 매매·전세·월세 법정 상한 | 생활계산서</title>
   <meta name="description" content="부동산 종류와 거래 유형(매매·전세·월세), 거래금액으로 공인중개사법 시행규칙의 중개보수(복비) 상한요율과 한도액을 계산합니다. 월세 환산 거래금액(×100, 5천만 원 미만 ×70)과 부가세를 함께 보여 줍니다.">
   <!-- seo:start -->

@@ -1077,10 +1077,15 @@ const CASES = [
     const apis = ['fetch(', 'XMLHttpRequest', 'sendBeacon', 'WebSocket', 'EventSource', 'localStorage', 'sessionStorage', 'indexedDB', 'document.cookie', 'import(', 'new Image', 'gtag', 'dataLayer'];
     const found = apis.filter((a) => src.includes(a));
     const externalScripts = (html.match(/<script[^>]+src="(?!\/)[^"]*"/g) || []);
-    T('코드 점검: 전송·저장 API 미사용', '화면·계산 JS에서 전송·저장 API 검색, HTML에서 외부 스크립트 검색',
-      '전송·저장 API 0건, 외부 스크립트 0건, CSP connect-src \'none\'',
-      `API ${found.length}건 ${found.join(',')} · 외부 스크립트 ${externalScripts.length}건 · CSP connect-src 'none' ${html.includes("connect-src 'none'") ? '있음' : '없음'}`,
-      found.length === 0 && externalScripts.length === 0 && html.includes("connect-src 'none'"));
+    // 방문 통계(Google 태그 관리자) 도입 후: 외부 통신은 Google 분석 주소만 허용, 계산 화면 코드는 여전히 전송·저장 API 0건
+    const connect = (html.match(/connect-src ([^;"]+)/) || [])[1] ?? '';
+    const connectOk = connect.split(/\s+/).every((h) => /^https:\/\/(www\.googletagmanager\.com|\*\.google-analytics\.com|\*\.analytics\.google\.com)$/.test(h));
+    const loader = fs.readFileSync(path.join(ROOT, DIR, 'assets/js/analytics.js'), 'utf8');
+    const loaderOk = /PRODUCTION_HOSTS = \['xn--989a2xnd520fn5f\.site'\]/.test(loader) && /GTM-WLPB6PGS/.test(loader) && !/value|querySelector|form/i.test(loader.replace(/\/\*[\s\S]*?\*\//, ''));
+    T('코드 점검: 전송·저장 API 미사용', '화면·계산 JS에서 전송·저장 API 검색, HTML에서 외부 스크립트 검색, CSP connect-src·통계 코드 확인',
+      '전송·저장 API 0건, 외부 스크립트 태그 0건, CSP connect-src 는 Google 분석 주소만, 통계 코드는 운영 도메인에서만·입력값 미접근',
+      `API ${found.length}건 ${found.join(',')} · 외부 스크립트 ${externalScripts.length}건 · connect-src ${connect} · 통계 코드 ${loaderOk ? '정상' : '확인 필요'}`,
+      found.length === 0 && externalScripts.length === 0 && connectOk && loaderOk);
     T('실행 중 요청: 다른 출처로 보낸 요청', '위 모든 검수를 실행하는 동안 브라우저 요청 기록(공식 출처 새 창 제외)',
       '다른 출처 요청 0건', `${externalRequests.length}건 ${externalRequests.slice(0, 3).join(', ')}`, externalRequests.length === 0);
     T('실행 중 콘솔 오류', '위 모든 검수 중 브라우저 콘솔 기록', '오류 0건', `${consoleErrors.length}건 ${consoleErrors.slice(0, 2).join(' | ')}`, consoleErrors.length === 0);

@@ -1,6 +1,6 @@
 # 생활계산서 검수 결과표
 
-- 실행: 2026-11-22T00:49:30.101Z · 운영용 빌드(dist/, SITE_URL=https://xn--989a2xnd520fn5f.site) · `npm run verify:production` · Chromium(Playwright) · 시간대 Pacific/Kiritimati(UTC+14)
+- 실행: 2026-11-24T12:15:54.308Z · 운영용 빌드(dist/, SITE_URL=https://xn--989a2xnd520fn5f.site) · `npm run verify:production` · Chromium(Playwright) · 시간대 Pacific/Kiritimati(UTC+14)
 - 집계: 통과 134 · 실패 0 · 미확인 3
 
 ## 월급 일할계산기 — 필수 검증 사례 5건 (회귀, 브라우저 직접 입력)
@@ -167,7 +167,7 @@
 
 | 검수 항목 | 입력 또는 재현 방법 | 기대값 | 실제값 | 상태 |
 |---|---|---|---|---|
-| 코드 점검: 전송·저장 API 미사용 | 화면·계산 JS에서 전송·저장 API 검색, HTML에서 외부 스크립트 검색 | 전송·저장 API 0건, 외부 스크립트 0건, CSP connect-src 'none' | API 0건  · 외부 스크립트 0건 · CSP connect-src 'none' 있음 | 통과 |
+| 코드 점검: 전송·저장 API 미사용 | 화면·계산 JS에서 전송·저장 API 검색, HTML에서 외부 스크립트 검색, CSP connect-src·통계 코드 확인 | 전송·저장 API 0건, 외부 스크립트 태그 0건, CSP connect-src 는 Google 분석 주소만, 통계 코드는 운영 도메인에서만·입력값 미접근 | API 0건  · 외부 스크립트 0건 · connect-src https://www.googletagmanager.com https://*.google-analytics.com https://*.analytics.google.com · 통계 코드 정상 | 통과 |
 | 실행 중 요청: 다른 출처로 보낸 요청 | 위 모든 검수를 실행하는 동안 브라우저 요청 기록(공식 출처 새 창 제외) | 다른 출처 요청 0건 | 0건  | 통과 |
 | 실행 중 콘솔 오류 | 위 모든 검수 중 브라우저 콘솔 기록 | 오류 0건 | 0건  | 통과 |
 

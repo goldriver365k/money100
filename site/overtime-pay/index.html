@@ -3,8 +3,9 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'none'; form-action 'none'; base-uri 'none'">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://www.googletagmanager.com; style-src 'self'; img-src 'self' data: https://www.googletagmanager.com https://*.google-analytics.com https://*.analytics.google.com; connect-src https://www.googletagmanager.com https://*.google-analytics.com https://*.analytics.google.com; form-action 'none'; base-uri 'none'">
   <meta name="referrer" content="strict-origin-when-cross-origin">
+  <script src="/assets/js/analytics.js" async></script>
   <title>야간수당·연장수당·휴일수당 계산기 — 자정 넘김·중복 가산 | 생활계산서</title>
   <meta name="description" content="시급과 근무 시작·종료 시각, 휴게시간으로 하루 기본임금과 연장·야간(22~06시)·휴일근로 가산수당을 계산합니다. 자정을 넘는 근무와 야간·연장 중복 가산, 5명 미만 사업장 예외를 반영합니다.">
   <!-- seo:start -->

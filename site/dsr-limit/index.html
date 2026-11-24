@@ -3,8 +3,9 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'none'; form-action 'none'; base-uri 'none'">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://www.googletagmanager.com; style-src 'self'; img-src 'self' data: https://www.googletagmanager.com https://*.google-analytics.com https://*.analytics.google.com; connect-src https://www.googletagmanager.com https://*.google-analytics.com https://*.analytics.google.com; form-action 'none'; base-uri 'none'">
   <meta name="referrer" content="strict-origin-when-cross-origin">
+  <script src="/assets/js/analytics.js" async></script>
   <title>DSR 대출한도 계산기 — 스트레스 DSR 반영 주택담보대출 한도 추정 | 생활계산서</title>
   <meta name="description" content="연소득, 기존 대출 원리금, 금리, 스트레스 금리, 만기, DSR 한도(은행 40%)로 원리금균등 상환 기준 신규 대출 가능 원금을 추정합니다. 스트레스 금리와 한도는 직접 입력하는 가정값입니다.">
   <!-- seo:start -->

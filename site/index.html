@@ -3,8 +3,9 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'none'; form-action 'none'; base-uri 'none'">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://www.googletagmanager.com; style-src 'self'; img-src 'self' data: https://www.googletagmanager.com https://*.google-analytics.com https://*.analytics.google.com; connect-src https://www.googletagmanager.com https://*.google-analytics.com https://*.analytics.google.com; form-action 'none'; base-uri 'none'">
   <meta name="referrer" content="strict-origin-when-cross-origin">
+  <script src="/assets/js/analytics.js" async></script>
   <!-- 검색엔진 소유확인 (네이버·구글): 값은 site.config.json 의 siteVerification, 운영 빌드에서 채움 -->
   <!-- verify:start --><!-- verify:end -->
   <title>급여·세금·부동산 계산기 30종 | 생활계산서</title>
@@ -489,7 +490,7 @@
           </details>
           <details class="faq-item">
             <summary>입력한 정보는 어떻게 활용되나요?</summary>
-            <p>입력한 금액·날짜·근무시간은 이 기기의 브라우저 안에서만 계산에 쓰이고, 서버나 분석 도구로 전송되지 않습니다.</p>
+            <p>입력한 금액·날짜·근무시간은 이 기기의 브라우저 안에서만 계산에 쓰이고, 서버나 분석 도구로 전송되지 않습니다. 사이트 방문 통계(방문한 페이지·기기 종류 등)만 Google 애널리틱스로 수집하며, 자세한 내용은 <a href="/privacy">개인정보처리방침</a>에 있습니다.</p>
           </details>
           <details class="faq-item">
             <summary>적용기준과 공식출처는 어디서 확인하나요?</summary>

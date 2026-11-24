@@ -33,3 +33,15 @@ test('구글 Search Console 소유확인 파일: 사이트 루트, 발급받은 
   const f = path.join(SITE, 'google02cbf226a5d76f54.html');
   assert.equal(fs.readFileSync(f, 'utf8'), 'google-site-verification: google02cbf226a5d76f54.html');
 });
+
+test('Google 태그 관리자: 모든 페이지에 통계 코드 연결, CSP는 Google 분석 주소만 추가 허용', () => {
+  for (const p of pages) {
+    const h = fs.readFileSync(p, 'utf8');
+    assert.ok(h.includes('<script src="/assets/js/analytics.js" async></script>'), path.relative(SITE, p));
+    const csp = (h.match(/http-equiv="Content-Security-Policy" content="([^"]+)"/) || [])[1];
+    if (!csp) continue; // 404 페이지는 CSP 없음
+    assert.match(csp, /script-src 'self' https:\/\/www\.googletagmanager\.com;/);
+    assert.match(csp, /connect-src https:\/\/www\.googletagmanager\.com https:\/\/\*\.google-analytics\.com https:\/\/\*\.analytics\.google\.com;/);
+    assert.ok(!/unsafe-inline|unsafe-eval/.test(csp));
+  }
+});

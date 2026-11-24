@@ -3,8 +3,9 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'none'; form-action 'none'; base-uri 'none'">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://www.googletagmanager.com; style-src 'self'; img-src 'self' data: https://www.googletagmanager.com https://*.google-analytics.com https://*.analytics.google.com; connect-src https://www.googletagmanager.com https://*.google-analytics.com https://*.analytics.google.com; form-action 'none'; base-uri 'none'">
   <meta name="referrer" content="strict-origin-when-cross-origin">
+  <script src="/assets/js/analytics.js" async></script>
   <title>종합소득세 계산기 2026 — 사업소득·필요경비·기납부세액 정산 | 생활계산서</title>
   <meta name="description" content="사업 수입금액, 필요경비, 그 밖의 종합소득금액, 소득공제·세액공제, 기납부세액(3.3% 원천징수 등)을 넣어 종합소득세 결정세액과 납부·환급 예상액, 지방소득세를 계산합니다.">
   <!-- seo:start -->
