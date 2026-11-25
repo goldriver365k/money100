@@ -1,0 +1,124 @@
+/* =====================================================================
+   생활계산서 디자인 스타터 — 다른 웹에 옮겨 쓰는 최소 CSS
+   (색·글꼴·버튼·입력·카드·칩·결과 강조·접근성 기본값)
+   사용: 이 파일을 불러오고, 브랜드에 맞게 :root 의 색만 바꾼다.
+   글꼴: Pretendard (SIL OFL 1.1) — https://github.com/orioncactus/pretendard
+   ===================================================================== */
+
+:root {
+  /* 바탕·글자 */
+  --bg: #f7f9fd;          /* 페이지 바탕: 아주 옅은 청회색 */
+  --surface: #ffffff;     /* 카드·입력 바탕 */
+  --text: #1e2a5a;        /* 제목·본문: 검정 대신 짙은 남색 */
+  --muted: #56608a;       /* 보조 문구 (흰 바탕 대비 6:1 이상) */
+  --border: #e2e7f2;
+  /* 주 색 */
+  --brand: #2563e2;
+  --brand-strong: #1c4fc4; /* 눌림·강조 글자 */
+  --brand-soft: #eaf1fd;   /* 연한 강조 바탕 */
+  --navy: #172149;         /* 바닥글 */
+  /* 분야(카테고리) 색: 글자색 / 옅은 바탕 / 테두리 — 글자색은 옅은 바탕 위 4.5:1 이상 */
+  --cat-1: #1554d6; --cat-1-bg: #e3eeff; --cat-1-line: #b9d0fb;   /* 파랑 */
+  --cat-2: #6728cd; --cat-2-bg: #f0e8ff; --cat-2-line: #d6c2f7;   /* 보라 */
+  --cat-3: #007a4b; --cat-3-bg: #e1f9ef; --cat-3-line: #a9e6cc;   /* 초록 */
+  /* 상태 */
+  --error: #c02a1e; --error-soft: #fdecea;
+  --warn-bg: #fff6e0; --warn-line: #e9c46a; --warn-text: #5b4300;
+  --focus: #1c4fc4;
+  /* 형태 */
+  --radius: 14px;          /* 카드 */
+  --radius-sm: 10px;       /* 입력·작은 버튼 */
+  --shadow: 0 6px 24px rgb(30 42 90 / 0.07);
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0e1430; --surface: #161f46; --text: #e7ebf7; --muted: #aab3d1; --border: #2b376a;
+    --brand: #7aa5ff; --brand-strong: #a4c1ff; --brand-soft: #1d2b5c; --navy: #0a0f26;
+    --cat-1: #8fb4ff; --cat-1-bg: #1b2a57; --cat-1-line: #34509a;
+    --cat-2: #c4a6ff; --cat-2-bg: #2a1f55; --cat-2-line: #5a43a0;
+    --cat-3: #5fd6a6; --cat-3-bg: #10352b; --cat-3-line: #2a7a5e;
+    --error: #ff8a7a; --error-soft: #3d1f1c; --focus: #a4c1ff; --shadow: none;
+    color-scheme: dark;
+  }
+}
+
+/* ---------- 기본 ---------- */
+*, *::before, *::after { box-sizing: border-box; }
+body {
+  margin: 0; background: var(--bg); color: var(--text);
+  font-family: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Malgun Gothic", "Noto Sans KR", sans-serif;
+  font-size: 16px; line-height: 1.6;
+  word-break: keep-all;          /* 한글 낱말 단위 줄바꿈 */
+  overflow-wrap: anywhere;
+}
+h1 { font-size: clamp(1.9rem, 6vw, 3rem); font-weight: 900; letter-spacing: -0.04em; line-height: 1.2; margin: 0 0 10px; }
+h2 { font-size: clamp(1.3rem, 3.4vw, 1.6rem); font-weight: 900; letter-spacing: -0.02em; margin: 0 0 14px; }
+a { color: var(--brand); }
+:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }   /* 키보드 포커스 항상 보이게 */
+.container { width: 100%; max-width: 760px; margin: 0 auto; padding: 0 16px; }   /* 읽기·입력 화면 */
+.container-wide { max-width: 1160px; }                                           /* 목록·홈 */
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+/* ---------- 버튼: 누르는 영역 44px 이상 ---------- */
+.btn { font: inherit; cursor: pointer; min-height: 44px; padding: 8px 16px; border-radius: var(--radius-sm);
+  border: 1.5px solid var(--border); background: var(--surface); color: var(--text); font-weight: 700; }
+.btn:hover { border-color: var(--brand); color: var(--brand); }
+.btn-primary { min-height: 52px; font-size: 1.05rem; font-weight: 800; background: var(--brand); border-color: var(--brand); color: #fff; }
+.btn-primary:hover { background: var(--brand-strong); border-color: var(--brand-strong); color: #fff; }
+.btn-pill { border-radius: 999px; }
+
+/* ---------- 입력 ---------- */
+.field { margin: 0 0 20px; }
+.field label { display: block; margin-bottom: 6px; font-weight: 700; }
+.input { width: 100%; min-height: 48px; padding: 10px 12px; font: inherit; color: var(--text);
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); font-variant-numeric: tabular-nums; }
+.input[aria-invalid="true"] { border-color: var(--error); box-shadow: 0 0 0 1px var(--error); }
+.hint { margin: 6px 0 0; font-size: .875rem; color: var(--muted); }
+.error { margin: 6px 0 0; font-size: .875rem; font-weight: 700; color: var(--error); }
+/* 빠른 입력 칩 (예: 3,000만 / 5,000만 / 1억) */
+.quick { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+.quick button { min-height: 44px; padding: 0 14px; border: 1.5px solid var(--border); border-radius: 999px;
+  background: var(--surface); color: var(--text); font: inherit; font-size: .9rem; font-weight: 700; cursor: pointer; }
+.quick button:hover { border-color: var(--brand); color: var(--brand); background: var(--brand-soft); }
+
+/* ---------- 카드 ---------- */
+.panel { margin-top: 20px; padding: 20px 16px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); }
+/* 분야 색 적용: 부모에 .cat-1 / .cat-2 / .cat-3 을 붙이면 --c 계열이 바뀐다 */
+.cat-1 { --c: var(--cat-1); --c-bg: var(--cat-1-bg); --c-line: var(--cat-1-line); }
+.cat-2 { --c: var(--cat-2); --c-bg: var(--cat-2-bg); --c-line: var(--cat-2-line); }
+.cat-3 { --c: var(--cat-3); --c-bg: var(--cat-3-bg); --c-line: var(--cat-3-line); }
+/* 목록 카드: 아이콘 | 분야·제목·설명 | 꺾쇠 — 카드 전체가 링크 */
+.list-card { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 4px 16px;
+  padding: 16px 18px; background: var(--surface); color: var(--text); text-decoration: none;
+  border: 1.5px solid var(--border); border-radius: var(--radius); transition: border-color .15s, transform .15s; }
+.list-card:hover { border-color: var(--c); transform: translateY(-1px); }
+.list-card .ico { display: grid; place-items: center; width: 46px; height: 46px; border-radius: 12px; background: var(--c-bg); color: var(--c); }
+.list-card .cat { font-size: .8rem; font-weight: 800; color: var(--c); }
+.list-card .title { margin: 0; font-size: 1.08rem; font-weight: 800; }
+.list-card .desc { color: var(--muted); font-size: .9rem; }
+@media (max-width: 599px) { .list-card { grid-template-columns: auto minmax(0, 1fr); padding: 12px 14px; } }
+
+/* ---------- 칩(필터) ---------- */
+.chip { min-height: 44px; padding: 8px 18px; border-radius: 999px; border: 1.5px solid var(--c-line, var(--border));
+  background: var(--surface); color: var(--c, var(--text)); font: inherit; font-weight: 800; cursor: pointer; }
+.chip[aria-pressed="true"] { background: var(--c, var(--text)); border-color: var(--c, var(--text)); color: #fff; }
+
+/* ---------- 결과 강조: 핵심 숫자 하나를 크게 ---------- */
+.result-hero { padding: 20px; border-radius: 16px; background: var(--brand-soft); border: 1.5px solid #c9d8fb; }
+.result-hero .label { margin: 0; font-weight: 800; }
+.result-hero .value { margin: 4px 0 6px; font-size: clamp(2rem, 8vw, 2.6rem); font-weight: 900; letter-spacing: -0.03em;
+  line-height: 1.15; color: var(--brand-strong); font-variant-numeric: tabular-nums; }
+.result-hero .basis { margin: 0; font-size: .85rem; color: var(--muted); }
+/* 입력이 바뀐 뒤의 예전 결과: 흐리게 + 안내 띠 */
+.stale-bar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px;
+  padding: 12px 14px; border-radius: 12px; background: var(--warn-bg); border: 1.5px solid var(--warn-line); color: var(--warn-text); font-weight: 700; }
+.is-stale .result-body { opacity: .45; filter: grayscale(.6); }
+
+/* ---------- 안내 상자 (왼쪽 두꺼운 색 띠 대신 옅은 바탕) ---------- */
+.notice { padding: 16px; border-radius: var(--radius); background: var(--brand-soft); border: 1px solid var(--border); }
+.notice-warn { background: var(--error-soft); border-color: #f3c3bd; }
+
+/* ---------- 움직임 줄이기 설정 존중 ---------- */
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { transition: none !important; animation: none !important; } }
